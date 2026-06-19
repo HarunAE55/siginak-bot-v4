@@ -1,0 +1,14 @@
+services:
+  - type: worker
+    name: siginak-rp-bot
+    runtime: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: python main.py
+    envVars:
+      - key: PYTHON_VERSION
+        value: "3.11.0"
+      - key: DISCORD_TOKEN
+        sync: false
+      - key: YEDEK_KANAL_ID
+        sync: false
+    plan: free

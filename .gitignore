@@ -1,0 +1,14 @@
+siginak_temel_veri.json
+siginak_temel_veri.json.tmp
+__pycache__/
+*.py[cod]
+*.pyo
+*.egg-info/
+venv/
+.venv/
+env/
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+.env
