@@ -7,8 +7,8 @@ Komutlar:
 - /envanter (herkese açık)
 - /biyografi-yaz (herkese açık)
 - /xp_kazan_test (sadece admin)
-- /owner-kayıt (sadece RP Owner - başkasını zorla kaydeder)
-- /kayıt-sil (sadece RP Owner - kaydı siler)
+- /owner-kayit (sadece RP Owner - başkasını zorla kaydeder)
+- /kayit-sil (sadece RP Owner - kaydı siler)
 """
 
 import discord
@@ -295,9 +295,9 @@ class KayitCog(commands.Cog):
         await interaction.response.send_message(embed=embed)
 
     # ====================================================
-    # /owner-kayıt - RP Owner başkasını zorla kaydeder
+    # /owner-kayit - RP Owner başkasını zorla kaydeder
     # ====================================================
-    @app_commands.command(name="owner-kayıt", description="[OWNER] Sadece RP Owner: Belirtilen üyeyi sığınağa zorla kaydeder.")
+    @app_commands.command(name="owner-kayit", description="[OWNER] Sadece RP Owner: Belirtilen üyeyi sığınağa zorla kaydeder.")
     @app_commands.describe(
         uye="Kaydedilecek üye",
         isim="Karakter adı",
@@ -327,7 +327,7 @@ class KayitCog(commands.Cog):
         # Eğer kayıtlıysa ve hayattaysa uyar
         if u_id in db["sakinler"] and db["sakinler"][u_id].get("durum") != "Ölü":
             await interaction.response.send_message(
-                f"❌ {uye.mention} zaten aktif bir sicile sahip! Önce `/kayıt-sil` ile mevcut kaydı silin.",
+                f"❌ {uye.mention} zaten aktif bir sicile sahip! Önce `/kayit-sil` ile mevcut kaydı silin.",
                 ephemeral=True
             )
             return
@@ -351,9 +351,9 @@ class KayitCog(commands.Cog):
         await interaction.response.send_message(embed=embed)
 
     # ====================================================
-    # /kayıt-sil - RP Owner kaydı siler
+    # /kayit-sil - RP Owner kaydı siler
     # ====================================================
-    @app_commands.command(name="kayıt-sil", description="[OWNER] Sadece RP Owner: Belirtilen üyenin sicil kaydını tamamen siler.")
+    @app_commands.command(name="kayit-sil", description="[OWNER] Sadece RP Owner: Belirtilen üyenin sicil kaydını tamamen siler.")
     @app_commands.describe(uye="Kaydı silinecek üye", onay="Silmeyi onaylamak için 'EVET' yazın")
     async def kayit_sil(self, interaction: discord.Interaction, uye: discord.Member, onay: str):
         if not any(rol.id == RP_OWNER_ROL_ID for rol in interaction.user.roles):

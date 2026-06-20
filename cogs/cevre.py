@@ -24,7 +24,7 @@ class CevreCog(commands.Cog):
     # ====================================================
     # /hava-durumu-degis - Admin
     # ====================================================
-    @app_commands.command(name="hava-durumu-değiş", description="[ADMİN] Sığınağın mevsimini ve hava durumunu değiştirir.")
+    @app_commands.command(name="hava-durumu-degis", description="[ADMİN] Sığınağın mevsimini ve hava durumunu değiştirir.")
     @app_commands.describe(yeni_hava="İlkbahar, Yaz, Yağmurlu, Kış")
     @app_commands.choices(yeni_hava=[
         app_commands.Choice(name="🌱 İlkbahar", value="İlkbahar"),
@@ -57,7 +57,7 @@ class CevreCog(commands.Cog):
     # ====================================================
     # /sunucu-yonetimi - SADECE RP OWNER
     # ====================================================
-    @app_commands.command(name="sunucu-yönetimi", description="[OWNER] Sadece RP Owner rolüne sahip yetkililerin açabileceği tanrısal kontrol panelidir.")
+    @app_commands.command(name="sunucu-yonetimi", description="[OWNER] Sadece RP Owner rolüne sahip yetkililerin açabileceği tanrısal kontrol panelidir.")
     async def sunucu_yonetimi_paneli(self, interaction: discord.Interaction):
         if not any(rol.id == RP_OWNER_ROL_ID for rol in interaction.user.roles):
             await interaction.response.send_message(

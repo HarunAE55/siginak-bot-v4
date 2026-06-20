@@ -106,7 +106,7 @@ class KollukCog(commands.Cog):
     # ====================================================
     # /hucreden-cikar
     # ====================================================
-    @app_commands.command(name="hucreden-çıkar", description="[KOLLUK] Hücredeki bir sakini serbest bırakır.")
+    @app_commands.command(name="hucreden-cikar", description="[KOLLUK] Hücredeki bir sakini serbest bırakır.")
     @app_commands.describe(hedef="Tahliye edilecek sakin")
     async def hucreden_cikar(self, interaction: discord.Interaction, hedef: discord.Member):
         u_id = str(interaction.user.id)
@@ -185,7 +185,7 @@ class KollukCog(commands.Cog):
     # ====================================================
     # /karantina-kaldir
     # ====================================================
-    @app_commands.command(name="karantina-kaldır", description="[KOLLUK/BAŞ SİMYACI] Tedavi olmuş veya karantina süresi dolmuş sakini çadırdan çıkarır.")
+    @app_commands.command(name="karantina-kaldir", description="[KOLLUK/BAŞ SİMYACI] Tedavi olmuş veya karantina süresi dolmuş sakini çadırdan çıkarır.")
     @app_commands.describe(hedef_sakin="Karantinadan çıkarılacak üye")
     async def karantina_kaldir(self, interaction: discord.Interaction, hedef_sakin: discord.Member):
         u_id = str(interaction.user.id)
@@ -258,7 +258,7 @@ class KollukCog(commands.Cog):
     # ====================================================
     # /savunmayi-guclendir
     # ====================================================
-    @app_commands.command(name="savunmayı-güçlendir", description="[BAŞKAN] Darbe ve isyanlara karşı muhafız tahkimatını artır (500 Hurda, +15 tahkimat).")
+    @app_commands.command(name="savunmayi-guclendir", description="[BAŞKAN] Darbe ve isyanlara karşı muhafız tahkimatını artır (500 Hurda, +15 tahkimat).")
     async def savunma_guclendir(self, interaction: discord.Interaction):
         u_id = str(interaction.user.id)
         if db["sakinler"].get(u_id, {}).get("meslek_anahtar") != "belediye_baskani":

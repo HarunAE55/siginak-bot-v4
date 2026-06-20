@@ -3,7 +3,7 @@ Cog: Keşif & Anıt
 =================
 Komutlar:
 - /gez (6 saat cooldown, %50 olumlu / %30 olumsuz / %20 gizemli, 30+ olay, büyük ödül/ceza)
-- /anıt (sığınak şeref listesi ve şehitler)
+- /anit (sığınak şeref listesi ve şehitler)
 
 Önemli: /gez sonucu hem komutun kullanıldığı kanala, hem de ilgili RP bölge kanalına gönderilir.
 """
@@ -291,9 +291,9 @@ class KesifCog(commands.Cog):
             pass
 
     # ====================================================
-    # /anıt - Şeref listesi ve şehitler
+    # /anit - Şeref listesi ve şehitler
     # ====================================================
-    @app_commands.command(name="anıt", description="Sığınak meydanındaki kadim anıtı, kuralları ve şeref listesini görüntüler.")
+    @app_commands.command(name="anit", description="Sığınak meydanındaki kadim anitı, kuralları ve şeref listesini görüntüler.")
     async def anit_goruntule(self, interaction: discord.Interaction):
         # En yüksek XP'ye sahip 3 kahraman
         sirali_sakinler = sorted(db["sakinler"].items(), key=lambda x: x[1].get("xp", 0), reverse=True)[:3]
@@ -325,7 +325,7 @@ class KesifCog(commands.Cog):
             "3. Kilise kurallarına uymayanlar engizisyon tarafından afaroz edilir.\n"
             "4. Ölü bir karakter tüm eşyalarını kaybeder, yeniden `/kayıt` olmak zorundadır.\n"
             "5. 6 saatten az sürede tekrar gezi yapılamaz.\n\n"
-            "✨ **SIĞINAK KAHRAMANLARI ŞEREF KÜRSÜSÜ:**\n" + (seref_kursusu or "*Henüz anıta adı kazınan bir kahraman yok.*\n") + "\n"
+            "✨ **SIĞINAK KAHRAMANLARI ŞEREF KÜRSÜSÜ:**\n" + (seref_kursusu or "*Henüz anita adı kazınan bir kahraman yok.*\n") + "\n"
             "💀 **ŞEHİTLER DUVARI — Sığınak İçin Can Verenler:**\n" + sehit_listesi + "\n"
             f"📅 **Kuruluş Tarihi:** Sığınak kapıları `03.01.2026` tarihinde mühürlenerek hayata başlamıştır."
         )

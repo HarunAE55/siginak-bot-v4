@@ -172,7 +172,7 @@ class SavasCog(commands.Cog):
     # ====================================================
     # /zombi-baskini-baslat - SADECE RP OWNER
     # ====================================================
-    @app_commands.command(name="zombi-baskını-başlat", description="[OWNER] Sadece RP Owner: Sığınak surlarına manuel zombi baskını başlatır.")
+    @app_commands.command(name="zombi-baskini-baslat", description="[OWNER] Sadece RP Owner: Sığınak surlarına manuel zombi baskını başlatır.")
     async def zombi_baskini_baslat(self, interaction: discord.Interaction):
         # RP Owner kontrolü
         if not any(rol.id == RP_OWNER_ROL_ID for rol in interaction.user.roles):

@@ -163,7 +163,7 @@ class SimyaCog(commands.Cog):
     # ====================================================
     # /laboratuvar-gelistir
     # ====================================================
-    @app_commands.command(name="laboratuvar-geliştir", description="[BAŞKAN/SİMYACI] Kasadan hurda harcayarak laboratuvar güvenlik seviyesini artırır.")
+    @app_commands.command(name="laboratuvar-gelistir", description="[BAŞKAN/SİMYACI] Kasadan hurda harcayarak laboratuvar güvenlik seviyesini artırır.")
     async def lab_gelistir(self, interaction: discord.Interaction):
         u_id = str(interaction.user.id)
         if u_id not in db["sakinler"]:

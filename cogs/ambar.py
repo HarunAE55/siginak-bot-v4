@@ -57,7 +57,7 @@ class AmbarCog(commands.Cog):
     # ====================================================
     # /ambara-bagis
     # ====================================================
-    @app_commands.command(name="ambara-bağış", description="[AMBAR] Kendi envanterinizden köy ambarına eşya bağışlayarak toplumsal itibarınızı artırır.")
+    @app_commands.command(name="ambara-bagis", description="[AMBAR] Kendi envanterinizden köy ambarına eşya bağışlayarak toplumsal itibarınızı artırır.")
     @app_commands.describe(esya_ad="Bağışlanacak malzeme (erzak, odun, kömür, ilaç)", adet="Bağışlanacak miktar")
     async def ambara_bagis_yap(self, interaction: discord.Interaction, esya_ad: str, adet: int):
         u_id = str(interaction.user.id)

@@ -103,12 +103,12 @@ class RehberCog(commands.Cog):
         )
         embed.add_field(
             name="🏛️ 3. Siyaset & Yönetim",
-            value="`/secimi-başlat` `/aday-ol` `/yonetim` `/tayin-et` `/maas-ode` `/meslek-maaş-öde` `/toplu-maaş`",
+            value="`/secimi-baslat` `/aday-ol` `/yonetim` `/tayin-et` `/maas-ode` `/meslek-maas-ode` `/toplu-maas`",
             inline=False
         )
         embed.add_field(
             name="⚖️ 4. Yargı & Ceza",
-            value="`/yargıla` `/hucreye-at` `/hucreden-çıkar` `/sokak-yasagi` `/darbe`",
+            value="`/yargila` `/hucreye-at` `/hucreden-cikar` `/sokak-yasagi` `/darbe`",
             inline=False
         )
         embed.add_field(
@@ -118,32 +118,32 @@ class RehberCog(commands.Cog):
         )
         embed.add_field(
             name="💊 6. Sağlık & Simya",
-            value="`/doktor-paneli` `/asi-uret` `/tedavi-et` `/deney` `/laboratuvar-geliştir`",
+            value="`/doktor-paneli` `/asi-uret` `/tedavi-et` `/deney` `/laboratuvar-gelistir`",
             inline=False
         )
         embed.add_field(
             name="🛡️ 7. Kolluk & Savunma",
-            value="`/muhafiz-paneli` `/karantina-al` `/karantina-kaldır` `/savunmayı-güçlendir` `/nobet`",
+            value="`/muhafiz-paneli` `/karantina-al` `/karantina-kaldir` `/savunmayi-guclendir` `/nobet`",
             inline=False
         )
         embed.add_field(
             name="🌾 8. Üretim & Ambar",
-            value="`/ciftci-paneli` `/tarla-calis` `/maden-kaz` `/orman-kes` `/ambar` `/ambara-bağış` `/ambardan-al`",
+            value="`/ciftci-paneli` `/tarla-calis` `/maden-kaz` `/orman-kes` `/ambar` `/ambara-bagis` `/ambardan-al`",
             inline=False
         )
         embed.add_field(
             name="⚔️ 9. Savaş & Keşif",
-            value="`/duello` `/sefer` `/zombi-baskını-başlat` `/gez` `/anıt`",
+            value="`/duello` `/sefer` `/zombi-baskini-baslat` `/gez` `/anit`",
             inline=False
         )
         embed.add_field(
             name="💰 10. Ekonomi & Maliye",
-            value="`/maliye-yönetim` `/hava-durumu-değiş` `/haber`",
+            value="`/maliye-yonetim` `/hava-durumu-degis` `/haber`",
             inline=False
         )
         embed.add_field(
             name="🔧 11. Yönetim Paneli",
-            value="`/sunucu-yönetimi` (RP Owner) `/owner-kayıt` (RP Owner) `/kayıt-sil` (RP Owner) `/xp_kazan_test` (Admin)",
+            value="`/sunucu-yonetimi` (RP Owner) `/owner-kayit` (RP Owner) `/kayit-sil` (RP Owner) `/xp_kazan_test` (Admin)",
             inline=False
         )
         embed.add_field(
@@ -273,7 +273,7 @@ class RehberDropdown(discord.ui.Select):
                 "color": 0xF1C40F,
                 "content": (
                     "**Belediye Başkanı Seçimi:**\n"
-                    "• Admin `/secimi-başlat` yapar → 15 dk adaylık + 45 dk oylama = 1 saat\n"
+                    "• Admin `/secimi-baslat` yapar → 15 dk adaylık + 45 dk oylama = 1 saat\n"
                     "• Aday olmak için: `/aday-ol [vaat]` — 500 hurda depozito gerekir\n"
                     "• Her sakin 1 oy kullanır, en çok oyu olan başkan olur\n"
                     "• Beraberlikte seçim iptal\n\n"
@@ -282,12 +282,12 @@ class RehberDropdown(discord.ui.Select):
                     "  - 🧱 Sur Geliştir: 250 hurda, +1 sur seviyesi\n"
                     "  - 🏡 Köy Geliştir: 300 hurda, +1 köy seviyesi\n"
                     "• `/tayin-et [@üye] [unvan]` — 5 kadroya atama (Yardımcı, Müfettiş, Komutan, Baş Simyacı, Rahip)\n"
-                    "• `/maas-ode [@üye] [miktar]` — Tek sakin maaş\n"
-                    "• `/meslek-maaş-öde [grup] [miktar]` — Meslek grubuna toplu maaş\n"
-                    "• `/toplu-maaş [miktar]` — Tüm halka maaş\n\n"
+                    "• `/maas-ode [@üye] [m[miktar]` — Tek sakin maaş\n"
+                    "• `/meslek-maas-ode [grup] [m[miktar]` — Meslek grubuna toplu maaş\n"
+                    "• `/toplu-maas [m[miktar]` — Tüm halka maaş\n\n"
                     "**Kayıt Yönetimi (RP Owner only):**\n"
-                    "• `/owner-kayıt [@üye] ...` — Bir üyeyi zorla kaydet\n"
-                    "• `/kayıt-sil [@üye] EVET` — Bir üyenin kaydını sil"
+                    "• `/owner-kayit [@üye] ...` — Bir üyeyi zorla kaydet\n"
+                    "• `/kayit-sil [@üye] EVET` — Bir üyenin kaydını sil"
                 )
             },
             "yargi": {
@@ -295,13 +295,13 @@ class RehberDropdown(discord.ui.Select):
                 "color": 0x9E9E9E,
                 "content": (
                     "**Mahkeme Sistemi (Başkan açar):**\n"
-                    "• `/yargıla [@sanık] [suç]` — 3 seçenek:\n"
+                    "• `/yargila [@sanık] [suç]` — 3 seçenek:\n"
                     "  1. 📢 **Halk Oylaması** — 2 dk, halk suçlu/suçsuuz oylar\n"
                     "  2. 💀 **Yargısız İdam** — Sanık ölür, başkan -300 hurda itibar kaybı (TİRANLIK)\n"
                     "  3. 🧳 **Mutlak Sürgün** — Sanık sürgün, başkan -150 hurda kaybı\n\n"
                     "**Hücre Sistemi (Kolluk):**\n"
                     "• `/hucreye-at [@sakin]` — Muhafız sınıfı, kuralları bozanı zindana atar\n"
-                    "• `/hucreden-çıkar [@sakin]` — Tahliye\n"
+                    "• `/hucreden-cikar [@sakin]` — Tahliye\n"
                     "• Hücrede olan hiçbir komutu kullanamaz\n\n"
                     "**Sokağa Çıkma Yasağı:**\n"
                     "• `/sokak-yasagi [durum]` — Başkan açar/kapatır\n"
@@ -353,7 +353,7 @@ class RehberDropdown(discord.ui.Select):
                     "  - Başarı: virüs ilerlemesi +5, +30 XP\n"
                     "  - Ölüm: simyacı ölür, virüs verisi sıfırlanır!\n"
                     "  - Lab seviyesi 2: +%25 başarı, seviye 3: +%45 başarı\n\n"
-                    "• `/laboratuvar-geliştir` (Başkan veya Baş Simyacı)\n"
+                    "• `/laboratuvar-gelistir` (Başkan veya Baş Simyacı)\n"
                     "  - 500 hurda/seviye\n"
                     "  - Max seviye 3"
                 )
@@ -365,7 +365,7 @@ class RehberDropdown(discord.ui.Select):
                     "**Muhafız Sınıfı (Komutan/Muhafız/Nişancı/İzci):**\n\n"
                     "• `/muhafiz-paneli` — Panel gösterir\n"
                     "• `/hucreye-at [@sakin]` — Zindana at\n"
-                    "• `/hucreden-çıkar [@sakin]` — Tahliye et\n\n"
+                    "• `/hucreden-cikar [@sakin]` — Tahliye et\n\n"
                     "• `/nobet` ⭐ YENİ\n"
                     "  - 4 saatte 1\n"
                     "  - 40-80 hurda + 20 XP kazandırır\n"
@@ -375,10 +375,10 @@ class RehberDropdown(discord.ui.Select):
                     "**Karantina Sistemi:**\n"
                     "• `/karantina-al [@sakin]` — Enfekte sakini karantinaya at\n"
                     "  - Yetkililer: Başkan, Yardımcı, Komutan, Muhafız, Karantinacı rolü\n"
-                    "• `/karantina-kaldır [@sakin]` — Karantinayı kaldır\n"
+                    "• `/karantina-kaldir [@sakin]` — Karantinayı kaldır\n"
                     "  - Yetkililer: Başkan, Komutan, Baş Simyacı, Simyacı, Karantinacı rolü\n\n"
                     "**Başkan Savunma:**\n"
-                    "• `/savunmayı-güçlendir` — 500 hurda, +15 muhafız tahkimatı (max 100)"
+                    "• `/savunmayi-guclendir` — 500 hurda, +15 muhafız tahkimatı (max 100)"
                 )
             },
             "uretim": {
@@ -401,7 +401,7 @@ class RehberDropdown(discord.ui.Select):
                     "  - +15 XP\n\n"
                     "**Ambar Sistemi:**\n"
                     "• `/ambar` — Stokları gör\n"
-                    "• `/ambara-bağış [esya] [adet]` — Bağış yap, +2 hurda/adet + itibar\n"
+                    "• `/ambara-bagis [esya] [adet]` — Bağış yap, +2 hurda/adet + itibar\n"
                     "• `/ambardan-al [esya] [adet]` — Ücretsiz al (max 5, cüzdanı 400+ olan alamaz)\n\n"
                     "**Tüketim:**\n"
                     "• `/tuket [esya]` — Gıda/Medikal tüket, su/sağlık yenile\n\n"
@@ -423,7 +423,7 @@ class RehberDropdown(discord.ui.Select):
                     "• 150+ hasar yiyen kalıcı ölür\n"
                     "• Zafer: zorluk +1, ganimet, +50 XP\n\n"
                     "**Zombi Baskını (RP Owner):**\n"
-                    "• `/zombi-baskını-başlat` — Manuel baskın tetikler\n"
+                    "• `/zombi-baskini-baslat` — Manuel baskın tetikler\n"
                     "• 2 dk savunma penceresi\n"
                     "• Savunma < baskın ise sur hasar alır\n"
                     "• Muhafız sınıfı +%20 savunma, diğerleri -15%\n\n"
@@ -432,7 +432,7 @@ class RehberDropdown(discord.ui.Select):
                     "• 6 bölge: Terkedilmiş Köy, Veba Mezarlığı, Karanlık Koruluk, Yıkık Kilise, Dehliz Labirenti, Zombi Tarlası\n"
                     "• %50 olumlu / %30 olumsuz / %20 gizemli\n"
                     "• Sonuç ilgili RP kanalına da gönderilir\n\n"
-                    "**Anıt:** `/anıt` — Şeref listesi ve şehitler"
+                    "**Anıt:** `/anit` — Şeref listesi ve şehitler"
                 )
             },
             "ekonomi": {
@@ -440,14 +440,14 @@ class RehberDropdown(discord.ui.Select):
                 "color": 0xE67E22,
                 "content": (
                     "**Vergi Sistemi (Vergi Memuru/Müfettişi):**\n"
-                    "• `/maliye-yönetim` — Panel + oran ayarlama\n"
+                    "• `/maliye-yonetim` — Panel + oran ayarlama\n"
                     "• Veba Vergisi: 5 saatte bir tüm canlılardan kesilir (default 20 hurda)\n"
                     "• Ticaret Kesintisi: Bot satışlarından alınır (default %10, max %50)\n\n"
                     "**Hava Durumu:**\n"
-                    "• `/hava-durumu-değiş [mevsim]` — Admin komutu\n"
+                    "• `/hava-durumu-degis [mevsim]` — Admin komutu\n"
                     "• 4 mevsim: İlkbahar, Yaz, Yağmurlu, Kış\n"
                     "• Üretim komutlarını etkiler\n\n"
-                    "**RP Owner Paneli (`/sunucu-yönetimi`):**\n"
+                    "**RP Owner Paneli (`/sunucu-yonetimi`):**\n"
                     "• 👑 **Kraliyet Acil Desteği** — +2000 odun, +1000 kömür, +500 hurda, +1 sur\n"
                     "• ☣️ **Tüm Sığınağa Enfeksiyon** — Tüm canlıları enfekte et, virüs +15\n"
                     "• 🌍 **Hava Durumu Menüsü** — Mevsim değiştir\n"

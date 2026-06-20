@@ -95,7 +95,7 @@ class YonetimCog(commands.Cog):
     # ====================================================
     # /secimi-baslat - SADECE ADMIN
     # ====================================================
-    @app_commands.command(name="secimi-başlat", description="[YÖNETİM] 1 saat sürecek belediye başkanlığı seçimlerini başlatır. Sadece sunucu yöneticileri.")
+    @app_commands.command(name="secimi-baslat", description="[YÖNETİM] 1 saat sürecek belediye başkanlığı seçimlerini başlatır. Sadece sunucu yöneticileri.")
     @app_commands.checks.has_permissions(administrator=True)
     async def secimi_baslat(self, interaction: discord.Interaction):
         if db["aktif_secim"]["durum"] == "kapali":
@@ -349,7 +349,7 @@ class YonetimCog(commands.Cog):
     # ====================================================
     # /meslek-maas-ode - Meslek grubuna toplu maaş
     # ====================================================
-    @app_commands.command(name="meslek-maaş-öde", description="[BAŞKAN] Belirli bir meslek grubundaki tüm çalışanlara kasadan toplu maaş yatırır.")
+    @app_commands.command(name="meslek-maas-ode", description="[BAŞKAN] Belirli bir meslek grubundaki tüm çalışanlara kasadan toplu maaş yatırır.")
     @app_commands.describe(meslek_grubu="Maaş ödenecek meslek grubu", miktar="Kişi başı hurda miktarı")
     @app_commands.choices(meslek_grubu=[
         app_commands.Choice(name="Muhafız Birliği", value="muhafiz"),
@@ -424,7 +424,7 @@ class YonetimCog(commands.Cog):
     # ====================================================
     # /toplu-maas - Tüm sakinlere maaş
     # ====================================================
-    @app_commands.command(name="toplu-maaş", description="[BAŞKAN] Sığınaktaki tüm aktif ve hayatta olan sakinlere kasadan eşit miktarda genel maaş dağıtır.")
+    @app_commands.command(name="toplu-maas", description="[BAŞKAN] Sığınaktaki tüm aktif ve hayatta olan sakinlere kasadan eşit miktarda genel maaş dağıtır.")
     @app_commands.describe(miktar="Herkese tek tek dağıtılacak hayatta kalma maaşı")
     async def toplu_maas(self, interaction: discord.Interaction, miktar: int):
         u_id = str(interaction.user.id)
@@ -474,7 +474,7 @@ class YonetimCog(commands.Cog):
     # ====================================================
     # /yargila - Başkan mahkeme açar
     # ====================================================
-    @app_commands.command(name="yargıla", description="[BAŞKAN] Sığınak kanunlarına karşı gelen bir sakini resmi başkanlık mahkemesine çıkarır.")
+    @app_commands.command(name="yargila", description="[BAŞKAN] Sığınak kanunlarına karşı gelen bir sakini resmi başkanlık mahkemesine çıkarır.")
     @app_commands.describe(hedef_sakin="Mahkemeye çıkarılacak sanık", suc_nedeni="İsnat edilen suç ve gerekçe")
     async def yargila(self, interaction: discord.Interaction, hedef_sakin: discord.Member, suc_nedeni: str):
         u_id = str(interaction.user.id)

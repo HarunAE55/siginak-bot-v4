@@ -73,7 +73,7 @@ class MaliyeCog(commands.Cog):
     # ====================================================
     # /maliye-yonetim
     # ====================================================
-    @app_commands.command(name="maliye-yönetim", description="[MÜFETTİŞ] Sadece Vergi Müfettişinin erişebileceği, sığınak vergi ve stopaj paneli.")
+    @app_commands.command(name="maliye-yonetim", description="[MÜFETTİŞ] Sadece Vergi Müfettişinin erişebileceği, sığınak vergi ve stopaj paneli.")
     async def vergi_yonetim_paneli(self, interaction: discord.Interaction):
         if not any(rol.id == VERGI_MEMURU_ROL_ID for rol in interaction.user.roles):
             await interaction.response.send_message(
