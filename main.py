@@ -133,18 +133,23 @@ async def on_ready():
     except Exception as e:
         log.error(f"❌ Sistem cog başlatma hatası: {e}")
 
-    # SLASH KOMUT CACHE TEMİZLEME VE SENKRONİZASYON
-    # Discord bazen eski komut adlarını cache'ler (örn. /kayıt → /kayit değişikliği).
-    # Bu yüzden önce tüm global komutları Discord'dan siliyoruz, sonra yeniden yüklüyoruz.
+    # SLASH KOMUT SENKRONİZASYONU
+    # Eski komutları Discord'dan temizlemek yerine güvenli sync yapıyoruz.
+    # clear_commands(guild=None) kullanırsak bot'un kendi ağacı da boşalır ve
+    # ikinci sync Discord'a boş liste gönderir → tüm komutlar kaybolur!
+    # Bu yüzden sadece sync() yapıyoruz, Discord eski/komut adlarını otomatik günceller.
     try:
-        log.info("🧹 Eski slash komutları Discord'dan temizleniyor...")
-        bot.tree.clear_commands(guild=None)
-        await bot.tree.sync()  # Boş ağacı Discord'a gönderir (tüm eski komutlar silinir)
-        log.info("✅ Eski komutlar temizlendi.")
-        
-        log.info("📥 Yeni slash komutları Discord'a yükleniyor...")
+        log.info(f"📥 Slash komutları Discord'a senkronize ediliyor... (bot ağacında {len(bot.tree.get_commands())} komut var)")
         synced = await bot.tree.sync()
         log.info(f"✔️ {len(synced)} slash komutu Discord'a senkronize edildi.")
+        
+        # Eğer 0 komut sync edildiyse, bir şeyler ters gitmiş olabilir
+        if len(synced) == 0:
+            log.warning("⚠️ Hiç komut sync edilmedi! Cog'lar kontrol edilmeli.")
+        else:
+            # Komut adlarını listele (debug için)
+            komut_adlari = [cmd.name for cmd in synced[:5]]
+            log.info(f"📋 İlk 5 komut: {', '.join(komut_adlari)}...")
     except Exception as e:
         log.error(f"❌ Senkronizasyon hatası: {e}")
 
