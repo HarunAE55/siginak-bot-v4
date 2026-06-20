@@ -391,6 +391,57 @@ class KayitCog(commands.Cog):
         )
         await interaction.response.send_message(embed=embed)
 
+    # ====================================================
+    # /db-sifirla - SADECE ADMIN (Veritabanı tam sıfırlama)
+    # ====================================================
+    @app_commands.command(name="db-sifirla", description="[ADMIN] Veritabanını tamamen sıfırlar. Tüm sakinler/kasa silinir. Dikkatli kullanın!")
+    @app_commands.describe(onay="Silmeyi onaylamak için 'EVET' yazın")
+    @app_commands.checks.has_permissions(administrator=True)
+    async def db_sifirla(self, interaction: discord.Interaction, onay: str):
+        if onay.upper() != "EVET":
+            await interaction.response.send_message(
+                "⚠️ **DİKKAT!** Bu işlem tüm kayıtları siler!\nOnaylamak için `onay` parametresine tam olarak `EVET` yazmalısınız.",
+                ephemeral=True
+            )
+            return
+
+        eski_sayi = len(db.get("sakinler", {}))
+
+        # Veritabanını sıfırla
+        db.clear()
+        db["sakinler"] = {}
+        db["sistem_ayarlari"] = {
+            "kasa_hurda": 50000,
+            "toplam_kayitli_sakin": 0,
+            "sur_seviyesi": 1,
+            "koy_seviyesi": 1
+        }
+
+        # Tüm tabloları default ile yeniden oluştur
+        from veritabani import db_ilkle
+        db_ilkle()
+        verileri_kaydet()
+
+        embed = discord.Embed(title="🗑️ VERİTABANI SIFIRLANDI", color=0xE74C3C)
+        embed.description = (
+            f"✅ Tüm veritabanı sıfırlandı!\n\n"
+            f"📊 **Silinen Sakin Sayısı:** `{eski_sayi}`\n"
+            f"💰 **Kasa:** `50000 Hurda` (default)\n"
+            f"🧱 **Sur Seviyesi:** `1`\n"
+            f"🏡 **Köy Seviyesi:** `1`\n\n"
+            f"⚠️ *Tüm oyuncular yeniden `/kayit` olmak zorundadır.*\n"
+            f"💡 *Yedekleme kanalındaki eski yedekleri de silin (yoksa bot açılışta geri yükleyebilir).*"
+        )
+        await interaction.response.send_message(embed=embed)
+
+    @db_sifirla.error
+    async def db_sifirla_error(self, interaction: discord.Interaction, error: app_commands.AppCommandError):
+        if isinstance(error, app_commands.MissingPermissions):
+            await interaction.response.send_message(
+                "❌ Bu komut sadece sunucu yöneticileri tarafından kullanılabilir!",
+                ephemeral=True
+            )
+
 
 async def setup(bot):
     await bot.add_cog(KayitCog(bot))
