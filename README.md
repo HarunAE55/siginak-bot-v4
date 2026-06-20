@@ -1,8 +1,8 @@
-# 🦠 Sığınak Veba RP Bot v5.2
+# 🦠 Sığınak Veba RP Bot v5.3
 
 **Discord RPG/RP botu** — 1349 Bavyera Veba teması. Cogs mimarisi, slash + v. prefix desteği.
 
-## 🆕 v5.2 Yenilikler
+## 🆕 v5.3 Yenilikler
 
 - ✅ **v. prefix komut desteği eklendi!** Artık hem `/kayit` hem `v.kayit` çalışır
 - ✅ **Discord cache temizleme** — Bot açılışta eski komutları Discord'dan silip yeniden yükler (command not found fix)
@@ -38,7 +38,7 @@ v. prefix komutlarının çalışması için Discord Developer Portal'da **Messa
 
 ```bash
 git clone <repo-url>
-cd siginak-bot-v5.2
+cd siginak-bot-v5.3
 pip install -r requirements.txt
 export DISCORD_TOKEN=bot_tokenin_buraya
 python main.py
@@ -56,7 +56,7 @@ python main.py
 ## 📁 Proje Yapısı
 
 ```
-siginak-bot-v5.2/
+siginak-bot-v5.3/
 ├── main.py                  # Bot giriş noktası + cache temizleme
 ├── veritabani.py            # JSON DB + yardımcı fonksiyonlar
 ├── kanallar.py              # RP kanal ID'leri
