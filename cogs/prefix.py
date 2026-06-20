@@ -214,46 +214,67 @@ class PrefixCog(commands.Cog):
     # ============================================================
     # v.destek
     # ============================================================
-    @commands.command(name="destek")
+    @commands.command(name="destek", aliases=["yardim"])
     async def prefix_destek(self, ctx):
-        embed = discord.Embed(title="📚 SIĞINAK RPG SİSTEMİ - KOMUT KILAVUZU", color=0x34495E)
-        embed.description = (
-            "Tüm komutların özeti. Hem slash (`/`) hem prefix (`v.`) çalışır.\n"
-            "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+        # Slash komuttaki ile aynı dropdown menüyü kullan
+        from cogs.rehber import DestekView
+        embed = discord.Embed(
+            title="🦠 SIĞINAK VEBEA RP - KOMUT MERKEZİ",
+            color=0x2C3E50
         )
-        embed.add_field(name="📝 1. Kayıt & Profil", value="`/kayit` `/profil` `/envanter` `/biyografi-yaz` `/meslek-sec` `/meslek-yonetim`", inline=False)
-        embed.add_field(name="🛒 2. Pazar & Ticaret", value="`/pazar` `/satinal` `/bota-sat` `/esya-sat` `/takas-teklif` `/acik-arttirma-baslat` `/pey-ver` `/tuket`", inline=False)
-        embed.add_field(name="🏛️ 3. Siyaset & Yönetim", value="`/secimi-baslat` `/aday-ol` `/yonetim` `/tayin-et` `/maas-ode` `/meslek-maas-ode` `/toplu-maas`", inline=False)
-        embed.add_field(name="⚖️ 4. Yargı & Ceza", value="`/yargila` `/hucreye-at` `/hucreden-cikar` `/sokak-yasagi` `/darbe`", inline=False)
-        embed.add_field(name="⛪ 5. Engizisyon & Rahip", value="`/rahip-paneli` `/afaroz-et` `/buyuk-kilise-cani` `/kedileri-yok-et` `/kutsa`", inline=False)
-        embed.add_field(name="💊 6. Sağlık & Simya", value="`/doktor-paneli` `/asi-uret` `/tedavi-et` `/deney` `/laboratuvar-gelistir`", inline=False)
-        embed.add_field(name="🛡️ 7. Kolluk & Savunma", value="`/muhafiz-paneli` `/karantina-al` `/karantina-kaldir` `/savunmayi-guclendir` `/nobet`", inline=False)
-        embed.add_field(name="🌾 8. Üretim & Ambar", value="`/ciftci-paneli` `/tarla-calis` `/maden-kaz` `/orman-kes` `/ambar` `/ambara-bagis` `/ambardan-al`", inline=False)
-        embed.add_field(name="⚔️ 9. Savaş & Keşif", value="`/duello` `/sefer` `/zombi-baskini-baslat` `/gez` `/anit`", inline=False)
-        embed.add_field(name="💰 10. Ekonomi & Çevre", value="`/maliye-yonetim` `/hava-durumu-degis` `/haber`", inline=False)
-        embed.add_field(name="🔧 11. Yönetim", value="`/sunucu-yonetimi` `/owner-kayit` `/kayit-sil` `/db-sifirla` `/xp_kazan_test`", inline=False)
-        embed.add_field(name="📖 12. Rehber", value="`/destek` `/rehber`", inline=False)
-        embed.set_footer(text="Sığınak Veba RP v5.1 | Slash ve v. prefix desteği")
-        await ctx.send(embed=embed)
+        if self.bot.user and self.bot.user.avatar:
+            embed.set_thumbnail(url=self.bot.user.avatar.url)
+        embed.description = (
+            "**Hoş geldin sakin!** 👋\n\n"
+            "Aşağıdaki menüden bir kategori seçerek o kategoriye ait tüm komutları görebilirsin.\n\n"
+            "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n"
+            "📜 **Kategoriler:**\n"
+            "📝 • **Kayıt & Profil** — Karakter oluşturma, profil, biyografi\n"
+            "🛒 • **Pazar & Ticaret** — Alım satım, açık arttırma, takas\n"
+            "🏛️ • **Siyaset & Yönetim** — Seçim, başkan, atama, maaş\n"
+            "⚖️ • **Yargı & Ceza** — Mahkeme, hücre, darbe, yasak\n"
+            "⛪ • **Engizisyon & Rahip** — Afaroz, kutsama, kilise\n"
+            "💊 • **Sağlık & Simya** — Aşı, tedavi, deney, laboratuvar\n"
+            "🛡️ • **Kolluk & Savunma** — Muhafız, karantina, nöbet\n"
+            "🌾 • **Üretim & Ambar** — Tarla, maden, odun, ambar\n"
+            "⚔️ • **Savaş & Keşif** — Düello, sefer, gezi, baskın\n"
+            "💰 • **Ekonomi & Çevre** — Vergi, hava durumu, RP Owner\n"
+            "🔧 • **Yönetim & Admin** — Owner araçları, db-sifirla\n"
+            "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n"
+            "💡 **İpucu:** Komutlar hem `/slash` hem `v.prefix` ile çalışır.\n"
+            "Örnek: `/kayit` veya `v.kayit Johann Bauer 25 Bavyera`"
+        )
+        embed.set_footer(text="Sığınak Veba RP v5.4 | Kategori seçmek için aşağıdaki menüyü kullan")
+        
+        view = DestekView()
+        await ctx.send(embed=embed, view=view)
 
     # ============================================================
     # v.rehber
     # ============================================================
-    @commands.command(name="rehber")
+    @commands.command(name="rehber", aliases=["yardim-detayli"])
     async def prefix_rehber(self, ctx):
-        embed = discord.Embed(title="📖 SIĞINAK REHBERİ", color=0x9B59B6)
-        embed.description = (
-            "Detaylı rehber için `/rehber` slash komutunu kullan (dropdown menü ile).\n\n"
-            "Hızlı yardım:\n"
-            "• `v.destek` — Tüm komutların özeti\n"
-            "• `v.kayit isim soyisim yaş memleket` — Kayıt ol\n"
-            "• `v.profil` — Karakter kartın\n"
-            "• `v.pazar <kategori>` — Pazar gez (Silah, Zırh, Medikal, Gıda, Hammadde, Teknoloji, Mistik)\n"
-            "• `v.satinal <kod> <adet>` — Eşya al\n"
-            "• `v.gez <bolge>` — Dış dünyaya keşfe çık\n\n"
-            "**Bölge seçenekleri:** Terkedilmiş Köy, Veba Mezarlığı, Karanlık Koruluk, Yıkık Kilise, Dehliz Labirenti, Zombi Tarlası"
+        # Slash komuttaki ile aynı dropdown menüyü kullan
+        from cogs.rehber import DestekView
+        embed = discord.Embed(
+            title="📖 SIĞINAK REHBERİ - Detaylı Bilgi",
+            color=0x9B59B6
         )
-        await ctx.send(embed=embed)
+        embed.description = (
+            "**Detaylı Rehber Sistemi** 🎓\n\n"
+            "Aşağıdaki menüden bir kategori seç. Seçtiğin kategoride:\n"
+            "• Komutların **nasıl kullanılacağını**\n"
+            "• Komutların **ne işe yaradığını**\n"
+            "• **Örnek kullanımları**\n"
+            "• **İpuçlarını**\n\ngörebilirsin.\n\n"
+            "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n"
+            "🆕 **Yeni başlayanlar için:** `Kayıt & Profil` kategorisinden başla!\n"
+            "💡 **Hızlı yardım:** `v.destek` komutu da aynı kategori menüsünü açar."
+        )
+        embed.set_footer(text="Sığınak Veba RP v5.4 | Detaylı rehber")
+        
+        view = DestekView()
+        await ctx.send(embed=embed, view=view)
 
     # ============================================================
     # v.pazar
