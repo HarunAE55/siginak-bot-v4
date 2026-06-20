@@ -1,7 +1,7 @@
 """
 Sığınak Bot - Ana Giriş Noktası (main.py)
 =========================================
-Sığınak Veba RP Bot v5.1 - Cogs mimarisi + v. prefix komutları + cache temizleme + db-sifirla
+Sığınak Veba RP Bot v5.2 - Cogs mimarisi + v. prefix komutları + cache temizleme + db-sifirla
 
 Çalıştırma:
     export DISCORD_TOKEN=...
@@ -21,7 +21,7 @@ Bot başladığında:
 - Slash komutları için herhangi bir ek ayar gerekmez.
 
 Prefix Komut Örnekleri:
-    v.kayit Harun Enes 25 Bavyera
+    v.kayit Johann Bauer 25 Bavyera
     v.profil
     v.pazar Silah
     v.gez "Terkedilmiş Köy"

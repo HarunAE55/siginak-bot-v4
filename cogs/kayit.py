@@ -197,7 +197,7 @@ class KayitCog(commands.Cog):
     # ====================================================
     # /biyografi-yaz - Karakter hikayesi (3 gün CD)
     # ====================================================
-    @app_commands.command(name="biyografi-yaz", description="[PROFİL] Karakterinin biyografisini yaz veya güncelle (max 1000 karakter, 3 günde 1 değiştirilebilir).")
+    @app_commands.command(name="biyografi-yaz", description="[PROFIL] Karakterinin biyografisini yaz veya guncelle (max 1000 karakter, 3 gunde 1)")
     @app_commands.describe(metin="Karakterinin hikayesi (max 1000 karakter)")
     async def biyografi_yaz(self, interaction: discord.Interaction, metin: str):
         import datetime as dt

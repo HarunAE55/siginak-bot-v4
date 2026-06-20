@@ -5,7 +5,7 @@ Tüm ana komutlar için v. prefix desteği.
 Slash komutlar hala çalışır, bu ek olarak v. prefix de sağlar.
 
 Örnek kullanımlar:
-  v.kayit Ahmet Kaya 25 Bavyera
+  v.kayit Johann Bauer 25 Bavyera
   v.profil
   v.destek
   v.rehber
@@ -72,9 +72,9 @@ class PrefixCog(commands.Cog):
     # ============================================================
     @commands.command(name="kayit")
     async def prefix_kayit(self, ctx, isim: str = None, soyisim: str = None, yas: int = None, memleket: str = None):
-        """Kayıt olmak için: v.kayit Ahmet Kaya 25 Bavyera"""
+        """Kayıt olmak için: v.kayit Johann Bauer 25 Bavyera"""
         if not isim or not soyisim or yas is None or not memleket:
-            await ctx.send("❌ Kullanım: `v.kayit isim soyisim yaş memleket`\nÖrnek: `v.kayit Ahmet Kaya 25 Bavyera`")
+            await ctx.send("❌ Kullanım: `v.kayit isim soyisim yaş memleket`\nÖrnek: `v.kayit Johann Bauer 25 Bavyera`")
             return
 
         u_id = self._uid(ctx)

@@ -26,7 +26,7 @@ def home():
 @app.route('/health')
 def health():
     """Health check endpoint - Render health check için"""
-    return {"status": "alive", "bot": "SiginakRP", "version": "5.1"}, 200
+    return {"status": "alive", "bot": "SiginakRP", "version": "5.2"}, 200
 
 
 def run():
