@@ -163,7 +163,7 @@ def bar_olustur(mevcut, maksimum=100, uzunluk=10):
 def olu_kontrolu(sakin_id: str):
     """Sakin ölüyse hata mesajı döner, değilse None."""
     if db["sakinler"].get(sakin_id, {}).get("durum") == "Ölü":
-        return "💀 Sığınak sicilinde **ÖLÜ** olarak kayıtlısın! Hiçbir komutu kullanamazsın. Yeniden doğmak için `/kayıt` ol."
+        return "💀 Sığınak sicilinde **ÖLÜ** olarak kayıtlısın! Hiçbir komutu kullanamazsın. Yeniden doğmak için `/kayit` ol."
     return None
 
 
@@ -173,7 +173,7 @@ def sokak_ve_karantina_kontrolu(sakin_id: str):
     durum = sakin.get("durum")
 
     if durum == "Ölü":
-        return "💀 Sığınak sicilinde **ÖLÜ** olarak kayıtlısın! Hiçbir komutu kullanamazsın. Yeniden doğmak için `/kayıt` ol."
+        return "💀 Sığınak sicilinde **ÖLÜ** olarak kayıtlısın! Hiçbir komutu kullanamazsın. Yeniden doğmak için `/kayit` ol."
     if durum == "Karantinada":
         return "☣️ Karantina çadırında tecrit altındasınız! Dışarı çıkmanız ve komut kullanmanız yasaktır."
     if durum == "Hücrede":
@@ -362,8 +362,8 @@ class OlumEkraniView(discord.ui.View):
             return
         await interaction.response.send_message(
             "📝 **Yeniden Doğuş:** Sığınak kapıları sana tekrar açılıyor!\n"
-            "Hayatına sıfırdan başlamak için `/kayıt` komutunu kullan:\n"
-            "`/kayıt isim: soyisim: yaş: memleket:`",
+            "Hayatına sıfırdan başlamak için `/kayit` komutunu kullan:\n"
+            "`/kayit isim: soyisim: yaş: memleket:`",
             ephemeral=True
         )
         self.stop()

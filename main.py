@@ -1,7 +1,7 @@
 """
 Sığınak Bot - Ana Giriş Noktası (main.py)
 =========================================
-Sığınak Veba RP Bot v4.0 - Cogs mimarisine taşınmış sürüm
+Sığınak Veba RP Bot v5.0 - Cogs mimarisi, tüm Türkçe karakter hataları düzeltilmiş
 
 Çalıştırma:
     export DISCORD_TOKEN=...

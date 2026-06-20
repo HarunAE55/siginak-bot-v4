@@ -2,7 +2,7 @@
 Cog: Kayıt & Profil
 ==================
 Komutlar:
-- /kayıt (herkese açık)
+- /kayit (herkese açık)
 - /profil (herkese açık)
 - /envanter (herkese açık)
 - /biyografi-yaz (herkese açık)
@@ -29,9 +29,9 @@ class KayitCog(commands.Cog):
         self.bot = bot
 
     # ====================================================
-    # /kayıt - Herkese açık sicil kaydı
+    # /kayit - Herkese açık sicil kaydı
     # ====================================================
-    @app_commands.command(name="kayıt", description="[SİCİL] Sığınak nüfus kütüğüne adınızı, yaşınızı ve memleketinizi işler.")
+    @app_commands.command(name="kayit", description="[SİCİL] Sığınak nüfus kütüğüne adınızı, yaşınızı ve memleketinizi işler.")
     @app_commands.describe(
         isim="Karakterinizin adı",
         soyisim="Karakterinizin soyadı",
@@ -387,7 +387,7 @@ class KayitCog(commands.Cog):
             f"**RP Owner** {interaction.user.mention} tarafından sicil kaydı silindi!\n\n"
             f"👤 **Etkilenen Üye:** {uye.mention}\n"
             f"🎭 **Silinen Karakter:** `{silinen_isim} {silinen_soyisim}`\n\n"
-            f"⚠️ *Bu işlem geri alınamaz. Üye yeniden `/kayıt` olmak zorundadır.*"
+            f"⚠️ *Bu işlem geri alınamaz. Üye yeniden `/kayit` olmak zorundadır.*"
         )
         await interaction.response.send_message(embed=embed)
 

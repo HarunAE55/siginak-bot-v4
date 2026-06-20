@@ -323,7 +323,7 @@ class KesifCog(commands.Cog):
             "1. Belediye başkanının sözü emirdir, aksini iddia etmek isyandır.\n"
             "2. Mahkeme kararlarına ve hücre cezalarına karşı gelmek darbe sebebi sayılır.\n"
             "3. Kilise kurallarına uymayanlar engizisyon tarafından afaroz edilir.\n"
-            "4. Ölü bir karakter tüm eşyalarını kaybeder, yeniden `/kayıt` olmak zorundadır.\n"
+            "4. Ölü bir karakter tüm eşyalarını kaybeder, yeniden `/kayit` olmak zorundadır.\n"
             "5. 6 saatten az sürede tekrar gezi yapılamaz.\n\n"
             "✨ **SIĞINAK KAHRAMANLARI ŞEREF KÜRSÜSÜ:**\n" + (seref_kursusu or "*Henüz anita adı kazınan bir kahraman yok.*\n") + "\n"
             "💀 **ŞEHİTLER DUVARI — Sığınak İçin Can Verenler:**\n" + sehit_listesi + "\n"

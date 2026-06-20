@@ -93,7 +93,7 @@ class RehberCog(commands.Cog):
 
         embed.add_field(
             name="📝 1. Kayıt & Profil",
-            value="`/kayıt` `/profil` `/envanter` `/biyografi-yaz` `/meslek-seç` `/meslek-yönetim`",
+            value="`/kayit` `/profil` `/envanter` `/biyografi-yaz` `/meslek-sec` `/meslek-yonetim`",
             inline=False
         )
         embed.add_field(
@@ -227,7 +227,7 @@ class RehberDropdown(discord.ui.Select):
                 "color": 0x3498DB,
                 "content": (
                     "**Nasıl Kayıt Olunur?**\n"
-                    "`/kayıt isim: soyisim: yaş: memleket:` komutuyla sicil kütüğüne kaydolursun.\n"
+                    "`/kayit isim: soyisim: yaş: memleket:` komutuyla sicil kütüğüne kaydolursun.\n"
                     "• Yaş sınırı: **10-40** arası\n"
                     "• Başlangıç: **500 Hurda** + **20 XP** + rastgele **10-20 Atak Gücü**\n\n"
                     "**Karakter Kartın:**\n"
@@ -242,7 +242,7 @@ class RehberDropdown(discord.ui.Select):
                     "😊 Moral (0-100)\n"
                     "⚔️ Atak / 🛡️ Defans — Savaşlarda kullanılır\n"
                     "⭐ Seviye/XP — 100 XP = 1 seviye, her seviye ×25 hurda ödülü\n\n"
-                    "**Önemli:** Öldüğünde tüm eşyaların kaybolur, `/kayıt` ile sıfırdan başlarsın."
+                    "**Önemli:** Öldüğünde tüm eşyaların kaybolur, `/kayit` ile sıfırdan başlarsın."
                 )
             },
             "pazar": {
@@ -282,9 +282,9 @@ class RehberDropdown(discord.ui.Select):
                     "  - 🧱 Sur Geliştir: 250 hurda, +1 sur seviyesi\n"
                     "  - 🏡 Köy Geliştir: 300 hurda, +1 köy seviyesi\n"
                     "• `/tayin-et [@üye] [unvan]` — 5 kadroya atama (Yardımcı, Müfettiş, Komutan, Baş Simyacı, Rahip)\n"
-                    "• `/maas-ode [@üye] [m[miktar]` — Tek sakin maaş\n"
-                    "• `/meslek-maas-ode [grup] [m[miktar]` — Meslek grubuna toplu maaş\n"
-                    "• `/toplu-maas [m[miktar]` — Tüm halka maaş\n\n"
+                    "• `/maas-ode [@üye] [miktar]` — Tek sakin maaş\n"
+                    "• `/meslek-maas-ode [grup] [miktar]` — Meslek grubuna toplu maaş\n"
+                    "• `/toplu-maas [miktar]` — Tüm halka maaş\n\n"
                     "**Kayıt Yönetimi (RP Owner only):**\n"
                     "• `/owner-kayit [@üye] ...` — Bir üyeyi zorla kaydet\n"
                     "• `/kayit-sil [@üye] EVET` — Bir üyenin kaydını sil"

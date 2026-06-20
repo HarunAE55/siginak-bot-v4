@@ -686,7 +686,7 @@ class MutlakHukumView(discord.ui.View):
         olum_embed.description = (
             f"{self.sanik_uye.mention} İdam edilerek can verdin.\n\n"
             f"⚰️ Eşyaların sığınak kasasına aktarıldı.\n"
-            f"🔄 Yeniden hayata dönmek için `/kayıt` komutunu kullan."
+            f"🔄 Yeniden hayata dönmek için `/kayit` komutunu kullan."
         )
         await interaction.channel.send(embed=olum_embed, view=OlumEkraniView(self.sanik_uye))
         haber_ekle(f"☠️ {db['sakinler'][s_id]['isim']} yargısız infazla idam edildi! Tiranlık tırmanışta.")

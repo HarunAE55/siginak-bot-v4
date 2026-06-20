@@ -2,8 +2,8 @@
 Cog: Meslek Sistemi
 ==================
 Komutlar:
-- /meslek-seç (herkese açık, 3 günde 1 değiştirilebilir)
-- /meslek-yönetim (herkese açık, mesleğe özel panel gösterir)
+- /meslek-sec (herkese açık, 3 günde 1 değiştirilebilir)
+- /meslek-yonetim (herkese açık, mesleğe özel panel gösterir)
 """
 
 import discord
@@ -18,7 +18,7 @@ from veritabani import db, verileri_kaydet, olu_kontrolu
 # MESLEK VERİTABANI - Discord rol ID'leri ile eşleşir
 # ====================================================
 # "atama": True olanlar sadece Belediye Başkanı /tayin-et ile verilir
-# "atama": False olanlar herkes /meslek-seç ile seçebilir
+# "atama": False olanlar herkes /meslek-sec ile seçebilir
 MESLEK_VERILERI = {
     # Yönetim
     "belediye_baskani": {"id": 1508463895692447926, "isim": "Belediye Başkanı", "tur": "Yönetim", "atama": True},
@@ -60,9 +60,9 @@ class MeslekCog(commands.Cog):
         self.bot = bot
 
     # ====================================================
-    # /meslek-seç
+    # /meslek-sec
     # ====================================================
-    @app_commands.command(name="meslek-seç", description="[MESLEK] Sığınakta icra edeceğiniz serbest iş kolunuzu tesciller.")
+    @app_commands.command(name="meslek-sec", description="[MESLEK] Sığınakta icra edeceğiniz serbest iş kolunuzu tesciller.")
     @app_commands.describe(secim="Seçmek istediğiniz meslek")
     async def meslek_sec(self, interaction: discord.Interaction, secim: str):
         u_id = str(interaction.user.id)
@@ -128,9 +128,9 @@ class MeslekCog(commands.Cog):
         ][:25]
 
     # ====================================================
-    # /meslek-yönetim
+    # /meslek-yonetim
     # ====================================================
-    @app_commands.command(name="meslek-yönetim", description="[MESLEK] İcra ettiğiniz sığınak mesleğine ait özel iş kolu yönetim panelini tetikler.")
+    @app_commands.command(name="meslek-yonetim", description="[MESLEK] İcra ettiğiniz sığınak mesleğine ait özel iş kolu yönetim panelini tetikler.")
     async def meslek_yonetim(self, interaction: discord.Interaction):
         u_id = str(interaction.user.id)
         if u_id not in db["sakinler"]:

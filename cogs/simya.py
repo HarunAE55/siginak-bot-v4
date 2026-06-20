@@ -108,7 +108,7 @@ class SimyaCog(commands.Cog):
             olum_embed.description = (
                 f"{interaction.user.mention} Laboratuvarda patlamada can verdin.\n\n"
                 f"⚰️ Eşyaların sığınak kasasına aktarıldı.\n"
-                f"🔄 Yeniden hayata dönmek için `/kayıt` komutunu kullan."
+                f"🔄 Yeniden hayata dönmek için `/kayit` komutunu kullan."
             )
             await interaction.channel.send(embed=olum_embed, view=OlumEkraniView(interaction.user))
             haber_ekle(f"💥 {sakin['isim']} laboratuvar patlamasında öldü! Virüs araştırması sıfırlandı.")

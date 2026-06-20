@@ -407,7 +407,7 @@ class DuelloView(discord.ui.View):
             olum_embed.description = (
                 f"<@{k_id}> Sığınakta kanlı bir düelloda can verdin.\n\n"
                 f"⚰️ Tüm eşyaların ve hurdaların rakibine yağmalandı.\n"
-                f"🔄 Yeniden hayata dönmek için `/kayıt` komutunu kullan."
+                f"🔄 Yeniden hayata dönmek için `/kayit` komutunu kullan."
             )
             await kanal.send(embed=olum_embed)
             haber_ekle(f"☠️ {kaybeden_bilesen['isim']} düelloda öldü. Kazanan: {kazanan_bilesen['isim']}.")
