@@ -18,7 +18,8 @@ from veritabani import (
     sokak_ve_karantina_kontrolu, xp_ekle, haber_ekle,
     RP_OWNER_ROL_ID
 )
-from kanallar import BASKIN_KANAL_ID
+# Baskın artık SURLAR kanalına gidecek (salgın değil)
+from kanallar import ZAYIF_SURLAR as BASKIN_KANAL_ID
 
 
 class SavasCog(commands.Cog):

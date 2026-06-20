@@ -70,7 +70,7 @@ class PrefixCog(commands.Cog):
     # ============================================================
     # v.kayit
     # ============================================================
-    @commands.command(name="kayit")
+    @commands.command(name="kayit", aliases=["kayıt"])
     async def prefix_kayit(self, ctx, isim: str = None, soyisim: str = None, yas: int = None, memleket: str = None):
         """Kayıt olmak için: v.kayit Johann Bauer 25 Bavyera"""
         if not isim or not soyisim or yas is None or not memleket:
@@ -433,12 +433,12 @@ class PrefixCog(commands.Cog):
         await ctx.send(embed=embed)
 
     # ============================================================
-    # v.tuket
+    # v.tuket / v.kullan
     # ============================================================
-    @commands.command(name="tuket")
+    @commands.command(name="tuket", aliases=["kullan", "ye", "ic"])
     async def prefix_tuket(self, ctx, *, esya_ad: str = None):
         if not esya_ad:
-            await ctx.send("❌ Kullanım: `v.tuket <esya_adı>`\nÖrnek: `v.tuket Kuru Taş Ekmeği`")
+            await ctx.send("❌ Kullanım: `v.tuket <esya_adı>` veya `v.kullan <esya_adı>`\nÖrnek: `v.tuket Kuru Taş Ekmeği`")
             return
 
         hata = self._sakin_kontrol(ctx)
@@ -500,7 +500,7 @@ class PrefixCog(commands.Cog):
     # ============================================================
     # v.meslek-sec
     # ============================================================
-    @commands.command(name="meslek-sec")
+    @commands.command(name="meslek-sec", aliases=["meslek-seç"])
     async def prefix_meslek_sec(self, ctx, *, secim: str = None):
         if not secim:
             liste = ", ".join([f"`{k}`" for k, v in MESLEK_VERILERI.items() if not v["atama"]])
@@ -547,7 +547,7 @@ class PrefixCog(commands.Cog):
     # ============================================================
     # v.meslek-yonetim
     # ============================================================
-    @commands.command(name="meslek-yonetim")
+    @commands.command(name="meslek-yonetim", aliases=["meslek-yönetim"])
     async def prefix_meslek_yonetim(self, ctx):
         hata = self._sakin_kontrol(ctx)
         if hata:
@@ -646,7 +646,7 @@ class PrefixCog(commands.Cog):
     # ============================================================
     # v.anit
     # ============================================================
-    @commands.command(name="anit")
+    @commands.command(name="anit", aliases=["anıt"])
     async def prefix_anit(self, ctx):
         sirali = sorted(db["sakinler"].items(), key=lambda x: x[1].get("xp", 0), reverse=True)[:3]
         seref = ""
@@ -929,7 +929,7 @@ class PrefixCog(commands.Cog):
     # ============================================================
     # v.ambara-bagis
     # ============================================================
-    @commands.command(name="ambara-bagis")
+    @commands.command(name="ambara-bagis", aliases=["ambara-bağış"])
     async def prefix_ambara_bagis(self, ctx, esya_ad: str = None, adet: int = 1):
         if not esya_ad:
             await ctx.send("❌ Kullanım: `v.ambara-bagis <esya> <adet>`\nÖrnek: `v.ambara-bagis erzak 5`")
@@ -1047,7 +1047,7 @@ class PrefixCog(commands.Cog):
     # ============================================================
     # v.zombi-baskini-baslat
     # ============================================================
-    @commands.command(name="zombi-baskini-baslat")
+    @commands.command(name="zombi-baskini-baslat", aliases=["zombi-baskını-başlat"])
     async def prefix_zombi_baskini(self, ctx):
         if not any(rol.id == RP_OWNER_ROL_ID for rol in ctx.author.roles):
             await ctx.send("❌ Bu komut sadece RP Owner tarafından kullanılabilir!")
@@ -1200,7 +1200,7 @@ class PrefixCog(commands.Cog):
     # ============================================================
     # v.meslek-maas-ode
     # ============================================================
-    @commands.command(name="meslek-maas-ode")
+    @commands.command(name="meslek-maas-ode", aliases=["meslek-maaş-öde"])
     async def prefix_meslek_maas(self, ctx, grup: str = None, miktar: int = None):
         if not grup or miktar is None:
             await ctx.send("❌ Kullanım: `v.meslek-maas-ode <grup> <miktar>`\nGruplar: muhafiz, saglik, ureticiler, idari")
@@ -1210,7 +1210,7 @@ class PrefixCog(commands.Cog):
     # ============================================================
     # v.toplu-maas
     # ============================================================
-    @commands.command(name="toplu-maas")
+    @commands.command(name="toplu-maas", aliases=["toplu-maaş"])
     async def prefix_toplu_maas(self, ctx, miktar: int = None):
         if miktar is None:
             await ctx.send("❌ Kullanım: `v.toplu-maas <miktar>`\nÖrnek: `v.toplu-maas 50`")
@@ -1245,7 +1245,7 @@ class PrefixCog(commands.Cog):
     # ============================================================
     # v.yargila
     # ============================================================
-    @commands.command(name="yargila")
+    @commands.command(name="yargila", aliases=["yargıla"])
     async def prefix_yargila(self, ctx, kullanici: discord.Member = None, *, suc: str = None):
         if not kullanici or not suc:
             await ctx.send("❌ Kullanım: `v.yargila @sanık <suç_nedeni>`\nÖrnek: `v.yargila @ali Hırsızlık yaptı`")
@@ -1286,7 +1286,7 @@ class PrefixCog(commands.Cog):
     # ============================================================
     # v.hucreden-cikar
     # ============================================================
-    @commands.command(name="hucreden-cikar")
+    @commands.command(name="hucreden-cikar", aliases=["hucreden-çıkar"])
     async def prefix_hucreden_cikar(self, ctx, kullanici: discord.Member = None):
         if not kullanici:
             await ctx.send("❌ Kullanım: `v.hucreden-cikar @kullanıcı`")
@@ -1340,7 +1340,7 @@ class PrefixCog(commands.Cog):
     # ============================================================
     # v.karantina-kaldir
     # ============================================================
-    @commands.command(name="karantina-kaldir")
+    @commands.command(name="karantina-kaldir", aliases=["karantina-kaldır"])
     async def prefix_karantina_kaldir(self, ctx, kullanici: discord.Member = None):
         if not kullanici:
             await ctx.send("❌ Kullanım: `v.karantina-kaldir @kullanıcı`")
@@ -1393,7 +1393,7 @@ class PrefixCog(commands.Cog):
     # ============================================================
     # v.savunmayi-guclendir
     # ============================================================
-    @commands.command(name="savunmayi-guclendir")
+    @commands.command(name="savunmayi-guclendir", aliases=["savunmayı-güçlendir"])
     async def prefix_savunma(self, ctx):
         u_id = self._uid(ctx)
         if db["sakinler"].get(u_id, {}).get("meslek_anahtar") != "belediye_baskani":
@@ -1593,7 +1593,7 @@ class PrefixCog(commands.Cog):
     # ============================================================
     # v.kutsa
     # ============================================================
-    @commands.command(name="kutsa")
+    @commands.command(name="kutsa", aliases=["kutsama"])
     async def prefix_kutsa(self, ctx, kullanici: discord.Member = None):
         if not kullanici:
             await ctx.send("❌ Kullanım: `v.kutsa @üye`")
@@ -1603,7 +1603,11 @@ class PrefixCog(commands.Cog):
             await ctx.send("❌ Kutsama yetkisi sadece Rahibe ait!")
             return
         rahip_id = self._uid(ctx)
-        if db["sakinler"].get(rahip_id, {}).get("durum") == "Ölü":
+        # RAHİP KAYITLI MI KONTROL ET (KeyError fix)
+        if rahip_id not in db["sakinler"]:
+            await ctx.send("❌ Rahip olarak kayıtlı değilsin! Önce `v.kayit` ol.")
+            return
+        if db["sakinler"][rahip_id].get("durum") == "Ölü":
             await ctx.send("❌ Ölü rahip kutsayamaz!")
             return
         son = db["sakinler"][rahip_id].get("son_kutsama")
@@ -1707,7 +1711,7 @@ class PrefixCog(commands.Cog):
     # ============================================================
     # v.laboratuvar-gelistir
     # ============================================================
-    @commands.command(name="laboratuvar-gelistir")
+    @commands.command(name="laboratuvar-gelistir", aliases=["laboratuvar-geliştir"])
     async def prefix_lab_gelistir(self, ctx):
         u_id = self._uid(ctx)
         hata = self._sakin_kontrol(ctx)
@@ -1834,7 +1838,7 @@ class PrefixCog(commands.Cog):
     # ============================================================
     # v.hava-durumu-degis
     # ============================================================
-    @commands.command(name="hava-durumu-degis")
+    @commands.command(name="hava-durumu-degis", aliases=["hava-durumu-değiş"])
     @commands.has_permissions(administrator=True)
     async def prefix_hava_degis(self, ctx, *, yeni_hava: str = None):
         if not yeni_hava:
@@ -1852,7 +1856,7 @@ class PrefixCog(commands.Cog):
     # ============================================================
     # v.sunucu-yonetimi
     # ============================================================
-    @commands.command(name="sunucu-yonetimi")
+    @commands.command(name="sunucu-yonetimi", aliases=["sunucu-yönetimi"])
     async def prefix_sunucu_yonetimi(self, ctx):
         if not any(rol.id == RP_OWNER_ROL_ID for rol in ctx.author.roles):
             await ctx.send("❌ Bu komut sadece RP Owner'a özel!")
@@ -1871,7 +1875,7 @@ class PrefixCog(commands.Cog):
     # ============================================================
     # v.maliye-yonetim
     # ============================================================
-    @commands.command(name="maliye-yonetim")
+    @commands.command(name="maliye-yonetim", aliases=["maliye-yönetim"])
     async def prefix_maliye_yonetim(self, ctx):
         VERGI_MEMURU_ROL_ID = 1508536734709973032
         if not any(rol.id == VERGI_MEMURU_ROL_ID for rol in ctx.author.roles):
@@ -1891,7 +1895,7 @@ class PrefixCog(commands.Cog):
     # ============================================================
     # v.owner-kayit
     # ============================================================
-    @commands.command(name="owner-kayit")
+    @commands.command(name="owner-kayit", aliases=["owner-kayıt"])
     async def prefix_owner_kayit(self, ctx, kullanici: discord.Member = None, isim: str = None, soyisim: str = None, yas: int = None, memleket: str = None):
         if not kullanici or not isim or not soyisim or yas is None or not memleket:
             await ctx.send("❌ Kullanım: `v.owner-kayit @üye <isim> <soyisim> <yas> <memleket>`\nÖrnek: `v.owner-kayit @ali Mehmet Yılmaz 25 Bavyera`")
@@ -1914,7 +1918,7 @@ class PrefixCog(commands.Cog):
     # ============================================================
     # v.kayit-sil
     # ============================================================
-    @commands.command(name="kayit-sil")
+    @commands.command(name="kayit-sil", aliases=["kayıt-sil"])
     async def prefix_kayit_sil(self, ctx, kullanici: discord.Member = None, onay: str = None):
         if not kullanici or onay != "EVET":
             await ctx.send("❌ Kullanım: `v.kayit-sil @üye EVET`")

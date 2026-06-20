@@ -359,6 +359,20 @@ class UretimCog(commands.Cog):
             if adet > 0 and esya in tuketilebilir_isimler and current.lower() in esya.lower()
         ][:25]
 
+    # ====================================================
+    # /kullan - /tuket'in alias'ı (alternatif isim)
+    # ====================================================
+    @app_commands.command(name="kullan", description="[GENEL] Envanterinizdeki bir eşyayı kullanır/tüketir. (/tuket ile aynı)")
+    @app_commands.describe(esya_ad="Kullanılacak/tüketilecek eşya (envanterden)")
+    async def kullan(self, interaction: discord.Interaction, esya_ad: str):
+        # /tuket ile aynı mantık — onu çağır
+        await self.tuket(interaction, esya_ad)
+
+    @kullan.autocomplete("esya_ad")
+    async def kullan_autocomplete(self, interaction: discord.Interaction, current: str):
+        # /tuket'in autocomplete'ini kullan
+        return await self.tuket_autocomplete(interaction, current)
+
 
 async def setup(bot):
     await bot.add_cog(UretimCog(bot))

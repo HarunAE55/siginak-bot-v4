@@ -38,7 +38,7 @@ v. prefix komutlarının çalışması için Discord Developer Portal'da **Messa
 
 ```bash
 git clone <repo-url>
-cd siginak-bot-v5.3
+cd siginak-bot-v5.4
 pip install -r requirements.txt
 export DISCORD_TOKEN=bot_tokenin_buraya
 python main.py
@@ -56,7 +56,7 @@ python main.py
 ## 📁 Proje Yapısı
 
 ```
-siginak-bot-v5.3/
+siginak-bot-v5.4/
 ├── main.py                  # Bot giriş noktası + cache temizleme
 ├── veritabani.py            # JSON DB + yardımcı fonksiyonlar
 ├── kanallar.py              # RP kanal ID'leri

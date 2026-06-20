@@ -172,7 +172,12 @@ class KiliseCog(commands.Cog):
             return
 
         rahip_id = str(interaction.user.id)
-        if db["sakinler"].get(rahip_id, {}).get("durum") == "Ölü":
+        # RAHİP KAYITLI MI KONTROL ET (KeyError fix)
+        if rahip_id not in db["sakinler"]:
+            await interaction.response.send_message("❌ Rahip olarak kayıtlı değilsin! Önce `/kayit` ol.", ephemeral=True)
+            return
+
+        if db["sakinler"][rahip_id].get("durum") == "Ölü":
             await interaction.response.send_message("❌ Ölü rahip kutsayamaz!", ephemeral=True)
             return
 
@@ -195,7 +200,7 @@ class KiliseCog(commands.Cog):
 
         hedef_sakin = db["sakinler"][h_id]
         if hedef_sakin.get("durum") == "Ölü":
-            await interaction.response.send_message("❌ Ölüyü kutsayamzsın!", ephemeral=True)
+            await interaction.response.send_message("❌ Ölüyü kutsayamazsın!", ephemeral=True)
             return
 
         # Kutsama etkisi: enfeksiyon -20, sağlık +15

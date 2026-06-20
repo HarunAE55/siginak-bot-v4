@@ -183,15 +183,46 @@ class KesifCog(commands.Cog):
 
     # ====================================================
     # /gez - 6 saat CD, %50 olumlu / %30 olumsuz / %20 gizemli
+    # TÜM RP KANALLARI mevcut (25 seçenek)
     # ====================================================
     @app_commands.command(name="gez", description="[KEŞİF] Sığınak sınırlarından çıkıp riskli dış bölgelere seyahat eder (6 saat cooldown).")
     @app_commands.choices(bolge=[
-        app_commands.Choice(name="🏚️ Terkedilmiş Köy", value="Terkedilmiş Köy"),
-        app_commands.Choice(name="⚰️ Veba Mezarlığı", value="Veba Mezarlığı"),
-        app_commands.Choice(name="🌲 Karanlık Koruluk", value="Karanlık Koruluk"),
-        app_commands.Choice(name="⛪ Yıkık Kilise", value="Yıkık Kilise"),
-        app_commands.Choice(name="🕳️ Dehliz Labirenti", value="Dehliz Labirenti"),
-        app_commands.Choice(name="🧟 Zombi Tarlası", value="Zombi Tarlası")
+        # Köy Girişi
+        app_commands.Choice(name="🛡️ Zayıf Surlar", value="Zayıf Surlar"),
+        app_commands.Choice(name="🍂 Toprak Yol", value="Toprak Yol"),
+        app_commands.Choice(name="🏠 Boş Ev", value="Boş Ev"),
+        app_commands.Choice(name="🌾 Tarla", value="Tarla"),
+        app_commands.Choice(name="🛡️ Surların Çevresi", value="Surların Çevresi"),
+        app_commands.Choice(name="🍂 Uzun Yol", value="Uzun Yol"),
+        # Doğu Kesim
+        app_commands.Choice(name="🌳 Meydan Ağacı", value="Meydan Ağacı"),
+        app_commands.Choice(name="🎊 Meydandaki Standlar", value="Meydandaki Standlar"),
+        app_commands.Choice(name="🪙 Pazar Yeri", value="Pazar Yeri"),
+        app_commands.Choice(name="🏛️ Belediye Binası", value="Belediye Binası"),
+        app_commands.Choice(name="⚖️ Başkan Salonu", value="Başkan Salonu"),
+        app_commands.Choice(name="⛺ Karantina Kampı", value="Karantina Kampı"),
+        app_commands.Choice(name="🪦 Mezarlık", value="Mezarlık"),
+        # Batı Kesim
+        app_commands.Choice(name="⚔️ Yeşil Kışla", value="Yeşil Kışla"),
+        app_commands.Choice(name="🌿 Hastane", value="Hastane"),
+        app_commands.Choice(name="🧪 Simyacının Kulesi", value="Simyacının Kulesi"),
+        app_commands.Choice(name="🪜 Kulenin Tepesi", value="Kulenin Tepesi"),
+        app_commands.Choice(name="🍂 Karanlık Orman Yolu", value="Karanlık Orman Yolu"),
+        # Kuzey Kesim
+        app_commands.Choice(name="🪙 Kuzey Pazar", value="Kuzey Pazar"),
+        app_commands.Choice(name="🍺 Han", value="Han"),
+        app_commands.Choice(name="💧 Su Kuyusu", value="Su Kuyusu"),
+        app_commands.Choice(name="⛪ İhtişamlı Hane", value="İhtişamlı Hane"),
+        app_commands.Choice(name="⛏️ Maden Ocağı", value="Maden Ocağı"),
+        app_commands.Choice(name="🏰 Önderin Köşkü", value="Önderin Köşkü"),
+        app_commands.Choice(name="🌾 Değirmen", value="Değirmen"),
+        app_commands.Choice(name="⚒️ Demirci", value="Demirci"),
+        app_commands.Choice(name="🐄 Ambar ve Ahırlar", value="Ambar ve Ahırlar"),
+        # Karanlık Orman
+        app_commands.Choice(name="🪵 Oduncunun Yeri", value="Oduncunun Yeri"),
+        app_commands.Choice(name="🪨 Sırlar Mağarası", value="Sırlar Mağarası"),
+        app_commands.Choice(name="🌿 Gizemli Bataklık", value="Gizemli Bataklık"),
+        app_commands.Choice(name="🛘 Sessiz Uçurum", value="Sessiz Uçurum"),
     ])
     async def cografi_gez(self, interaction: discord.Interaction, bolge: str):
         u_id = str(interaction.user.id)
@@ -226,9 +257,9 @@ class KesifCog(commands.Cog):
             ephemeral=False
         )
 
-        # RP kanalına kısa bildiri
+        # RP kanalına kısa bildiri (bölgeye göre)
         try:
-            rp_kanal_id = GEZI_BOLGE_KANAL_ESLEME.get(bolge)
+            rp_kanal_id = self._bolge_kanal_bul(bolge)
             if rp_kanal_id:
                 rp_kanal = self.bot.get_channel(rp_kanal_id)
                 if rp_kanal:
@@ -277,7 +308,7 @@ class KesifCog(commands.Cog):
 
         # RP kanalına sonucu da gönder
         try:
-            rp_kanal_id = GEZI_BOLGE_KANAL_ESLEME.get(bolge)
+            rp_kanal_id = self._bolge_kanal_bul(bolge)
             if rp_kanal_id:
                 rp_kanal = self.bot.get_channel(rp_kanal_id)
                 if rp_kanal:
@@ -289,6 +320,49 @@ class KesifCog(commands.Cog):
                     await rp_kanal.send(embed=rp_embed)
         except Exception:
             pass
+
+    def _bolge_kanal_bul(self, bolge: str):
+        """Bölge adından RP kanal ID'sini bul. Bulamazsa None döner."""
+        # Bölge adı → kanal ID eşlemesi (kanallar.py'deki tüm RP kanalları)
+        BOLGE_KANAL_ESLEME = {
+            # Köy Girişi
+            "Zayıf Surlar": 1508542217969467445,
+            "Toprak Yol": 1508857245830484282,
+            "Boş Ev": 1508857306467794944,
+            "Tarla": 1508648065307902022,
+            "Surların Çevresi": 1508648316831793242,
+            "Uzun Yol": 1508648627734708394,
+            # Doğu Kesim
+            "Meydan Ağacı": 1508860255293931690,
+            "Meydandaki Standlar": 1508860387666165791,
+            "Pazar Yeri": 1508752279174512730,
+            "Belediye Binası": 1508752930893991976,
+            "Başkan Salonu": 1508753021377708122,
+            "Karantina Kampı": 1515060113029992591,
+            "Mezarlık": 1515060310866788513,
+            # Batı Kesim
+            "Yeşil Kışla": 1508860968250380318,
+            "Hastane": 1508757518678229172,
+            "Simyacının Kulesi": 1508757828796551288,
+            "Kulenin Tepesi": 1508758009164337238,
+            "Karanlık Orman Yolu": 1508758137346330754,
+            # Kuzey Kesim
+            "Kuzey Pazar": 1508755924947308634,
+            "Han": 1508860745943879772,
+            "Su Kuyusu": 1508860784338538698,
+            "İhtişamlı Hane": 1508755973764808754,
+            "Maden Ocağı": 1508756162693304381,
+            "Önderin Köşkü": 1508756267508695061,
+            "Değirmen": 1508756451387244615,
+            "Demirci": 1508756552079904910,
+            "Ambar ve Ahırlar": 1508756716513132605,
+            # Karanlık Orman
+            "Oduncunun Yeri": 1515069184592056370,
+            "Sırlar Mağarası": 1515069602042744964,
+            "Gizemli Bataklık": 1515069633764261998,
+            "Sessiz Uçurum": 1515078867319263322,
+        }
+        return BOLGE_KANAL_ESLEME.get(bolge)
 
     # ====================================================
     # /anit - Şeref listesi ve şehitler
