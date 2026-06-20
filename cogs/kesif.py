@@ -187,42 +187,37 @@ class KesifCog(commands.Cog):
     # ====================================================
     @app_commands.command(name="gez", description="[KEŞİF] Sığınak sınırlarından çıkıp riskli dış bölgelere seyahat eder (6 saat cooldown).")
     @app_commands.choices(bolge=[
-        # Köy Girişi
+        # Köy Girişi (5)
         app_commands.Choice(name="🛡️ Zayıf Surlar", value="Zayıf Surlar"),
         app_commands.Choice(name="🍂 Toprak Yol", value="Toprak Yol"),
         app_commands.Choice(name="🏠 Boş Ev", value="Boş Ev"),
         app_commands.Choice(name="🌾 Tarla", value="Tarla"),
         app_commands.Choice(name="🛡️ Surların Çevresi", value="Surların Çevresi"),
-        app_commands.Choice(name="🍂 Uzun Yol", value="Uzun Yol"),
-        # Doğu Kesim
+        # Doğu Kesim (6)
         app_commands.Choice(name="🌳 Meydan Ağacı", value="Meydan Ağacı"),
-        app_commands.Choice(name="🎊 Meydandaki Standlar", value="Meydandaki Standlar"),
         app_commands.Choice(name="🪙 Pazar Yeri", value="Pazar Yeri"),
         app_commands.Choice(name="🏛️ Belediye Binası", value="Belediye Binası"),
         app_commands.Choice(name="⚖️ Başkan Salonu", value="Başkan Salonu"),
         app_commands.Choice(name="⛺ Karantina Kampı", value="Karantina Kampı"),
         app_commands.Choice(name="🪦 Mezarlık", value="Mezarlık"),
-        # Batı Kesim
+        # Batı Kesim (5)
         app_commands.Choice(name="⚔️ Yeşil Kışla", value="Yeşil Kışla"),
         app_commands.Choice(name="🌿 Hastane", value="Hastane"),
         app_commands.Choice(name="🧪 Simyacının Kulesi", value="Simyacının Kulesi"),
         app_commands.Choice(name="🪜 Kulenin Tepesi", value="Kulenin Tepesi"),
         app_commands.Choice(name="🍂 Karanlık Orman Yolu", value="Karanlık Orman Yolu"),
-        # Kuzey Kesim
+        # Kuzey Kesim (6)
         app_commands.Choice(name="🪙 Kuzey Pazar", value="Kuzey Pazar"),
         app_commands.Choice(name="🍺 Han", value="Han"),
         app_commands.Choice(name="💧 Su Kuyusu", value="Su Kuyusu"),
         app_commands.Choice(name="⛪ İhtişamlı Hane", value="İhtişamlı Hane"),
         app_commands.Choice(name="⛏️ Maden Ocağı", value="Maden Ocağı"),
         app_commands.Choice(name="🏰 Önderin Köşkü", value="Önderin Köşkü"),
-        app_commands.Choice(name="🌾 Değirmen", value="Değirmen"),
-        app_commands.Choice(name="⚒️ Demirci", value="Demirci"),
-        app_commands.Choice(name="🐄 Ambar ve Ahırlar", value="Ambar ve Ahırlar"),
-        # Karanlık Orman
+        # Karanlık Orman (3)
         app_commands.Choice(name="🪵 Oduncunun Yeri", value="Oduncunun Yeri"),
         app_commands.Choice(name="🪨 Sırlar Mağarası", value="Sırlar Mağarası"),
         app_commands.Choice(name="🌿 Gizemli Bataklık", value="Gizemli Bataklık"),
-        app_commands.Choice(name="🛘 Sessiz Uçurum", value="Sessiz Uçurum"),
+        # TOPLAM: 25 bölge (Discord limiti)
     ])
     async def cografi_gez(self, interaction: discord.Interaction, bolge: str):
         u_id = str(interaction.user.id)
