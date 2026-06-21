@@ -92,6 +92,18 @@ class SistemCog(commands.Cog):
     @tasks.loop(hours=1)
     async def otomatik_yedekleme_task(self):
         await self.yedekle()
+        # Yedeklemeden sonra botun watching durumunu güncelle
+        try:
+            sakin_sayisi = len([s for s in db.get("sakinler", {}).values() if s.get("durum") != "Ölü"])
+            await self.bot.change_presence(
+                status=discord.Status.online,
+                activity=discord.Activity(
+                    type=discord.ActivityType.watching,
+                    name=f"Sığınakta {sakin_sayisi} sakin"
+                )
+            )
+        except Exception:
+            pass
 
     @otomatik_yedekleme_task.before_loop
     async def before_yedek_task(self):
