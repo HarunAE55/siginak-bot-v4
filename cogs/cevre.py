@@ -33,9 +33,10 @@ class CevreCog(commands.Cog):
         app_commands.Choice(name="❄️ Kış", value="Kış")
     ])
     async def hava_durumu_degis(self, interaction: discord.Interaction, yeni_hava: str):
-        if not interaction.user.guild_permissions.administrator:
+        from veritabani import admin_mi
+        if not admin_mi(interaction):
             await interaction.response.send_message(
-                "❌ Sığınak iklimini sadece kurucular değiştirebilir!",
+                "❌ Bu komut sadece yetkili ekibe özeldir!",
                 ephemeral=True
             )
             return

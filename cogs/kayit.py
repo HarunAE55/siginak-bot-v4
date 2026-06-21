@@ -258,9 +258,9 @@ class KayitCog(commands.Cog):
     @app_commands.command(name="xp_kazan_test", description="[TEST] Test amaçlı XP ekler. SADECE SUNUCU YÖNETİCİLERİ kullanabilir.")
     @app_commands.describe(miktar="Eklenecek XP miktarı", hedef="XP verilecek üye (boşsa kendin)")
     async def xp_kazan_test(self, interaction: discord.Interaction, miktar: int, hedef: discord.Member = None):
-        if not interaction.user.guild_permissions.administrator:
+        if not admin_mi(interaction):
             await interaction.response.send_message(
-                "❌ Bu test komutunu sadece sunucu yöneticileri kullanabilir!",
+                "❌ Bu komut sadece yetkili ekibe özeldir!",
                 ephemeral=True
             )
             return
@@ -396,8 +396,10 @@ class KayitCog(commands.Cog):
     # ====================================================
     @app_commands.command(name="db-sifirla", description="[ADMIN] Veritabanını tamamen sıfırlar. Tüm sakinler/kasa silinir. Dikkatli kullanın!")
     @app_commands.describe(onay="Silmeyi onaylamak için 'EVET' yazın")
-    @app_commands.checks.has_permissions(administrator=True)
     async def db_sifirla(self, interaction: discord.Interaction, onay: str):
+        if not admin_mi(interaction):
+            await interaction.response.send_message("❌ Bu komut sadece yetkili ekibe özeldir!", ephemeral=True)
+            return
         if onay.upper() != "EVET":
             await interaction.response.send_message(
                 "⚠️ **DİKKAT!** Bu işlem tüm kayıtları siler!\nOnaylamak için `onay` parametresine tam olarak `EVET` yazmalısınız.",
@@ -441,6 +443,67 @@ class KayitCog(commands.Cog):
                 "❌ Bu komut sadece sunucu yöneticileri tarafından kullanılabilir!",
                 ephemeral=True
             )
+
+
+
+    # ====================================================
+    # /hurda-gonder - Oyuncudan oyuncuya hurda
+    # ====================================================
+    @app_commands.command(name="hurda-gonder", description="[GENEL] Başka bir sakine hurda gönder.")
+    @app_commands.describe(hedef="Hurda gönderilecek kişi", miktar="Gönderilecek hurda miktarı")
+    async def hurda_gonder(self, interaction: discord.Interaction, hedef: discord.Member, miktar: int):
+        u_id = str(interaction.user.id)
+        if u_id not in db["sakinler"]:
+            await interaction.response.send_message("❌ Sicil kaydın yok!", ephemeral=True)
+            return
+        if str(hedef.id) == u_id:
+            await interaction.response.send_message("❌ Kendine hurda gönderemezsin!", ephemeral=True)
+            return
+        if miktar <= 0:
+            await interaction.response.send_message("❌ Miktar pozitif olmalı!", ephemeral=True)
+            return
+        h_id = str(hedef.id)
+        if h_id not in db["sakinler"]:
+            await interaction.response.send_message("❌ Hedef sakin kayıtlı değil!", ephemeral=True)
+            return
+        sakin = db["sakinler"][u_id]
+        if sakin["cuzdan"] < miktar:
+            await interaction.response.send_message(f"❌ Yetersiz! Cüzdan: `{sakin['cuzdan']}`", ephemeral=True)
+            return
+        sakin["cuzdan"] -= miktar
+        db["sakinler"][h_id]["cuzdan"] += miktar
+        verileri_kaydet()
+        embed = discord.Embed(title="💸 HURDA TRANSFERİ", color=0x2ECC71)
+        embed.description = f"👤 **Gönderen:** {interaction.user.mention}\n👤 **Alan:** {hedef.mention}\n🪙 **Miktar:** `{miktar} Hurda`"
+        await interaction.response.send_message(embed=embed)
+
+    # ====================================================
+    # /kaynak-ekle - Admin kaynak ekleme
+    # ====================================================
+    @app_commands.command(name="kaynak-ekle", description="[ADMIN] Sığınak kaynaklarına ekleme yap (odun, kömür, erzak, hurda).")
+    @app_commands.describe(kaynak="Eklenecek kaynak", miktar="Eklenecek miktar")
+    @app_commands.choices(kaynak=[
+        app_commands.Choice(name="🪵 Odun", value="odun"),
+        app_commands.Choice(name="🪨 Kömür", value="komur"),
+        app_commands.Choice(name="🌾 Erzak", value="erzak"),
+        app_commands.Choice(name="⚕️ Tıbbi Malzeme", value="tibbi_malzeme"),
+        app_commands.Choice(name="💰 Kasa Hurda", value="kasa_hurda"),
+    ])
+    async def kaynak_ekle(self, interaction: discord.Interaction, kaynak: str, miktar: int):
+        if not admin_mi(interaction):
+            await interaction.response.send_message("❌ Bu komut sadece yetkili ekibe özeldir!", ephemeral=True)
+            return
+        if miktar <= 0 or miktar > 100000:
+            await interaction.response.send_message("❌ Miktar 1-100000 arası!", ephemeral=True)
+            return
+        if kaynak == "kasa_hurda":
+            db["sistem_ayarlari"]["kasa_hurda"] = db["sistem_ayarlari"].get("kasa_hurda", 0) + miktar
+            verileri_kaydet()
+            await interaction.response.send_message(f"✅ Kasaya `{miktar} Hurda` eklendi! Yeni: `{db['sistem_ayarlari']['kasa_hurda']}`")
+        else:
+            db["koy_ambari"]["stoklar"][kaynak] = db["koy_ambari"]["stoklar"].get(kaynak, 0) + miktar
+            verileri_kaydet()
+            await interaction.response.send_message(f"✅ `{kaynak}` stokuna `{miktar}` eklendi! Yeni: `{db['koy_ambari']['stoklar'][kaynak]}`")
 
 
 async def setup(bot):

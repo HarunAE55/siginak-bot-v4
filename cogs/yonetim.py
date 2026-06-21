@@ -3,7 +3,7 @@ Cog: Yönetim & Siyaset
 =====================
 Komutlar:
 - /aday-ol (500 hurda depozito ile başkan adayı)
-- /secimi-baslat (sadece admin, 15+45 dk = 1 saat seçim)
+- /secimi-baslat (sadece admin, 15+60 dk = 1 saat seçim)
 - /yonetim (başkan paneli, sur/köy geliştirme)
 - /tayin-et (başkan, 5 kadroluk atama)
 - /maas-ode (başkan, tek sakin maaş)
@@ -98,17 +98,21 @@ class YonetimCog(commands.Cog):
     @app_commands.command(name="secimi-baslat", description="[YÖNETİM] 1 saat sürecek belediye başkanlığı seçimlerini başlatır. Sadece sunucu yöneticileri.")
     @app_commands.checks.has_permissions(administrator=True)
     async def secimi_baslat(self, interaction: discord.Interaction):
+        from veritabani import admin_mi
+        if not admin_mi(interaction):
+            await interaction.response.send_message("❌ Bu komut sadece yetkili ekibe özeldir!", ephemeral=True)
+            return
         if db["aktif_secim"]["durum"] == "kapali":
             db["aktif_secim"]["durum"] = "adaylik_acik"
             db["aktif_secim"]["adaylar"] = {}
             db["aktif_secim"]["oylar"] = {}
             verileri_kaydet()
             await interaction.response.send_message(
-                "📢 **SIĞINAK YÜCE SEÇİM KURULU:** Resmi Belediye Başkanlığı adaylık süreci açılmıştır! `/aday-ol` komutuyla başvurularınızı ve vaatlerinizi sisteme işleyin. Sandıklar tam **15 dakika** sonra kurulacaktır!"
+                "📢 **SIĞINAK YÜCE SEÇİM KURULU:** Resmi Belediye Başkanlığı adaylık süreci açılmıştır! `/aday-ol` komutuyla başvurularınızı ve vaatlerinizi sisteme işleyin. Sandıklar tam **30 dakika** sonra kurulacaktır!"
             )
-            haber_ekle("📢 Belediye Başkanlığı seçim süreci başladı. 15 dakika adaylık süresi açıldı.")
+            haber_ekle("📢 Belediye Başkanlığı seçim süreci başladı. 30 dakika adaylık süresi açıldı.")
 
-            await asyncio.sleep(900)  # 15 dk
+            await asyncio.sleep(1800)  # 30 dk
         else:
             await interaction.response.send_message("❌ Seçim zaten devam ediyor!", ephemeral=True)
             return
@@ -116,7 +120,7 @@ class YonetimCog(commands.Cog):
         if not db["aktif_secim"]["adaylar"]:
             db["aktif_secim"]["durum"] = "kapali"
             verileri_kaydet()
-            await interaction.channel.send("❌ Seçim iptal edildi! 15 dakikalık sürede hiçbir sakin başkanlığa aday olmadı.")
+            await interaction.channel.send("❌ Seçim iptal edildi! 30 dakikalık sürede hiçbir sakin başkanlığa aday olmadı.")
             return
 
         db["aktif_secim"]["durum"] = "oylama_aktif"
@@ -128,13 +132,13 @@ class YonetimCog(commands.Cog):
         pusula_text = "**Mevcut Resmi Adaylar ve Programları:**\n\n"
         for a_id, veri in db["aktif_secim"]["adaylar"].items():
             pusula_text += f"👑 **{veri['isim']}** \n• Vaadi: *\"{veri['vaat']}\"*\n\n"
-        pusula_text += "⚠️ **NOT:** Oy vermek için aşağıdaki ilgili butona tıklayın. Sandıklar tam **45 dakika (2700 saniye)** sonra kapanacaktır!"
+        pusula_text += "⚠️ **NOT:** Oy vermek için aşağıdaki ilgili butona tıklayın. Sandıklar tam **60 dakika (2700 saniye)** sonra kapanacaktır!"
         pusula_embed.description = pusula_text
 
         await interaction.channel.send(embed=pusula_embed, view=pusula_view)
-        haber_ekle("🗳️ Seçim sandıkları açıldı! 45 dakikalık oylama süresi başladı.")
+        haber_ekle("🗳️ Seçim sandıkları açıldı! 60 dakikalık oylama süresi başladı.")
 
-        await asyncio.sleep(2700)  # 45 dk
+        await asyncio.sleep(3600)  # 60 dk
 
         adaylar = db["aktif_secim"]["adaylar"]
         if not adaylar:
@@ -234,6 +238,7 @@ class YonetimCog(commands.Cog):
         app_commands.Choice(name="Vergi Müfettişi", value="vergi_mufettisi"),
         app_commands.Choice(name="Muhafızlar Komutanı", value="muhafiz_komutani"),
         app_commands.Choice(name="Baş Simyacı", value="bas_simyaci"),
+        app_commands.Choice(name="Baş Doktor", value="bas_doktor"),
         app_commands.Choice(name="Sığınak Rahibi", value="rahip")
     ])
     async def tayin_et(self, interaction: discord.Interaction, hedef_sakin: discord.Member, unvan: str):

@@ -18,7 +18,6 @@ from veritabani import (
     sokak_ve_karantina_kontrolu, xp_ekle, haber_ekle,
     RP_OWNER_ROL_ID
 )
-# Baskın artık SURLAR kanalına gidecek (salgın değil)
 from kanallar import ZAYIF_SURLAR as BASKIN_KANAL_ID
 
 
@@ -169,6 +168,71 @@ class SavasCog(commands.Cog):
 
         verileri_kaydet()
         await interaction.channel.send(embed=embed_sonuc)
+
+
+    # ====================================================
+    # /kavga - Ölümcül olmayan düello (rp kavgası)
+    # ====================================================
+    @app_commands.command(name="kavga", description="[SAVAŞ] Ölümcül olmayan düello. Kimse ölmez, sadece yaralanma olur.")
+    @app_commands.describe(kullanici="Kavga edeceğin kişi")
+    async def kavga(self, interaction: discord.Interaction, kullanici: discord.User):
+        if kullanici.id == interaction.user.id:
+            await interaction.response.send_message("❌ Kendinle kavga edemezsin!", ephemeral=True)
+            return
+
+        u_id = str(interaction.user.id)
+        r_id = str(kullanici.id)
+
+        if u_id not in db["sakinler"] or r_id not in db["sakinler"]:
+            await interaction.response.send_message("❌ Taraflardan birinin kaydı yok!", ephemeral=True)
+            return
+
+        if db["sakinler"][u_id].get("durum") == "Ölü" or db["sakinler"][r_id].get("durum") == "Ölü":
+            await interaction.response.send_message("❌ Ölü karakterler kavga edemez!", ephemeral=True)
+            return
+
+        eden = db["sakinler"][u_id]
+        edilen = db["sakinler"][r_id]
+
+        hasar1 = random.randint(5, 20) + (eden.get("atak", 10) // 3)
+        hasar2 = random.randint(5, 20) + (edilen.get("atak", 10) // 3)
+
+        hasar1 = max(1, hasar1 - (edilen.get("defans", 0) // 2))
+        hasar2 = max(1, hasar2 - (eden.get("defans", 0) // 2))
+
+        eden["saglik"] = max(5, eden.get("saglik", 100) - hasar2)
+        edilen["saglik"] = max(5, edilen.get("saglik", 100) - hasar1)
+
+        if hasar1 > hasar2:
+            kazanan = eden["isim"]
+            kaybeden = edilen["isim"]
+        elif hasar2 > hasar1:
+            kazanan = edilen["isim"]
+            kaybeden = eden["isim"]
+        else:
+            kazanan = None
+
+        verileri_kaydet()
+
+        embed = discord.Embed(title="🥊 KAVGA! (Ölümcül Değil)", color=0xE67E22)
+        if kazanan:
+            embed.description = (
+                f"🥊 **{eden['isim']}** vs **{edilen['isim']}**\n\n"
+                f"💥 **{eden['isim']}** verdiği hasar: `{hasar1}`\n"
+                f"💥 **{edilen['isim']}** verdiği hasar: `{hasar2}`\n\n"
+                f"🏆 **Kazanan:** `{kazanan}`\n"
+                f"💀 **Kaybeden:** `{kaybeden}` (yaralandı ama hayatta!)\n\n"
+                f"❤️ {eden['isim']} sağlık: `{eden['saglik']}`\n"
+                f"❤️ {edilen['isim']} sağlık: `{edilen['saglik']}`"
+            )
+        else:
+            embed.description = (
+                f"🥊 **{eden['isim']}** vs **{edilen['isim']}**\n\n"
+                f"💥 Eşit hasar! Berabere!\n\n"
+                f"❤️ {eden['isim']} sağlık: `{eden['saglik']}`\n"
+                f"❤️ {edilen['isim']} sağlık: `{edilen['saglik']}`"
+            )
+        await interaction.response.send_message(embed=embed)
 
     # ====================================================
     # /zombi-baskini-baslat - SADECE RP OWNER

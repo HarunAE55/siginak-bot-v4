@@ -370,24 +370,47 @@ class OlumEkraniView(discord.ui.View):
 
 
 # ====================================================
-# 3. ROL ID'leri (Sabit - Sunucuya özel)
+# 3. ROL ID'leri (Sabit - Sunucuya özel - v5.5 Güncel)
 # ====================================================
 
-# Yetkili roller
+# Sunucu Yönetimi
 RP_OWNER_ROL_ID = 1470544130559049921        # ♔ • RP Owner
 SECOND_OWNER_ROL_ID = 1470743025280880743     # ♕ • Second Owner
+ADMINISTRATOR_ROL_ID = 1518268192395497544    # 👑 • Administrator
+ADMIN_ROL_ID = 1518268274687873145           # 🛡️ • Admin
+YETKILI_EKIP_ROL_ID = 1518378716533882921    # 🎩 • Yetkili Ekip
+VEBA_BOT_ROL_ID = 1516186216276431062        # 🤖 • Veba 1320
+
+# Yetkili Rolleri
+KAYIT_EKIBI_ROL_ID = 1470748590917025842      # 🪪 • Kayıt Ekibi
+KIDEMLI_MODERATOR_ROL_ID = 1518267799200338091 # 🛡️ • Kıdemli Moderatör
+MODERATOR_ROL_ID = 1492516693921234964        # ⚖️ • Moderatör
+PARTNER_SORUMLUSU_ROL_ID = 1515767601069031424 # 🤝 • Partner Sorumlusu
+GAZETECI_ROL_ID = 1492555591007211781         # 📰 • Gazeteci
+HARITACI_ROL_ID = 1497684152512676030         # 🗺️ • Haritacı
+SUNUCU_EKIBI_ROL_ID = 1470743726958706831     # 🎩 • Sunucu Ekibi
+OZEL_UYE_ROL_ID = 1518271196154691644         # 💎 • Özel Üye
+ILK_UYE_ROL_ID = 1494999628515643455          # 🌹 • İlk Üye
+
+# RP Yönetim
 BELEDIYE_BASKANI_ROL_ID = 1508463895692447926
 BASKAN_YARDIMCISI_ROL_ID = 1508535553434587238
-VERGI_MEMURU_ROL_ID = 1508536734709973032      # Discord'da "Vergi Memuru" (kodda Müfettiş olarak da geçer)
+VERGI_MEMURU_ROL_ID = 1508536734709973032
+
+# RP Sağlık
 BAS_SIMYACI_ROL_ID = 1508539755304845352
 SIMYACI_ROL_ID = 1508539888696430663
 BAS_DOKTOR_ROL_ID = 1508540001804226703
 DOKTOR_ROL_ID = 1508540501253558573
 KARANTINACI_ROL_ID = 1508540605259714700
+
+# RP Savunma
 MUHAFIZ_KOMUTANI_ROL_ID = 1508543542153187478
 MUHAFIZ_ROL_ID = 1508543643131314396
 NISANCI_ROL_ID = 1508543751222464593
 IZCI_ROL_ID = 1508543970660319366
+
+# RP Üretim
 CIFTCI_ROL_ID = 1508555554589638656
 COBAN_ROL_ID = 1508555705504764005
 DEMIRCI_ROL_ID = 1508555928029630484
@@ -396,9 +419,41 @@ MADENCI_ROL_ID = 1508556646295670890
 TUCCAR_ROL_ID = 1508556806174015578
 DEGIRMENCI_ROL_ID = 1508557253534548099
 HANCI_ROL_ID = 1508557453556580382
+
+# RP Özel
 GEZGIN_ROL_ID = 1515024992708988940
 AVCI_ROL_ID = 1515025127539216504
 ARASTIRMACI_ROL_ID = 1515025236771209358
 KRALIYET_ELCISI_ROL_ID = 1515025324708991086
+
+# RP Din
 RAHIP_ROL_ID = 1515026155969843401
 MEZARCI_ROL_ID = 1515026257874522282
+
+# Üye Rolleri
+UYE_ROL_ID = 1470747341005918228
+BOT_ROL_ID = 1492819034305990737
+KAYITSIZ_ROL_ID = 1470747472858058897
+
+
+# ====================================================
+# 5. YETKI KONTROL FONKSIYONLARI
+# ====================================================
+
+def admin_mi(interaction) -> bool:
+    """Kullanıcı admin yetkisine sahip mi? (RP Owner, Administrator, Admin, Yetkili Ekip, veya Discord admin)"""
+    if hasattr(interaction, 'user') and hasattr(interaction.user, 'guild_permissions'):
+        if interaction.user.guild_permissions.administrator:
+            return True
+    rol_idleri = [RP_OWNER_ROL_ID, ADMINISTRATOR_ROL_ID, ADMIN_ROL_ID, YETKILI_EKIP_ROL_ID]
+    if hasattr(interaction, 'user'):
+        return any(rol.id in rol_idleri for rol in interaction.user.roles)
+    return False
+
+
+def rp_owner_mi(interaction) -> bool:
+    """Kullanıcı RP Owner/Administrator/Admin mi?"""
+    rol_idleri = [RP_OWNER_ROL_ID, ADMINISTRATOR_ROL_ID, ADMIN_ROL_ID]
+    if hasattr(interaction, 'user'):
+        return any(rol.id in rol_idleri for rol in interaction.user.roles)
+    return False

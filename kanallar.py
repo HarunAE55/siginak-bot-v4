@@ -190,8 +190,8 @@ VERGI_RAPOR_KANAL_ID = LOG_KANAL_ID
 # Gazete → DER_BEOBACHTER (haber kanalı)
 GAZETE_KANAL_ID = DER_BEOBACHTER
 
-# Zombi baskını → SALGIN (veba eventleri kanalı)
-BASKIN_KANAL_ID = SALGIN
+# Zombi baskını → ZAYIF SURLAR (surların olduğu kanal)
+BASKIN_KANAL_ID = ZAYIF_SURLAR
 
 # Açlık/susuzluk genel uyarısı → SALGIN (kriz kanalı)
 ACLUK_RAPOR_KANAL_ID = SALGIN

@@ -1,7 +1,7 @@
 """
 Sığınak Bot - Ana Giriş Noktası (main.py)
 =========================================
-Sığınak Veba RP Bot v5.4 - Cogs mimarisi + v. prefix komutları + cache temizleme + db-sifirla
+Sığınak Veba RP Bot v5.5 - Cogs mimarisi + v. prefix komutları + cache temizleme + db-sifirla
 
 Çalıştırma:
     export DISCORD_TOKEN=...
