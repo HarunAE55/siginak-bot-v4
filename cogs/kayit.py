@@ -20,6 +20,7 @@ from veritabani import (
     db, verileri_kaydet, olu_kontrolu, bar_olustur,
     sakin_olustur_defaults, sakin_sil, xp_ekle,
     RP_OWNER_ROL_ID, SECOND_OWNER_ROL_ID,
+    admin_mi, rp_owner_mi,
 )
 from kanallar import KAYIT_LOG
 
