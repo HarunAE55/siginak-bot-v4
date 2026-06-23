@@ -233,7 +233,7 @@ class PrefixCog(commands.Cog):
         embed.add_field(name="💰 10. Ekonomi & Çevre", value="`/maliye-yonetim` `/hava-durumu-degis` `/haber`", inline=False)
         embed.add_field(name="🔧 11. Yönetim", value="`/sunucu-yonetimi` `/owner-kayit` `/kayit-sil` `/db-sifirla` `/xp_kazan_test`", inline=False)
         embed.add_field(name="📖 12. Rehber", value="`/destek` `/rehber`", inline=False)
-        embed.set_footer(text="Sığınak Veba RP v5.5 | Slash ve v. prefix desteği")
+        embed.set_footer(text="Sığınak Veba RP v5.7 | Slash ve v. prefix desteği")
         await ctx.send(embed=embed)
 
     # ============================================================

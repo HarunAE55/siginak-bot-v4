@@ -1,8 +1,8 @@
-# 🦠 Sığınak Veba RP Bot v5.5
+# 🦠 Sığınak Veba RP Bot v5.7
 
 **Discord RPG/RP botu** — 1349 Bavyera Veba teması. Cogs mimarisi, slash + v. prefix desteği.
 
-## 🆕 v5.5 Yenilikler
+## 🆕 v5.7 Yenilikler
 
 - ✅ **Yeni roller eklendi**: Administrator, Admin, Yetkili Ekip, Özel Üye, Moderatör, Kıdemli Moderatör
 - ✅ **`/kavga`** komutu eklendi — Ölümcül olmayan düello (RP kavgaları için)
@@ -46,7 +46,7 @@
 
 ```bash
 git clone <repo-url>
-cd siginak-bot-v5.5
+cd siginak-bot-v5.7
 pip install -r requirements.txt
 export DISCORD_TOKEN=bot_tokenin_buraya
 python main.py
@@ -64,7 +64,7 @@ python main.py
 ## 📁 Proje Yapısı
 
 ```
-siginak-bot-v5.5/
+siginak-bot-v5.7/
 ├── main.py                  # Bot giriş noktası + cache temizleme
 ├── veritabani.py            # JSON DB + yardımcı fonksiyonlar + rol ID'leri
 ├── kanallar.py              # RP kanal ID'leri

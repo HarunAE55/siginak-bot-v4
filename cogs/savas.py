@@ -171,7 +171,7 @@ class SavasCog(commands.Cog):
 
 
     # ====================================================
-    # /kavga - Ölümcül olmayan düello (rp kavgası)
+    # /kavga - Ölümcül olmayan düello (rp kavgası) - Kabul/Red butonlu
     # ====================================================
     @app_commands.command(name="kavga", description="[SAVAŞ] Ölümcül olmayan düello. Kimse ölmez, sadece yaralanma olur.")
     @app_commands.describe(kullanici="Kavga edeceğin kişi")
@@ -191,48 +191,24 @@ class SavasCog(commands.Cog):
             await interaction.response.send_message("❌ Ölü karakterler kavga edemez!", ephemeral=True)
             return
 
-        eden = db["sakinler"][u_id]
-        edilen = db["sakinler"][r_id]
+        veri_eden = db["sakinler"][u_id]
+        veri_edilen = db["sakinler"][r_id]
 
-        hasar1 = random.randint(5, 20) + (eden.get("atak", 10) // 3)
-        hasar2 = random.randint(5, 20) + (edilen.get("atak", 10) // 3)
+        embed = discord.Embed(title="🥊 KAVGA DAVETİ!", color=0xE67E22)
+        embed.description = (
+            f"🥊 **{interaction.user.mention}**, **{kullanici.mention}** kullanıcısına kavga teklif etti!\n\n"
+            f"🔺 **Teklif Eden:** {veri_eden['isim']} | ⚔️ Atak: `{veri_eden.get('atak', 10)}` | 🛡️ Defans: `{veri_eden.get('defans', 0)}`\n"
+            f"🔻 **Teklif Edilen:** {veri_edilen['isim']} | ⚔️ Atak: `{veri_edilen.get('atak', 10)}` | 🛡️ Defans: `{veri_edilen.get('defans', 0)}`\n\n"
+            f"⚠️ *Bu kavgada kimse ÖLMEZ! Sadece yaralanma olur (sağlık min 5'e düşer).*\n\n"
+            f"⏱️ *Davet 60 saniye sonra otomatik olarak sona erer.*"
+        )
 
-        hasar1 = max(1, hasar1 - (edilen.get("defans", 0) // 2))
-        hasar2 = max(1, hasar2 - (eden.get("defans", 0) // 2))
-
-        eden["saglik"] = max(5, eden.get("saglik", 100) - hasar2)
-        edilen["saglik"] = max(5, edilen.get("saglik", 100) - hasar1)
-
-        if hasar1 > hasar2:
-            kazanan = eden["isim"]
-            kaybeden = edilen["isim"]
-        elif hasar2 > hasar1:
-            kazanan = edilen["isim"]
-            kaybeden = eden["isim"]
-        else:
-            kazanan = None
-
-        verileri_kaydet()
-
-        embed = discord.Embed(title="🥊 KAVGA! (Ölümcül Değil)", color=0xE67E22)
-        if kazanan:
-            embed.description = (
-                f"🥊 **{eden['isim']}** vs **{edilen['isim']}**\n\n"
-                f"💥 **{eden['isim']}** verdiği hasar: `{hasar1}`\n"
-                f"💥 **{edilen['isim']}** verdiği hasar: `{hasar2}`\n\n"
-                f"🏆 **Kazanan:** `{kazanan}`\n"
-                f"💀 **Kaybeden:** `{kaybeden}` (yaralandı ama hayatta!)\n\n"
-                f"❤️ {eden['isim']} sağlık: `{eden['saglik']}`\n"
-                f"❤️ {edilen['isim']} sağlık: `{edilen['saglik']}`"
-            )
-        else:
-            embed.description = (
-                f"🥊 **{eden['isim']}** vs **{edilen['isim']}**\n\n"
-                f"💥 Eşit hasar! Berabere!\n\n"
-                f"❤️ {eden['isim']} sağlık: `{eden['saglik']}`\n"
-                f"❤️ {edilen['isim']} sağlık: `{edilen['saglik']}`"
-            )
-        await interaction.response.send_message(embed=embed)
+        view = KavgaDavetView(interaction.user, kullanici, veri_eden, veri_edilen)
+        await interaction.response.send_message(
+            f"🥊 {kullanici.mention}, {interaction.user.mention} sana kavga teklif etti! Kabul ediyor musun?",
+            embed=embed,
+            view=view
+        )
 
     # ====================================================
     # /zombi-baskini-baslat - SADECE RP OWNER
@@ -590,6 +566,84 @@ class BaskinSavunmaView(discord.ui.View):
 
         self.toplam_savunma_gucu += nihai_katki
         await interaction.response.send_message(mesaj)
+
+
+# ====================================================
+# VIEW - KAVGA DAVETİ (Kabul/Red butonlu)
+# ====================================================
+class KavgaDavetView(discord.ui.View):
+    def __init__(self, davet_eden, davet_edilen, veri_eden, veri_edilen):
+        super().__init__(timeout=60)
+        self.davet_eden = davet_eden
+        self.davet_edilen = davet_edilen
+        self.veri_eden = veri_eden
+        self.veri_edilen = veri_edilen
+
+    @discord.ui.button(label="🥊 Kabul Et", style=discord.ButtonStyle.danger)
+    async def kabul_btn(self, interaction: discord.Interaction, button: discord.ui.Button):
+        if interaction.user.id != self.davet_edilen.id:
+            await interaction.response.send_message("❌ Bu davet sana gelmedi!", ephemeral=True)
+            return
+
+        self.clear_items()
+
+        eden = self.veri_eden
+        edilen = self.veri_edilen
+
+        hasar1 = random.randint(5, 20) + (eden.get("atak", 10) // 3)
+        hasar2 = random.randint(5, 20) + (edilen.get("atak", 10) // 3)
+
+        hasar1 = max(1, hasar1 - (edilen.get("defans", 0) // 2))
+        hasar2 = max(1, hasar2 - (eden.get("defans", 0) // 2))
+
+        eden["saglik"] = max(5, eden.get("saglik", 100) - hasar2)
+        edilen["saglik"] = max(5, edilen.get("saglik", 100) - hasar1)
+
+        if hasar1 > hasar2:
+            kazanan = eden["isim"]
+            kaybeden = edilen["isim"]
+        elif hasar2 > hasar1:
+            kazanan = edilen["isim"]
+            kaybeden = eden["isim"]
+        else:
+            kazanan = None
+
+        verileri_kaydet()
+
+        embed = discord.Embed(title="🥊 KAVGA SONUCU! (Ölümcül Değil)", color=0xE67E22)
+        if kazanan:
+            embed.description = (
+                f"🥊 **{eden['isim']}** vs **{edilen['isim']}**\n\n"
+                f"💥 **{eden['isim']}** verdiği hasar: `{hasar1}`\n"
+                f"💥 **{edilen['isim']}** verdiği hasar: `{hasar2}`\n\n"
+                f"🏆 **Kazanan:** `{kazanan}`\n"
+                f"💀 **Kaybeden:** `{kaybeden}` (yaralandı ama hayatta!)\n\n"
+                f"❤️ {eden['isim']} sağlık: `{eden['saglik']}`\n"
+                f"❤️ {edilen['isim']} sağlık: `{edilen['saglik']}`"
+            )
+        else:
+            embed.description = (
+                f"🥊 **{eden['isim']}** vs **{edilen['isim']}**\n\n"
+                f"💥 Eşit hasar! Berabere!\n\n"
+                f"❤️ {eden['isim']} sağlık: `{eden['saglik']}`\n"
+                f"❤️ {edilen['isim']} sağlık: `{edilen['saglik']}`"
+            )
+        await interaction.response.edit_message(
+            content=f"🥊 **KAVGA BAŞLADI!** {self.davet_eden.mention} vs {self.davet_edilen.mention}",
+            embed=embed,
+            view=self
+        )
+
+    @discord.ui.button(label="❌ Reddet", style=discord.ButtonStyle.secondary)
+    async def reddet_btn(self, interaction: discord.Interaction, button: discord.ui.Button):
+        if interaction.user.id != self.davet_edilen.id:
+            await interaction.response.send_message("❌ Bu daveti reddetme yetkin yok!", ephemeral=True)
+            return
+
+        self.clear_items()
+        embed = discord.Embed(title="❌ KAVGA REDDEDİLDİ", color=0x7F8C8D)
+        embed.description = f"🥊 **{self.davet_edilen.mention}** kavga teklifini reddetti."
+        await interaction.response.edit_message(content="", embed=embed, view=self)
 
 
 async def setup(bot):

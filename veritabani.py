@@ -370,7 +370,7 @@ class OlumEkraniView(discord.ui.View):
 
 
 # ====================================================
-# 3. ROL ID'leri (Sabit - Sunucuya özel - v5.5 Güncel)
+# 3. ROL ID'leri (Sabit - Sunucuya özel - v5.7 Güncel)
 # ====================================================
 
 # Sunucu Yönetimi
