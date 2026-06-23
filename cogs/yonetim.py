@@ -2,7 +2,7 @@
 Cog: Yönetim & Siyaset
 =====================
 Komutlar:
-- /aday-ol (500 hurda depozito ile başkan adayı)
+- /aday-ol (500 akçe depozito ile başkan adayı)
 - /secimi-baslat (sadece admin, 15+60 dk = 1 saat seçim)
 - /yonetim (başkan paneli, sur/köy geliştirme)
 - /tayin-et (başkan, 5 kadroluk atama)
@@ -58,7 +58,7 @@ class YonetimCog(commands.Cog):
 
         if sakin.get("cuzdan", 0) < 500:
             await interaction.response.send_message(
-                "❌ Adaylık için yeterli sermayeniz yok! Cüzdanınızda en az `500 Hurda` bulunmalıdır.",
+                "❌ Adaylık için yeterli sermayeniz yok! Cüzdanınızda en az `500 Akçe` bulunmalıdır.",
                 ephemeral=True
             )
             return
@@ -219,7 +219,7 @@ class YonetimCog(commands.Cog):
         embed.description = (
             f"**Mevcut Belediye Başkanı:** {interaction.user.mention}\n"
             f"--- \n"
-            f"💰 **Sığınak Ortak Kasası (Vergiler):** `{db['sistem_ayarlari']['kasa_hurda']} Hurda`\n"
+            f"💰 **Sığınak Ortak Kasası (Vergiler):** `{db['sistem_ayarlari']['KASA_AKÇE_PLACEHOLDER']} Akçe`\n"
             f"🧱 **Mevcut Sur Savunma Seviyesi:** `🛡️ Seviye {db['sistem_ayarlari']['sur_seviyesi']}`\n"
             f"🏡 **Mevcut Köy Yapılaşma Seviyesi:** `🏛️ Seviye {db['sistem_ayarlari']['koy_seviyesi']}`\n\n"
             f"⚠️ *Aşağıdaki butonları kullanarak sığınak bütçesini halk yararına harcayabilirsiniz.*"
@@ -309,7 +309,7 @@ class YonetimCog(commands.Cog):
     # /maas-ode - Tek sakin maaş
     # ====================================================
     @app_commands.command(name="maas-ode", description="[BAŞKAN] Sığınak kasasından belirli bir sakine esnek miktarda maaş/ikramiye ödemesi yapar.")
-    @app_commands.describe(hedef_sakin="Ödeme yapılacak sakin", miktar="Dağıtılacak hurda miktarı")
+    @app_commands.describe(hedef_sakin="Ödeme yapılacak sakin", miktar="Dağıtılacak akçe miktarı")
     async def maas_ode(self, interaction: discord.Interaction, hedef_sakin: discord.Member, miktar: int):
         u_id = str(interaction.user.id)
         olu_kontrol = olu_kontrolu(u_id)
@@ -326,9 +326,9 @@ class YonetimCog(commands.Cog):
             await interaction.response.send_message("❌ Ödenecek maaş miktarı pozitif bir sayı olmalıdır!", ephemeral=True)
             return
 
-        if db["sistem_ayarlari"]["kasa_hurda"] < miktar:
+        if db["sistem_ayarlari"]["KASA_AKÇE_PLACEHOLDER"] < miktar:
             await interaction.response.send_message(
-                f"❌ Sığınak ortak kasasında yeterli bütçe yok! Mevcut Kasa: `{db['sistem_ayarlari']['kasa_hurda']}` Hurda.",
+                f"❌ Sığınak ortak kasasında yeterli bütçe yok! Mevcut Kasa: `{db['sistem_ayarlari']['KASA_AKÇE_PLACEHOLDER']}` Akçe.",
                 ephemeral=True
             )
             return
@@ -337,7 +337,7 @@ class YonetimCog(commands.Cog):
             await interaction.response.send_message("❌ Ödeme yapılmak istenen kişi sığınak kütüğünde kayıtlı değil!", ephemeral=True)
             return
 
-        db["sistem_ayarlari"]["kasa_hurda"] -= miktar
+        db["sistem_ayarlari"]["KASA_AKÇE_PLACEHOLDER"] -= miktar
         db["sakinler"][h_id]["cuzdan"] += miktar
         verileri_kaydet()
 
@@ -345,9 +345,9 @@ class YonetimCog(commands.Cog):
         embed.description = (
             f"👑 **Makam:** Sığınak Belediye Başkanlığı\n"
             f"👤 **Ödeme Yapılan:** {hedef_sakin.mention}\n"
-            f"🪙 **Aktarılan Tutar:** `{miktar} Hurda`\n"
+            f"🪙 **Aktarılan Tutar:** `{miktar} Akçe`\n"
             f"--- \n"
-            f"📉 **Kalan Sığınak Kasası:** `{db['sistem_ayarlari']['kasa_hurda']} Hurda`"
+            f"📉 **Kalan Sığınak Kasası:** `{db['sistem_ayarlari']['KASA_AKÇE_PLACEHOLDER']} Akçe`"
         )
         await interaction.response.send_message(embed=embed)
 
@@ -355,7 +355,7 @@ class YonetimCog(commands.Cog):
     # /meslek-maas-ode - Meslek grubuna toplu maaş
     # ====================================================
     @app_commands.command(name="meslek-maas-ode", description="[BAŞKAN] Belirli bir meslek grubundaki tüm çalışanlara kasadan toplu maaş yatırır.")
-    @app_commands.describe(meslek_grubu="Maaş ödenecek meslek grubu", miktar="Kişi başı hurda miktarı")
+    @app_commands.describe(meslek_grubu="Maaş ödenecek meslek grubu", miktar="Kişi başı akçe miktarı")
     @app_commands.choices(meslek_grubu=[
         app_commands.Choice(name="Muhafız Birliği", value="muhafiz"),
         app_commands.Choice(name="Sağlık Ekibi", value="saglik"),
@@ -399,18 +399,18 @@ class YonetimCog(commands.Cog):
 
         toplam_maliyet = miktar * len(maas_alacaklar)
 
-        if db["sistem_ayarlari"]["kasa_hurda"] < toplam_maliyet:
+        if db["sistem_ayarlari"]["KASA_AKÇE_PLACEHOLDER"] < toplam_maliyet:
             await interaction.response.send_message(
-                f"❌ Kasada toplu ödeme için yeterli hurda yok! Gereken: `{toplam_maliyet}`, Kasada Olan: `{db['sistem_ayarlari']['kasa_hurda']}`",
+                f"❌ Kasada toplu ödeme için yeterli akçe yok! Gereken: `{toplam_maliyet}`, Kasada Olan: `{db['sistem_ayarlari']['KASA_AKÇE_PLACEHOLDER']}`",
                 ephemeral=True
             )
             return
 
-        db["sistem_ayarlari"]["kasa_hurda"] -= toplam_maliyet
+        db["sistem_ayarlari"]["KASA_AKÇE_PLACEHOLDER"] -= toplam_maliyet
         rapor_listesi = []
         for s_id in maas_alacaklar:
             db["sakinler"][s_id]["cuzdan"] += miktar
-            rapor_listesi.append(f"• <@{s_id}> (+{miktar} Hurda)")
+            rapor_listesi.append(f"• <@{s_id}> (+{miktar} Akçe)")
 
         verileri_kaydet()
 
@@ -419,9 +419,9 @@ class YonetimCog(commands.Cog):
             f"📢 **Belediye Başkanı** {interaction.user.mention}, belirli bir iş koluna toplu bütçe dağıtımı yaptı!\n\n"
             f"💼 **Ödeme Yapılan Grup:** `{meslek_grubu.upper()}`\n"
             f"👥 **Maaş Alan Toplam Kişi:** `{len(maas_alacaklar)} Sakin`\n"
-            f"💰 **Kişi Başı Ödenen:** `{miktar} Hurda`\n"
-            f"📉 **Kasadan Çıkan Toplam Bütçe:** `{toplam_maliyet} Hurda`\n"
-            f"📦 **Kalan Ortak Kasa:** `{db['sistem_ayarlari']['kasa_hurda']} Hurda`\n\n"
+            f"💰 **Kişi Başı Ödenen:** `{miktar} Akçe`\n"
+            f"📉 **Kasadan Çıkan Toplam Bütçe:** `{toplam_maliyet} Akçe`\n"
+            f"📦 **Kalan Ortak Kasa:** `{db['sistem_ayarlari']['KASA_AKÇE_PLACEHOLDER']} Akçe`\n\n"
             f"**Ödeme Yapılan Bazı Sakinler:**\n" + "\n".join(rapor_listesi[:10])
         )
         await interaction.response.send_message(embed=embed)
@@ -453,14 +453,14 @@ class YonetimCog(commands.Cog):
 
         toplam_maliyet = miktar * len(hayatta_olanlar)
 
-        if db["sistem_ayarlari"]["kasa_hurda"] < toplam_maliyet:
+        if db["sistem_ayarlari"]["KASA_AKÇE_PLACEHOLDER"] < toplam_maliyet:
             await interaction.response.send_message(
-                f"❌ Genel maaş dağıtımı için kasada yeterli bütçe yok! Gereken: `{toplam_maliyet}`, Kasada Olan: `{db['sistem_ayarlari']['kasa_hurda']}`",
+                f"❌ Genel maaş dağıtımı için kasada yeterli bütçe yok! Gereken: `{toplam_maliyet}`, Kasada Olan: `{db['sistem_ayarlari']['KASA_AKÇE_PLACEHOLDER']}`",
                 ephemeral=True
             )
             return
 
-        db["sistem_ayarlari"]["kasa_hurda"] -= toplam_maliyet
+        db["sistem_ayarlari"]["KASA_AKÇE_PLACEHOLDER"] -= toplam_maliyet
         for s_id in hayatta_olanlar:
             db["sakinler"][s_id]["cuzdan"] += miktar
 
@@ -470,9 +470,9 @@ class YonetimCog(commands.Cog):
         embed.description = (
             f"👑 **Belediye Başkanı** {interaction.user.mention} sığınaktaki tüm halka **Genel Refah Maaşı** dağıttı!\n\n"
             f"👥 **Ödeme Yapılan Nüfus:** `{len(hayatta_olanlar)} Sakin`\n"
-            f"🪙 **Kişi Başı Dağıtılan:** `{miktar} Hurda`\n"
-            f"🔥 **Kasadan Karşılanan Toplam:** `{toplam_maliyet} Hurda`\n"
-            f"💰 **Yeni Ortak Kasa Bakiyesi:** `{db['sistem_ayarlari']['kasa_hurda']} Hurda`"
+            f"🪙 **Kişi Başı Dağıtılan:** `{miktar} Akçe`\n"
+            f"🔥 **Kasadan Karşılanan Toplam:** `{toplam_maliyet} Akçe`\n"
+            f"💰 **Yeni Ortak Kasa Bakiyesi:** `{db['sistem_ayarlari']['KASA_AKÇE_PLACEHOLDER']} Akçe`"
         )
         await interaction.response.send_message(embed=embed)
 
@@ -563,14 +563,14 @@ class BaskanPaneliView(discord.ui.View):
             return False
         return True
 
-    @discord.ui.button(label="🧱 Suru Geliştir (250 Hurda)", style=discord.ButtonStyle.danger)
+    @discord.ui.button(label="🧱 Suru Geliştir (250 Akçe)", style=discord.ButtonStyle.danger)
     async def sur_gelistir_btn(self, interaction: discord.Interaction, button: discord.ui.Button):
         maliyet = 250
-        if db["sistem_ayarlari"]["kasa_hurda"] < maliyet:
-            await interaction.response.send_message("❌ Sığınak ortak kasasında yeterli hurda yok!", ephemeral=True)
+        if db["sistem_ayarlari"]["KASA_AKÇE_PLACEHOLDER"] < maliyet:
+            await interaction.response.send_message("❌ Sığınak ortak kasasında yeterli akçe yok!", ephemeral=True)
             return
 
-        db["sistem_ayarlari"]["kasa_hurda"] -= maliyet
+        db["sistem_ayarlari"]["KASA_AKÇE_PLACEHOLDER"] -= maliyet
         db["sistem_ayarlari"]["sur_seviyesi"] += 1
         verileri_kaydet()
 
@@ -578,18 +578,18 @@ class BaskanPaneliView(discord.ui.View):
         embed.description = (
             f"🧱 **Sığınak Surları Güçlendirildi!**\n"
             f"• Yeni Sur Seviyesi: `Seviye {db['sistem_ayarlari']['sur_seviyesi']}`\n"
-            f"• Kalan Ortak Kasa: `{db['sistem_ayarlari']['kasa_hurda']} Hurda`"
+            f"• Kalan Ortak Kasa: `{db['sistem_ayarlari']['KASA_AKÇE_PLACEHOLDER']} Akçe`"
         )
         await interaction.response.send_message(embed=embed)
 
-    @discord.ui.button(label="🏡 Köyü Geliştir (300 Hurda)", style=discord.ButtonStyle.success)
+    @discord.ui.button(label="🏡 Köyü Geliştir (300 Akçe)", style=discord.ButtonStyle.success)
     async def koy_gelistir_btn(self, interaction: discord.Interaction, button: discord.ui.Button):
         maliyet = 300
-        if db["sistem_ayarlari"]["kasa_hurda"] < maliyet:
-            await interaction.response.send_message("❌ Sığınak ortak kasasında yeterli hurda yok!", ephemeral=True)
+        if db["sistem_ayarlari"]["KASA_AKÇE_PLACEHOLDER"] < maliyet:
+            await interaction.response.send_message("❌ Sığınak ortak kasasında yeterli akçe yok!", ephemeral=True)
             return
 
-        db["sistem_ayarlari"]["kasa_hurda"] -= maliyet
+        db["sistem_ayarlari"]["KASA_AKÇE_PLACEHOLDER"] -= maliyet
         db["sistem_ayarlari"]["koy_seviyesi"] += 1
         verileri_kaydet()
 
@@ -597,7 +597,7 @@ class BaskanPaneliView(discord.ui.View):
         embed.description = (
             f"🏡 **Köy Binaları ve Ambarlar Geliştirildi!**\n"
             f"• Yeni Köy Seviyesi: `Seviye {db['sistem_ayarlari']['koy_seviyesi']}`\n"
-            f"• Kalan Ortak Kasa: `{db['sistem_ayarlari']['kasa_hurda']} Hurda`"
+            f"• Kalan Ortak Kasa: `{db['sistem_ayarlari']['KASA_AKÇE_PLACEHOLDER']} Akçe`"
         )
         await interaction.response.send_message(embed=embed)
 
@@ -669,7 +669,7 @@ class MutlakHukumView(discord.ui.View):
         ganimet_metni = olum_protokolu(s_id, olum_sebebi="diger")
 
         itibar_kaybi = 300
-        db["sistem_ayarlari"]["kasa_hurda"] = max(0, db["sistem_ayarlari"].get("kasa_hurda", 0) - itibar_kaybi)
+        db["sistem_ayarlari"]["KASA_AKÇE_PLACEHOLDER"] = max(0, db["sistem_ayarlari"].get("KASA_AKÇE_PLACEHOLDER", 0) - itibar_kaybi)
         db["mahkeme_kayitlari"]["toplam_idam"] += 1
 
         try:
@@ -681,7 +681,7 @@ class MutlakHukumView(discord.ui.View):
         embed.description = (
             f"👑 **Belediye Başkanı {interaction.user.mention}** adalet terazisini hiçe saydı!\n\n"
             f"💀 {self.sanik_uye.mention} isimli sakini halka sormadan **İDAM ETTİ!**\n"
-            f"🚨 **TİRANLIK RİSKİ:** Toplumsal İtibar sarsıldı, kasadan `{itibar_kaybi} Hurda` tazminat eksildi!\n\n"
+            f"🚨 **TİRANLIK RİSKİ:** Toplumsal İtibar sarsıldı, kasadan `{itibar_kaybi} Akçe` tazminat eksildi!\n\n"
             f"📦 **Miras Aktarımı:**\n"
             f"{ganimet_metni if ganimet_metni else 'Aktarılacak bir şey kalmamıştı.'}"
         )
@@ -703,7 +703,7 @@ class MutlakHukumView(discord.ui.View):
 
         db["sakinler"][s_id]["durum"] = "Sürgün"
         itibar_kaybi = 150
-        db["sistem_ayarlari"]["kasa_hurda"] = max(0, db["sistem_ayarlari"].get("kasa_hurda", 0) - itibar_kaybi)
+        db["sistem_ayarlari"]["KASA_AKÇE_PLACEHOLDER"] = max(0, db["sistem_ayarlari"].get("KASA_AKÇE_PLACEHOLDER", 0) - itibar_kaybi)
         db["mahkeme_kayitlari"]["toplam_surgun"] += 1
         verileri_kaydet()
 
@@ -711,7 +711,7 @@ class MutlakHukumView(discord.ui.View):
         embed.description = (
             f"👑 **Belediye Başkanı {interaction.user.mention}** yetkilerini kullanarak bir kararname çıkardı!\n\n"
             f"🚪 {self.sanik_uye.mention}, sığınak meclisine danışılmadan **SÜRGÜN EDİLDİ!**\n\n"
-            f"⚠️ **TOPLUMSAL TEPKİ:** Kasadan `{itibar_kaybi} Hurda` dağıtıldı!"
+            f"⚠️ **TOPLUMSAL TEPKİ:** Kasadan `{itibar_kaybi} Akçe` dağıtıldı!"
         )
         await interaction.response.send_message(embed=embed)
         haber_ekle(f"🧳 {db['sakinler'][s_id]['isim']} idari kararnameden sürgün edildi.")

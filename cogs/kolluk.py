@@ -10,7 +10,7 @@ Komutlar:
 - /sokak-yasagi (başkan)
 - /savunmayi-guclendir (başkan, +15 tahkimat)
 - /darbe (isyan, başkan devirme)
-- /nobet (muhafız nöbet tutar, XP+hurda kazanır, 4 saat CD)
+- /nobet (muhafız nöbet tutar, XP+akçe kazanır, 4 saat CD)
 """
 
 import discord
@@ -51,7 +51,7 @@ class KollukCog(commands.Cog):
             "⚔️ **Kolluk Kuvveti Operasyon Arayüzü:**\n\n"
             "🔒 `/hucreye-at [@sakin]` -> Asayişi bozan, darbeci veya kurallara uymayan sakini zindana kapatır.\n"
             "🔓 `/hucreden-cikar [@sakin]` -> Sakinin cezasını sonlandırır.\n"
-            "🛡️ `/nobet` -> Nöbet tut, XP ve hurda kazan (4 saat CD).\n\n"
+            "🛡️ `/nobet` -> Nöbet tut, XP ve akçe kazan (4 saat CD).\n\n"
             f"🛡️ **Mevcut Muhafız Tahkimatı:** `{db['savunma_sistemi'].get('muhafiz_tahkimati', 10)}/100`"
         )
         await interaction.response.send_message(embed=embed)
@@ -258,15 +258,15 @@ class KollukCog(commands.Cog):
     # ====================================================
     # /savunmayi-guclendir
     # ====================================================
-    @app_commands.command(name="savunmayi-guclendir", description="[BAŞKAN] Darbe ve isyanlara karşı muhafız tahkimatını artır (500 Hurda, +15 tahkimat).")
+    @app_commands.command(name="savunmayi-guclendir", description="[BAŞKAN] Darbe ve isyanlara karşı muhafız tahkimatını artır (500 Akçe, +15 tahkimat).")
     async def savunma_guclendir(self, interaction: discord.Interaction):
         u_id = str(interaction.user.id)
         if db["sakinler"].get(u_id, {}).get("meslek_anahtar") != "belediye_baskani":
             await interaction.response.send_message("❌ Sadece belediye başkanı savunma emirleri verebilir!", ephemeral=True)
             return
 
-        if db["sistem_ayarlari"]["kasa_hurda"] < 500:
-            await interaction.response.send_message("❌ Sığınak kasasında 500 Hurda yok!", ephemeral=True)
+        if db["sistem_ayarlari"]["KASA_AKÇE_PLACEHOLDER"] < 500:
+            await interaction.response.send_message("❌ Sığınak kasasında 500 Akçe yok!", ephemeral=True)
             return
 
         mevcut_tahkimat = db["savunma_sistemi"]["muhafiz_tahkimati"]
@@ -274,7 +274,7 @@ class KollukCog(commands.Cog):
             await interaction.response.send_message("❌ Muhafız tahkimatı zaten maksimum (%100)!", ephemeral=True)
             return
 
-        db["sistem_ayarlari"]["kasa_hurda"] -= 500
+        db["sistem_ayarlari"]["KASA_AKÇE_PLACEHOLDER"] -= 500
         db["savunma_sistemi"]["muhafiz_tahkimati"] = min(100, mevcut_tahkimat + 15)
         verileri_kaydet()
 
@@ -309,7 +309,7 @@ class KollukCog(commands.Cog):
             return
 
         # Darbe başarı şansı
-        itibar_puan = db["sistem_ayarlari"].get("kasa_hurda", 0) / 10
+        itibar_puan = db["sistem_ayarlari"].get("KASA_AKÇE_PLACEHOLDER", 0) / 10
         savunma = db["savunma_sistemi"]["muhafiz_tahkimati"]
         basari_sansi = 10 + (100 - min(itibar_puan, 100)) + (50 - savunma)
         basari_sansi = max(5, min(basari_sansi, 90))
@@ -322,7 +322,7 @@ class KollukCog(commands.Cog):
             db["sakinler"][baskan_id]["meslek_isim"] = "Gezgin (Devrildi)"
             db["sakinler"][u_id]["meslek_anahtar"] = "belediye_baskani"
             db["sakinler"][u_id]["meslek_isim"] = "Belediye Başkanı"
-            db["sistem_ayarlari"]["kasa_hurda"] = max(0, db["sistem_ayarlari"].get("kasa_hurda", 0) // 2)
+            db["sistem_ayarlari"]["KASA_AKÇE_PLACEHOLDER"] = max(0, db["sistem_ayarlari"].get("KASA_AKÇE_PLACEHOLDER", 0) // 2)
             verileri_kaydet()
 
             embed = discord.Embed(title="🔥 İHTİLAL! SIĞINAKTA DARBE BAŞARILI!", color=0xE74C3C)
@@ -346,7 +346,7 @@ class KollukCog(commands.Cog):
     # ====================================================
     # /nobet - Muhafız nöbet tutar
     # ====================================================
-    @app_commands.command(name="nobet", description="[MUHAFIZ] Nöbet tut, XP ve hurda kazan (4 saat cooldown).")
+    @app_commands.command(name="nobet", description="[MUHAFIZ] Nöbet tut, XP ve akçe kazan (4 saat cooldown).")
     async def nobet_tut(self, interaction: discord.Interaction):
         u_id = str(interaction.user.id)
         if u_id not in db["sakinler"]:
@@ -378,14 +378,14 @@ class KollukCog(commands.Cog):
                 return
 
         # Nöbet sonuçları - mesleğe göre çarpan
-        taban_hurda = random.randint(40, 80)
+        taban_akçe = random.randint(40, 80)
         taban_xp = 20
 
         if meslek == "muhafiz_komutani":
-            taban_hurda = int(taban_hurda * 1.5)
+            taban_akçe = int(taban_akçe * 1.5)
             taban_xp = 35
         elif meslek == "muhafiz":
-            taban_hurda = int(taban_hurda * 1.2)
+            taban_akçe = int(taban_akçe * 1.2)
             taban_xp = 25
 
         # Şans faktörü: bazen küçük olay
@@ -394,15 +394,15 @@ class KollukCog(commands.Cog):
         if olay_zari <= 2:
             # Vardiyada suçlu yakaladı, bonus
             bonus = random.randint(30, 60)
-            taban_hurda += bonus
-            ek_metin = f"\n🚨 **Vardiya Olayı:** Sur kenarında dolaşan bir hırsızı yakaladın! `+{bonus} Hurda` ikramiye!"
+            taban_akçe += bonus
+            ek_metin = f"\n🚨 **Vardiya Olayı:** Sur kenarında dolaşan bir hırsızı yakaladın! `+{bonus} Akçe` ikramiye!"
         elif olay_zari >= 9:
             # Sıkıcı nöbet, daha az ödül
-            taban_hurda = int(taban_hurda * 0.7)
+            taban_akçe = int(taban_akçe * 0.7)
             ek_metin = "\n😴 **Sıkıcı Nöbet:** Hiçbir şey olmadı, sadece üşüdün. Ödül azaldı."
 
         # Ödül ver
-        sakin["cuzdan"] = sakin.get("cuzdan", 0) + taban_hurda
+        sakin["cuzdan"] = sakin.get("cuzdan", 0) + taban_akçe
         atlamalar = xp_ekle(u_id, taban_xp)
         sakin["son_nobet"] = datetime.datetime.now().isoformat()
         verileri_kaydet()
@@ -411,7 +411,7 @@ class KollukCog(commands.Cog):
         embed.description = (
             f"👤 **Muhafız:** {interaction.user.mention} ({sakin.get('meslek_isim', 'Muhafız')})\n"
             f"⏰ **Vardiye Süresi:** 4 saat (simüle)\n\n"
-            f"💰 **Kazanılan Hurda:** `+{taban_hurda}`\n"
+            f"💰 **Kazanılan Akçe:** `+{taban_akçe}`\n"
             f"⭐ **Kazanılan XP:** `+{taban_xp}`"
             f"{ek_metin}\n\n"
             f"⏱️ *Bir sonraki nöbet için 4 saat beklemelisin.*"
@@ -420,12 +420,12 @@ class KollukCog(commands.Cog):
         if atlamalar:
             embed.add_field(
                 name="🎉 Seviye Atlamaları",
-                value="\n".join([f"• Seviye {a['seviye']}! +{a['odul']} Hurda" for a in atlamalar]),
+                value="\n".join([f"• Seviye {a['seviye']}! +{a['odul']} Akçe" for a in atlamalar]),
                 inline=False
             )
 
         await interaction.response.send_message(embed=embed)
-        haber_ekle(f"🛡️ {sakin['isim']} nöbet tuttu ve {taban_hurda} hurda kazandı.")
+        haber_ekle(f"🛡️ {sakin['isim']} nöbet tuttu ve {taban_akçe} akçe kazandı.")
 
 
 async def setup(bot):

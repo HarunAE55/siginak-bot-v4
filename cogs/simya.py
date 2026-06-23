@@ -3,7 +3,7 @@ Cog: Simya & Sağlık
 ==================
 Komutlar:
 - /deney (simyacı virüs deneyi, %10/85/5)
-- /laboratuvar-gelistir (başkan/baş simyacı, 500 hurda/seviye, max 3)
+- /laboratuvar-gelistir (başkan/baş simyacı, 500 akçe/seviye, max 3)
 - /doktor-paneli (panel gösterir)
 - /asi-uret (doktor, 2 tibbi malzeme → 1 aşı)
 - /tedavi-et (doktor, aşı ile hasta iyileştirir)
@@ -133,7 +133,7 @@ class SimyaCog(commands.Cog):
             if atlamalar:
                 desc += "\n🎉 **SEVİYE ATLAMALAR:**\n"
                 for a in atlamalar:
-                    desc += f"• Seviye {a['seviye']}! +{a['odul']} Hurda ödülü\n"
+                    desc += f"• Seviye {a['seviye']}! +{a['odul']} Akçe ödülü\n"
 
             if yeni_ilerleme >= 100:
                 desc += "\n☣️ **KATASTROFİK SEVİYE:** Virüs haritası %100 tamamlandı!"
@@ -163,7 +163,7 @@ class SimyaCog(commands.Cog):
     # ====================================================
     # /laboratuvar-gelistir
     # ====================================================
-    @app_commands.command(name="laboratuvar-gelistir", description="[BAŞKAN/SİMYACI] Kasadan hurda harcayarak laboratuvar güvenlik seviyesini artırır.")
+    @app_commands.command(name="laboratuvar-gelistir", description="[BAŞKAN/SİMYACI] Kasadan akçe harcayarak laboratuvar güvenlik seviyesini artırır.")
     async def lab_gelistir(self, interaction: discord.Interaction):
         u_id = str(interaction.user.id)
         if u_id not in db["sakinler"]:
@@ -195,14 +195,14 @@ class SimyaCog(commands.Cog):
             return
 
         maliyet = 500
-        if db["sistem_ayarlari"]["kasa_hurda"] < maliyet:
+        if db["sistem_ayarlari"]["KASA_AKÇE_PLACEHOLDER"] < maliyet:
             await interaction.response.send_message(
-                f"❌ Ortak kasada yeterli ödenek yok! Gereken: `{maliyet}`, Kasada: `{db['sistem_ayarlari']['kasa_hurda']}`",
+                f"❌ Ortak kasada yeterli ödenek yok! Gereken: `{maliyet}`, Kasada: `{db['sistem_ayarlari']['KASA_AKÇE_PLACEHOLDER']}`",
                 ephemeral=True
             )
             return
 
-        db["sistem_ayarlari"]["kasa_hurda"] -= maliyet
+        db["sistem_ayarlari"]["KASA_AKÇE_PLACEHOLDER"] -= maliyet
         lab["lab_seviyesi"] += 1
         verileri_kaydet()
 
@@ -210,8 +210,8 @@ class SimyaCog(commands.Cog):
         embed.description = (
             f"🛠️ Sığınak bilim üssü devlet ödeneğiyle modernize edildi!\n\n"
             f"📦 **Yeni Teknolojik Seviye:** `Seviye {lab['lab_seviyesi']}`\n"
-            f"💰 **Harcanan Bütçe:** `{maliyet} Hurda`\n"
-            f"📉 **Kalan Sığınak Ortak Kasası:** `{db['sistem_ayarlari']['kasa_hurda']} Hurda`"
+            f"💰 **Harcanan Bütçe:** `{maliyet} Akçe`\n"
+            f"📉 **Kalan Sığınak Ortak Kasası:** `{db['sistem_ayarlari']['KASA_AKÇE_PLACEHOLDER']} Akçe`"
         )
         await interaction.response.send_message(embed=embed)
 
@@ -277,7 +277,7 @@ class SimyaCog(commands.Cog):
         if atlamalar:
             msg += "\n\n🎉 **SEVİYE ATLAMALAR:**"
             for a in atlamalar:
-                msg += f"\n• Seviye {a['seviye']}! +{a['odul']} Hurda"
+                msg += f"\n• Seviye {a['seviye']}! +{a['odul']} Akçe"
         await interaction.response.send_message(msg)
 
     # ====================================================
@@ -324,7 +324,7 @@ class SimyaCog(commands.Cog):
         if atlamalar:
             msg += "\n\n🎉 **SEVİYE ATLAMALAR:**"
             for a in atlamalar:
-                msg += f"\n• Seviye {a['seviye']}! +{a['odul']} Hurda"
+                msg += f"\n• Seviye {a['seviye']}! +{a['odul']} Akçe"
         await interaction.response.send_message(msg)
         haber_ekle(f"💊 {db['sakinler'][u_id]['isim']} bir hastayı tedavi etti.")
 

@@ -154,48 +154,34 @@ class PazarCog(commands.Cog):
         self.bot = bot
 
     # ====================================================
-    # /pazar - Kategori listele
+    # /pazar - Select Menu ile kategori seç
     # ====================================================
     @app_commands.command(name="pazar", description="[TİCARET] Sığınak pazarında kategori seçerek eşya satın al.")
-    @app_commands.choices(kategori=[
-        app_commands.Choice(name="⚔️ Silahlar", value="Silah"),
-        app_commands.Choice(name="🛡️ Zırhlar", value="Zırh"),
-        app_commands.Choice(name="💊 Medikal Ürünler", value="Medikal"),
-        app_commands.Choice(name="🍲 Gıda Ürünleri", value="Gıda"),
-        app_commands.Choice(name="🪵 Hammaddeler", value="Hammadde"),
-        app_commands.Choice(name="⚙️ Teknoloji Ögeleri", value="Teknoloji"),
-        app_commands.Choice(name="🔮 Mistik Nesneler", value="Mistik")
-    ])
-    async def pazar_listele(self, interaction: discord.Interaction, kategori: str):
-        kategori_emoji = {
-            "Silah": "⚔️", "Zırh": "🛡️", "Medikal": "💊", "Gıda": "🍲",
-            "Hammadde": "🪵", "Teknoloji": "⚙️", "Mistik": "🔮"
-        }
-
+    async def pazar_listele(self, interaction: discord.Interaction):
         embed = discord.Embed(
-            title=f"{kategori_emoji.get(kategori, '🛒')} SIĞINAK PAZAR TEZGAHI — {kategori.upper()}",
+            title="🛒 SIĞINAK PAZAR TEZGAHI",
             color=0x2ECC71
         )
-        embed.description = "*Satın almak için `/satinal` komutunu kullan: `/satinal esya_kodu: adet:`*\n\n"
-
-        sayac = 0
-        for kod, veri in TAM_PAZAR.items():
-            if veri["tip"] != kategori:
-                continue
-            sayac += 1
-            if sayac > 24:
-                embed.description += "\n*... ve daha fazla eşya. Fiyatlarını görmek için pazarı tekrar gez.*"
-                break
-            embed.add_field(
-                name=f"📦 `{kod}` — {veri['isim']}",
-                value=f"💰 `{veri['fiyat']}` Hurda | Etki: `+{veri['bonus_degeri']} {veri['bonus_turu']}`\n*{veri['aciklama']}*",
-                inline=False
-            )
-
-        if sayac == 0:
-            embed.description = "❌ Bu kategoride şu an eşya yok."
-
-        await interaction.response.send_message(embed=embed)
+        embed.description = (
+            "**Hoş geldin tüccar!** 🛒\n\n"
+            "Aşağıdaki menüden bir kategori seçerek o kategorideki tüm eşyaları görebilirsin.\n\n"
+            "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n"
+            "📋 **Kategoriler:**\n"
+            "⚔️ • **Silahlar** — Kılıç, kama, yay, gürz vb.\n"
+            "🛡️ • **Zırhlar** — Göğüslük, zincir, plaka vb.\n"
+            "💊 • **Medikal** — Bandaj, serum, iksir vb.\n"
+            "🍲 • **Gıda** — Ekmek, et, su, bira vb.\n"
+            "🪵 • **Hammadde** — Demir, odun, kömür vb.\n"
+            "⚙️ • **Teknoloji** — Dişli, teleskop, dinamit vb.\n"
+            "🔮 • **Mistik** — Rün, tılsım, sançak vb.\n"
+            "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n"
+            "💡 **Satın almak için:** `/satinal [kod] [adet]`\n"
+            "💡 **Satmak için:** `/bota-sat [esya] [adet]`"
+        )
+        embed.set_footer(text="Sığınak Veba RP v5.5 | Kategori seçmek için aşağıdaki menüyü kullan")
+        
+        view = PazarView()
+        await interaction.response.send_message(embed=embed, view=view)
 
     # ====================================================
     # /satinal - Kod ile eşya al
@@ -238,7 +224,7 @@ class PazarCog(commands.Cog):
 
         if sakin["cuzdan"] < toplam_maliyet:
             await interaction.response.send_message(
-                f"❌ Bakiyeniz yetersiz! Gereken: `{toplam_maliyet}` Hurda, Cüzdanınızda: `{sakin['cuzdan']}`.",
+                f"❌ Bakiyeniz yetersiz! Gereken: `{toplam_maliyet}` Akçe, Cüzdanınızda: `{sakin['cuzdan']}`.",
                 ephemeral=True
             )
             return
@@ -266,7 +252,7 @@ class PazarCog(commands.Cog):
 
         verileri_kaydet()
 
-        msg = f"🛒 Alım tamamlandı.\n• Alınan: `{adet} Adet {urun['isim']}`\n• Toplam Ödenen: `💰 {toplam_maliyet} Hurda`"
+        msg = f"🛒 Alım tamamlandı.\n• Alınan: `{adet} Adet {urun['isim']}`\n• Toplam Ödenen: `💰 {toplam_maliyet} Akçe`"
         if indirim_uygula:
             msg += " *(Mesleki %20 İndirim Uygulandı!)*"
         msg += f"\n• Karaktere Yansıyan Bonus: `+{b_degeri} {b_turu}`"
@@ -326,7 +312,7 @@ class PazarCog(commands.Cog):
 
         envanter[esya_ad] -= adet
         sakin["cuzdan"] += net_kazanc
-        db["sistem_ayarlari"]["kasa_hurda"] += vergi_kesintisi
+        db["sistem_ayarlari"]["KASA_AKÇE_PLACEHOLDER"] += vergi_kesintisi
 
         if envanter[esya_ad] == 0:
             del envanter[esya_ad]
@@ -337,11 +323,11 @@ class PazarCog(commands.Cog):
         embed.description = (
             f"**Satan Sakin:** {interaction.user.mention}\n"
             f"**Teslim Edilen:** `{adet} Adet {esya_ad}`\n\n"
-            f"• Eşya Başı Orijinal Değer: `{orijinal_fiyat} Hurda`\n"
-            f"• Toplam Brüt Tutar: `{brut_kazanc} Hurda`\n"
-            f"• Değer Kaybı Vergisi (%{int(vergi_orani * 100)}): `-{vergi_kesintisi} Hurda`\n"
+            f"• Eşya Başı Orijinal Değer: `{orijinal_fiyat} Akçe`\n"
+            f"• Toplam Brüt Tutar: `{brut_kazanc} Akçe`\n"
+            f"• Değer Kaybı Vergisi (%{int(vergi_orani * 100)}): `-{vergi_kesintisi} Akçe`\n"
             f"--- \n"
-            f"• **Cüzdana Aktarılan Net Kazanç:** `💰 {net_kazanc} Hurda`"
+            f"• **Cüzdana Aktarılan Net Kazanç:** `💰 {net_kazanc} Akçe`"
         )
         embed.set_footer(text="Borsa dengeleme protokolü uygulandı.")
         await interaction.response.send_message(embed=embed)
@@ -360,8 +346,8 @@ class PazarCog(commands.Cog):
     # ====================================================
     # /esya-sat - Doğrudan oyuncuya satış
     # ====================================================
-    @app_commands.command(name="esya-sat", description="[TİCARET] Bir sığınak sakinine hurda karşılığı eşya satma teklifi sunar.")
-    @app_commands.describe(kullanici="Alıcı sakin", esya_ad="Satılacak eşya", fiyat="Talep edilen hurda")
+    @app_commands.command(name="esya-sat", description="[TİCARET] Bir sığınak sakinine akçe karşılığı eşya satma teklifi sunar.")
+    @app_commands.describe(kullanici="Alıcı sakin", esya_ad="Satılacak eşya", fiyat="Talep edilen akçe")
     async def esya_sat(self, interaction: discord.Interaction, kullanici: discord.User, esya_ad: str, fiyat: int):
         if kullanici.id == interaction.user.id:
             await interaction.response.send_message("❌ Kendi kendine bir şey satamazsın!", ephemeral=True)
@@ -398,7 +384,7 @@ class PazarCog(commands.Cog):
         await interaction.response.send_message(
             f"💰 {interaction.user.mention}, {kullanici.mention} kullanıcısına doğrudan bir satış teklifi gönderdi!\n"
             f"• Satılacak Ürün: `1 Adet {gercek_esya_ad}`\n"
-            f"• Talep Edilen Ücret: `🪙 {fiyat} Hurda`\n"
+            f"• Talep Edilen Ücret: `🪙 {fiyat} Akçe`\n"
             f"**Alıcının onaylaması durumunda ticaret el altından tescillenecektir.**",
             view=view
         )
@@ -490,7 +476,7 @@ class PazarCog(commands.Cog):
     # /acik-arttirma-baslat - 2 dakikalık açık arttırma
     # ====================================================
     @app_commands.command(name="acik-arttirma-baslat", description="[TİCARET] Elinizdeki bir eşyayı 2 dakika sürecek bir açık arttırma pazarına çıkarır.")
-    @app_commands.describe(esya_ad="Açık arttırmaya çıkacak eşyanın tam adı", baslangic_fiyati="Açılış hurda değeri")
+    @app_commands.describe(esya_ad="Açık arttırmaya çıkacak eşyanın tam adı", baslangic_fiyati="Açılış akçe değeri")
     async def ihale_baslat(self, interaction: discord.Interaction, esya_ad: str, baslangic_fiyati: int):
         u_id = str(interaction.user.id)
         if u_id not in db["sakinler"]:
@@ -501,7 +487,7 @@ class PazarCog(commands.Cog):
             await interaction.response.send_message(kontrol, ephemeral=True)
             return
         if baslangic_fiyati < 1:
-            await interaction.response.send_message("❌ Başlangıç fiyatı en az 1 Hurda olmalıdır!", ephemeral=True)
+            await interaction.response.send_message("❌ Başlangıç fiyatı en az 1 Akçe olmalıdır!", ephemeral=True)
             return
 
         sakin = db["sakinler"][u_id]
@@ -543,9 +529,9 @@ class PazarCog(commands.Cog):
             f"🏛️ **İlan Kodu:** `{ilan_id}`\n"
             f"👤 **Satıcı Sakin:** {interaction.user.mention}\n"
             f"📦 **Açık Arttırmadaki Eşya:** `{gercek_esya_ad}`\n"
-            f"🪙 **Taban Açılış Fiyatı:** `{baslangic_fiyati} Hurda`\n\n"
+            f"🪙 **Taban Açılış Fiyatı:** `{baslangic_fiyati} Akçe`\n\n"
             f"⏳ **Kalan Süre:** `2 Dakika (120 Saniye)`\n"
-            f"ℹ️ Pey vermek için `/pey-ver ilan_id: {ilan_id} teklif_edilen_hurda: [Miktar]` komutunu kullanın!"
+            f"ℹ️ Pey vermek için `/pey-ver ilan_id: {ilan_id} teklif_edilen_akçe: [Miktar]` komutunu kullanın!"
         )
         embed.set_footer(text="Süre dolduğunda en yüksek teklif sahibine otomatik teslim edilecektir.")
         await interaction.response.send_message(embed=embed)
@@ -572,7 +558,7 @@ class PazarCog(commands.Cog):
                 satici_net_kazanc = final_teklif - idare_kesintisi
 
                 db["sakinler"][satici_id]["cuzdan"] += satici_net_kazanc
-                db["sistem_ayarlari"]["kasa_hurda"] += idare_kesintisi
+                db["sistem_ayarlari"]["KASA_AKÇE_PLACEHOLDER"] += idare_kesintisi
 
                 alici_env = db["sakinler"][alici_id].get("envanter", {})
                 alici_env[ihale["esya"]] = alici_env.get(ihale["esya"], 0) + 1
@@ -581,8 +567,8 @@ class PazarCog(commands.Cog):
                     f"🎉 **İhale Sonuçlandı!**\n\n"
                     f"📦 **Satılan Ürün:** `{ihale['esya']}`\n"
                     f"🏆 **Yeni Sahibi:** <@{alici_id}>\n"
-                    f"💰 **Final Teklif Değeri:** `{final_teklif} Hurda`\n"
-                    f"💸 **Satıcıya Aktarılan (%5 Vergisiz):** `{satici_net_kazanc} Hurda`"
+                    f"💰 **Final Teklif Değeri:** `{final_teklif} Akçe`\n"
+                    f"💸 **Satıcıya Aktarılan (%5 Vergisiz):** `{satici_net_kazanc} Akçe`"
                 )
                 bitis_embed.color = 0x2ECC71
 
@@ -609,9 +595,9 @@ class PazarCog(commands.Cog):
     # ====================================================
     # /pey-ver - Aktif ilana teklif
     # ====================================================
-    @app_commands.command(name="pey-ver", description="[TİCARET] Aktif bir açık arttırma ilanına mevcut tekliften daha yüksek hurda teklif eder.")
-    @app_commands.describe(ilan_id="Teklif vereceğiniz 4 haneli ilan kodu", teklif_edilen_hurda="Gözden çıkardığınız yeni teklif tutarı")
-    async def pey_ver(self, interaction: discord.Interaction, ilan_id: str, teklif_edilen_hurda: int):
+    @app_commands.command(name="pey-ver", description="[TİCARET] Aktif bir açık arttırma ilanına mevcut tekliften daha yüksek akçe teklif eder.")
+    @app_commands.describe(ilan_id="Teklif vereceğiniz 4 haneli ilan kodu", teklif_edilen_akçe="Gözden çıkardığınız yeni teklif tutarı")
+    async def pey_ver(self, interaction: discord.Interaction, ilan_id: str, teklif_edilen_akçe: int):
         u_id = str(interaction.user.id)
         if u_id not in db["sakinler"]:
             await interaction.response.send_message("❌ Sığınak sicil kütüğünde kaydınız yok!", ephemeral=True)
@@ -633,16 +619,16 @@ class PazarCog(commands.Cog):
         sakin = db["sakinler"][u_id]
         cuzdan = sakin.get("cuzdan", 0)
 
-        if teklif_edilen_hurda <= ihale["en_yuksek_pey"]:
+        if teklif_edilen_akçe <= ihale["en_yuksek_pey"]:
             await interaction.response.send_message(
-                f"❌ Geçersiz teklif! Şu anki en yüksek teklif `{ihale['en_yuksek_pey']} Hurda`. Daha üstünü vermelisiniz!",
+                f"❌ Geçersiz teklif! Şu anki en yüksek teklif `{ihale['en_yuksek_pey']} Akçe`. Daha üstünü vermelisiniz!",
                 ephemeral=True
             )
             return
 
-        if cuzdan < teklif_edilen_hurda:
+        if cuzdan < teklif_edilen_akçe:
             await interaction.response.send_message(
-                f"❌ Cüzdanınızda teklif ettiğiniz kadar `{teklif_edilen_hurda}` Hurda bulunmuyor!",
+                f"❌ Cüzdanınızda teklif ettiğiniz kadar `{teklif_edilen_akçe}` Akçe bulunmuyor!",
                 ephemeral=True
             )
             return
@@ -653,9 +639,9 @@ class PazarCog(commands.Cog):
             db["sakinler"][eski_alici_id]["cuzdan"] += ihale["en_yuksek_pey"]
 
         # Yeni pey sahibinin parasını bloke et
-        sakin["cuzdan"] -= teklif_edilen_hurda
+        sakin["cuzdan"] -= teklif_edilen_akçe
 
-        ihale["en_yuksek_pey"] = teklif_edilen_hurda
+        ihale["en_yuksek_pey"] = teklif_edilen_akçe
         ihale["en_son_peyleyen"] = u_id
         verileri_kaydet()
 
@@ -663,7 +649,7 @@ class PazarCog(commands.Cog):
         pey_embed.description = (
             f"🏛️ **İlan Kodu:** `{ilan_id}`\n"
             f"📦 **Eşya:** `{ihale['esya']}`\n"
-            f"🚀 **Yeni En Yüksek Teklif:** `🪙 {teklif_edilen_hurda} Hurda`\n"
+            f"🚀 **Yeni En Yüksek Teklif:** `🪙 {teklif_edilen_akçe} Akçe`\n"
             f"👤 **Teklif Sahibi:** {interaction.user.mention}"
         )
         await interaction.response.send_message(embed=pey_embed)
@@ -699,7 +685,7 @@ class EsyaSatView(discord.ui.View):
             return
         if alici_cuzdan < self.fiyat:
             self.clear_items()
-            await interaction.response.edit_message(content=f"❌ Satış iptal! Alıcının cüzdanında yeterli hurda yok. Gereken: `{self.fiyat}`", view=self)
+            await interaction.response.edit_message(content=f"❌ Satış iptal! Alıcının cüzdanında yeterli akçe yok. Gereken: `{self.fiyat}`", view=self)
             return
 
         db["sakinler"][a_id]["cuzdan"] -= self.fiyat
@@ -712,7 +698,7 @@ class EsyaSatView(discord.ui.View):
 
         self.clear_items()
         await interaction.response.edit_message(
-            content=f"💸 **DOĞRUDAN SATIŞ TAMAMLANDI!** {self.satici.mention}, {self.alici.mention} kullanıcısına `1 Adet {self.esya}` ürününü `{self.fiyat} Hurda` karşılığında el altından sattı!",
+            content=f"💸 **DOĞRUDAN SATIŞ TAMAMLANDI!** {self.satici.mention}, {self.alici.mention} kullanıcısına `1 Adet {self.esya}` ürününü `{self.fiyat} Akçe` karşılığında el altından sattı!",
             view=self
         )
 
@@ -784,6 +770,69 @@ class TakasOnayView(discord.ui.View):
                 f"✅ Onayın alındı! Şu kişilerin onayı bekleniyor: {', '.join(bekleyen)}",
                 ephemeral=True
             )
+
+
+# ====================================================
+# VIEW - PAZAR DROPDOWN (kategori seçim menüsü)
+# ====================================================
+class PazarView(discord.ui.View):
+    """Pazar kategori seçim menüsü. /pazar komutunda kullanılır."""
+    def __init__(self):
+        super().__init__(timeout=300)
+        self.add_item(PazarDropdown())
+
+
+class PazarDropdown(discord.ui.Select):
+    """Pazar kategorilerini içeren dropdown. Kullanıcı kategori seçince o kategorinin eşyalarını gösterir."""
+    def __init__(self):
+        options = [
+            discord.SelectOption(label="Silahlar", description="Kılıç, kama, yay, gürz, mızrak", value="Silah", emoji="⚔️"),
+            discord.SelectOption(label="Zırhlar", description="Göğüslük, zincir, plaka zırh", value="Zırh", emoji="🛡️"),
+            discord.SelectOption(label="Medikal Ürünler", description="Bandaj, serum, iksir, tentür", value="Medikal", emoji="💊"),
+            discord.SelectOption(label="Gıda Ürünleri", description="Ekmek, et, su, bira, bal", value="Gıda", emoji="🍲"),
+            discord.SelectOption(label="Hammaddeler", description="Demir, odun, kömür, deri", value="Hammadde", emoji="🪵"),
+            discord.SelectOption(label="Teknoloji Ögeleri", description="Dişli, teleskop, dinamit", value="Teknoloji", emoji="⚙️"),
+            discord.SelectOption(label="Mistik Nesneler", description="Rün, tılsım, sancak, idol", value="Mistik", emoji="🔮"),
+        ]
+        super().__init__(placeholder="📂 Pazar kategorisi seç...", min_values=1, max_values=1, options=options)
+
+    async def callback(self, interaction: discord.Interaction):
+        kategori = self.values[0]
+        kategori_emoji = {
+            "Silah": "⚔️", "Zırh": "🛡️", "Medikal": "💊", "Gıda": "🍲",
+            "Hammadde": "🪵", "Teknoloji": "⚙️", "Mistik": "🔮"
+        }
+
+        embed = discord.Embed(
+            title=f"{kategori_emoji.get(kategori, '🛒')} SIĞINAK PAZAR TEZGAHI — {kategori.upper()}",
+            color=0x2ECC71
+        )
+        embed.description = "*Satın almak için `/satinal` komutunu kullan: `/satinal esya_kodu: adet:`*\n\n"
+
+        sayac = 0
+        for kod, veri in TAM_PAZAR.items():
+            if veri["tip"] != kategori:
+                continue
+            sayac += 1
+            if sayac > 24:
+                embed.description += "\n*... ve daha fazla eşya.*"
+                break
+            embed.add_field(
+                name=f"📦 `{kod}` — {veri['isim']}",
+                value=f"💰 `{veri['fiyat']}` Akçe | Etki: `+{veri['bonus_degeri']} {veri['bonus_turu']}`\n*{veri['aciklama']}*",
+                inline=False
+            )
+
+        if sayac == 0:
+            embed.description = "❌ Bu kategoride şu an eşya yok."
+
+        embed.set_footer(text="Sığınak Veba RP v5.5 | Başka kategori için tekrar seçim yap")
+        
+        yeni_view = PazarView()
+        if interaction.response.is_done():
+            await interaction.followup.send(embed=embed, view=yeni_view, ephemeral=True)
+        else:
+            await interaction.response.edit_message(embed=embed, view=yeni_view)
 
 
 async def setup(bot):

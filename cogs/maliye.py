@@ -46,7 +46,7 @@ class MaliyeCog(commands.Cog):
                     toplam_toplanan += mevcut_cuzdan
                     kesilen_sayac += 1
 
-        db["sistem_ayarlari"]["kasa_hurda"] = db["sistem_ayarlari"].get("kasa_hurda", 0) + toplam_toplanan
+        db["sistem_ayarlari"]["KASA_AKÇE_PLACEHOLDER"] = db["sistem_ayarlari"].get("KASA_AKÇE_PLACEHOLDER", 0) + toplam_toplanan
         maliye["toplam_tahsilat"] = maliye.get("toplam_tahsilat", 0) + toplam_toplanan
         verileri_kaydet()
 
@@ -57,9 +57,9 @@ class MaliyeCog(commands.Cog):
             embed.description = (
                 f"⏰ **Dönem:** 5 Saatlik Otomatik Vergi Tahsilatı\n\n"
                 f"💰 **Kesilen Sakin Sayısı:** `{kesilen_sayac}`\n"
-                f"🪙 **Toplam Tahsil Edilen:** `{toplam_toplanan} Hurda`\n"
+                f"🪙 **Toplam Tahsil Edilen:** `{toplam_toplanan} Akçe`\n"
                 f"🏛️ **Ortak Kasaya Aktarıldı.**\n\n"
-                f"📈 **Tarih Boyunca Toplam Toplanan Vergi:** `{maliye['toplam_tahsilat']} Hurda`"
+                f"📈 **Tarih Boyunca Toplam Toplanan Vergi:** `{maliye['toplam_tahsilat']} Akçe`"
             )
             try:
                 await kanal.send(embed=embed)
@@ -88,10 +88,10 @@ class MaliyeCog(commands.Cog):
         embed.description = (
             f"**Resmi Müfettiş:** {interaction.user.mention}\n"
             f"--- \n"
-            f"🦠 **Mevcut Veba Vergisi Oranı:** `{maliye['veba_vergisi']} Hurda / 5 Saat`\n"
+            f"🦠 **Mevcut Veba Vergisi Oranı:** `{maliye['veba_vergisi']} Akçe / 5 Saat`\n"
             f"⚖️ **Pazar Ticaret Kesintisi:** `%{maliye['ticaret_kesintisi']}`\n"
-            f"💰 **Başkanlık Ortak Kasası (Mevcut):** `{db['sistem_ayarlari'].get('kasa_hurda', 0)} Hurda`\n"
-            f"📊 **Tarih Boyunca Toplam Toplanan Vergi:** `{maliye['toplam_tahsilat']} Hurda`\n\n"
+            f"💰 **Başkanlık Ortak Kasası (Mevcut):** `{db['sistem_ayarlari'].get('KASA_AKÇE_PLACEHOLDER', 0)} Akçe`\n"
+            f"📊 **Tarih Boyunca Toplam Toplanan Vergi:** `{maliye['toplam_tahsilat']} Akçe`\n\n"
             f"⚠️ *Aşağıdaki butona basarak veba vergisini ve pazar kesinti oranlarını anlık değiştirebilirsin.*"
         )
 
@@ -120,7 +120,7 @@ class VergiPaneliView(discord.ui.View):
 
 class VergiAyariModal(discord.ui.Modal, title="⚖️ Vergi Oranı Ayarlama"):
     veba_input = discord.ui.TextInput(
-        label="Veba Vergisi (Hurda / 5 Saat)",
+        label="Veba Vergisi (Akçe / 5 Saat)",
         placeholder="Örn: 20",
         max_length=4,
         default=str(db.get("maliye_ayarlari", {}).get("veba_vergisi", 20))
@@ -151,7 +151,7 @@ class VergiAyariModal(discord.ui.Modal, title="⚖️ Vergi Oranı Ayarlama"):
             embed = discord.Embed(title="📈 EKONOMİK REFORMA GİDİLDİ", color=0xF1C40F)
             embed.description = (
                 f"📋 **Vergi Memuru {interaction.user.mention}** sığınak mali politikasını güncelledi!\n\n"
-                f"🦠 **Yeni Dönemsel Veba Vergisi:** `{yeni_veba} Hurda` (5 saatte bir tahsil edilir)\n"
+                f"🦠 **Yeni Dönemsel Veba Vergisi:** `{yeni_veba} Akçe` (5 saatte bir tahsil edilir)\n"
                 f"⚖️ **Yeni Pazar/Ticaret Stopajı:** `%{yeni_ticaret}` (Bot alım-satımlarından kesilir)"
             )
             await interaction.response.send_message(embed=embed)

@@ -26,18 +26,18 @@ from kanallar import GEZI_BOLGE_KANAL_ESLEME
 # KEŞİF OLAY HAVUZU - BÜYÜK ÖDÜL/CEZA, 30 OLAY
 # ====================================================
 # Format: ("Açıklama metni", "etki_kodu")
-# Etki kodları: hurda+/-N, saglik+/-N, su+/-N, akil+/-N, moral+/-N, enfeksiyon+/-N,
+# Etki kodları: akçe+/-N, saglik+/-N, su+/-N, akil+/-N, moral+/-N, enfeksiyon+/-N,
 #               xp+N, odun+N, komur+N, erzak+N, enfeksiyon_temizle (kısmi)
 
 # 10 OLUMLU OLAY - Büyük ödüller
 OLUMLU_OLAYLAR = [
-    ("🎒 Terkedilmiş bir kulübede eski bir tüccarın deri kesesi buldun! İçinden `+150 Hurda` çıktı.", "hurda+150"),
+    ("🎒 Terkedilmiş bir kulübede eski bir tüccarın deri kesesi buldun! İçinden `+150 Akçe` çıktı.", "akçe+150"),
     ("🍎 Yabani bir elma bahçesine rastladın, taze meyvelerle karnını doyurdun. Su seviyen `+25` arttı, sağlığın `+15` iyileşti.", "su_saglik+25+15"),
     ("🪓 Yere düşmüş karaçam kütükleri buldun, köy ambarına `+25 Odun` taşıdın ve `+40 XP` kazandın.", "odun_xp+25+40"),
-    ("🕯️ Yıkık bir şapelde yanan bir mum buldun, kısa dua ile aklın `+20` dinginleşti ve `+80 Hurda` bağışı buldun.", "akil_hurda+20+80"),
-    ("🧴 Ölü bir gezginin çantasından sızdırmaz bir su tulumu ve kesesi çıktı. `+120 Hurda` edecek değerde ganimet!", "hurda+120"),
-    ("🏹 Gölgede unutulmuş bir ok çantası buldun, içinde birkaç ok hâlâ kullanılabilir. `+50 XP` ve `+60 Hurda` kazandın.", "xp_hurda+50+60"),
-    ("💰 Yıkık bir hanenin temelinde gömülü bir çömlek buldun! İçinde `+250 Hurda`lik eski bir servet!", "hurda+250"),
+    ("🕯️ Yıkık bir şapelde yanan bir mum buldun, kısa dua ile aklın `+20` dinginleşti ve `+80 Akçe` bağışı buldun.", "akil_akçe+20+80"),
+    ("🧴 Ölü bir gezginin çantasından sızdırmaz bir su tulumu ve kesesi çıktı. `+120 Akçe` edecek değerde ganimet!", "akçe+120"),
+    ("🏹 Gölgede unutulmuş bir ok çantası buldun, içinde birkaç ok hâlâ kullanılabilir. `+50 XP` ve `+60 Akçe` kazandın.", "xp_akçe+50+60"),
+    ("💰 Yıkık bir hanenin temelinde gömülü bir çömlek buldun! İçinde `+250 Akçe`lik eski bir servet!", "akçe+250"),
     ("🍷 Mahzende unutulmuş bir şarap fıçısı keşfettin. Bir yudum aldın, moralin `+30` yükseldi ve aklın `+15` berraklaştı.", "moral_akil+30+15"),
     ("📜 Bir rahibin cesedinden kutsal bir parşömen düştü. Üzerindeki dua seni `+20 Sağlık` iyileştirdi.", "saglik+20"),
     ("⛏️ Sığ bir maden ocağında terk edilmiş `+15 Kömür` ve `+10 Demir Cevheri` buldun, köy ambarına taşıdın!", "komur+15"),
@@ -46,13 +46,13 @@ OLUMLU_OLAYLAR = [
 # 10 OLUMSUZ OLAY - Büyük cezalar
 OLUMSUZ_OLAYLAR = [
     ("🐀 Lağım fareleri sürü halinde saldırdı! Kaçtın ama ısırıklardan `+25 Enfeksiyon` yükü aldın ve `+10 Sağlık` kaybettin.", "enfeksiyon_saglik+25-10"),
-    ("🧟 Putrefakt bir cesetle karşılaştın! Dehşet içinde kaçarken cüzdanından `-80 Hurda` düştü.", "hurda-80"),
+    ("🧟 Putrefakt bir cesetle karşılaştın! Dehşet içinde kaçarken cüzdanından `-80 Akçe` düştü.", "akçe-80"),
     ("🌫️ Mezarlığın üzerinden veba bulutu geçti, soluğun kesildi. Moralin `-25` düştü, enfeksiyonun `+15` arttı.", "moral_enfeksiyon-25+15"),
     ("🕷️ Dehlizde devasa bir örümcek ağına yakalandın! Kurtulurken cildin yaralandı, sağlığın `-25` azaldı.", "saglik-25"),
     ("💨 Çürümüş ceset kokusu her yere sinmiş, miden bulandı. Su seviyen `-25` düştü, sağlığın `-10` azaldı.", "su_saglik-25-10"),
     ("🦇 Mağaradan yarasalar sürü halinde üzerine saldırdı! Panikle aklın `-20` karaldı ve `+10 Enfeksiyon` kaptın.", "akil_enfeksiyon-20+10"),
-    ("💀 Bataklıkta gizli bir çukura düştün! Kurtuldun ama `+30 Enfeksiyon` ve `-30 Hurda` kaybettin.", "enfeksiyon_hurda+30-30"),
-    ("🗡️ Haydutlar pusuya düşürdü seni! `+20 Sağlık` hasarı aldın ve `-100 Hurda` soyuldun.", "saglik_hurda-20-100"),
+    ("💀 Bataklıkta gizli bir çukura düştün! Kurtuldun ama `+30 Enfeksiyon` ve `-30 Akçe` kaybettin.", "enfeksiyon_akçe+30-30"),
+    ("🗡️ Haydutlar pusuya düşürdü seni! `+20 Sağlık` hasarı aldın ve `-100 Akçe` soyuldun.", "saglik_akçe-20-100"),
     ("☠️ Zombi sürüsü seni kıstırdı! Zar zor kurtuldun ama `+35 Enfeksiyon` kaptın ve `+20 Sağlık` kaybettin.", "enfeksiyon_saglik+35-20"),
     ("🔥 Bir kulübede çıkan yangında `+15 Sağlık` hasarı aldın, kurtardığın tek şey olduğun `+10 Akıl Sağlığı` kaybı oldu.", "saglik_akil-15-10"),
 ]
@@ -62,10 +62,10 @@ GIZEMLI_OLAYLAR = [
     ("🌀 Yıkık kilisenin sunağında parlayan garip bir rün buldun... Rün kayboldu ama vücudundaki tüm yaralar `+25 Sağlık` ile kapandı!", "saglik+25"),
     ("🔮 Bir mezar taşının altında kadim bir parşömen parçası buldun, üzerindeki rünler zihnini açtı! `+60 XP` kazandın.", "xp+60"),
     ("⚰️ Gece mezarlıkta bir rahibin hayaletiyle karşılaştın! Seni kutsadı ve enfeksiyon yükünü `-30` azalttı.", "enfeksiyon-30"),
-    ("👁️ Göz bebeksiz bir idol heykelciği buldun, sana bakıyor gibi. Heyecanla `+100 Hurda`lık bir hazine keşfettin ama aklın `-15` karaldı.", "hurda_akil+100-15"),
+    ("👁️ Göz bebeksiz bir idol heykelciği buldun, sana bakıyor gibi. Heyecanla `+100 Akçe`lık bir hazine keşfettin ama aklın `-15` karaldı.", "akçe_akil+100-15"),
     ("🌟 Gökyüzünden düşen parlak bir taş buldun, dokunduğunda sağlığın `+30` iyileşti ve `+40 XP` kazandın.", "saglik_xp+30+40"),
-    ("🪞 Eski bir aynaya baktın, yansıtan yüzün değil başka biri! Şok oldu aklın `-20` ama o sırada `+150 Hurda` buldun.", "akil_hurda-20+150"),
-    ("🕯️ Yanan mumlar senden ayrı yürümeye başladı, korktun ama onlar seni bir hazineye götürdü: `+200 Hurda`.", "hurda+200"),
+    ("🪞 Eski bir aynaya baktın, yansıtan yüzün değil başka biri! Şok oldu aklın `-20` ama o sırada `+150 Akçe` buldun.", "akil_akçe-20+150"),
+    ("🕯️ Yanan mumlar senden ayrı yürümeye başladı, korktun ama onlar seni bir hazineye götürdü: `+200 Akçe`.", "akçe+200"),
     ("🦉 Bir baykuş konuşarak sana bir kehanet verdi. Kehanet kafa karıştırıcıydı (`-10 Akıl`) ama `+50 XP` kazandın.", "akil_xp-10+50"),
     ("🌊 Gizli bir yer altı nehrinde yıkandın, tüm yorgunluğun gitti! Sağlık `+15`, su `+30`, akıl `+10`.", "hepsi+15+30+10"),
     ("💫 Yere düşen bir yıldız taşını buldun, mucizevi! Enfeksiyon `-20`, sağlık `+20`, moral `+20`.", "ferahlat-20+20+20"),
@@ -79,7 +79,7 @@ def olay_ekisini_uygula(sakin, etki: str) -> str:
     """Etki kodunu sakine uygular. Ek rapor metni döner."""
     ek_metin = ""
 
-    # Tekli etkiler (hurda+N, saglik-N, vb.)
+    # Tekli etkiler (akçe+N, saglik-N, vb.)
     if "+" in etki and "_" not in etki:
         parca = etki.split("+")
         tur = parca[0]
@@ -94,10 +94,10 @@ def olay_ekisini_uygula(sakin, etki: str) -> str:
         sakin["enfeksiyon"] = 0
         ek_metin = " (Enfeksiyon tamamen temizlendi!)"
 
-    # İkili etkiler (su_saglik+25+15, akil_hurda-20+150, vb.)
+    # İkili etkiler (su_saglik+25+15, akil_akçe-20+150, vb.)
     elif "_" in etki:
         # Parse: "su_saglik+25+15" -> ["su", "saglik", "+25", "+15"]
-        # Veya "akil_hurda-20+150" -> ["akil", "hurda", "-20", "+150"]
+        # Veya "akil_akçe-20+150" -> ["akil", "akçe", "-20", "+150"]
         # Veya "ferahlat-20+20+20" -> 3 etkili
         parcalar = etki.replace("_", " ").replace("+", " +").replace("-", " -").split()
         # ilk iki öğe tur adları, sonra sayılar
@@ -120,7 +120,7 @@ def olay_ekisini_uygula(sakin, etki: str) -> str:
 
 def _tekli_etki(sakin, tur: str, miktar: int, yon: int):
     """Tek bir stat'a etki uygular. yon: +1 artış, -1 azalış."""
-    if tur == "hurda":
+    if tur == "akçe":
         if yon > 0:
             sakin["cuzdan"] = sakin.get("cuzdan", 0) + miktar
         else:

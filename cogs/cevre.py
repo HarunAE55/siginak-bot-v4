@@ -60,9 +60,10 @@ class CevreCog(commands.Cog):
     # ====================================================
     @app_commands.command(name="sunucu-yonetimi", description="[OWNER] Sadece RP Owner rolüne sahip yetkililerin açabileceği tanrısal kontrol panelidir.")
     async def sunucu_yonetimi_paneli(self, interaction: discord.Interaction):
-        if not any(rol.id == RP_OWNER_ROL_ID for rol in interaction.user.roles):
+        from veritabani import admin_mi
+        if not admin_mi(interaction):
             await interaction.response.send_message(
-                "❌ Bu komut sadece sığınak kurucularına (`RP Owner`) özel gizli bir protokoldür!",
+                "❌ Bu komut sadece yönetici ekibine özeldir!",
                 ephemeral=True
             )
             return
@@ -74,7 +75,7 @@ class CevreCog(commands.Cog):
             f"🌍 **Mevcut Hava Durumu:** `{db['cevre_ayarlari'].get('hava_durumu', 'Güneşli')}`\n"
             f"🌤️ **Mevsim (Üretim):** `{db['cevre_durumu'].get('hava_durumu', 'İlkbahar')}`\n"
             f"☣️ **Salgın Varyant Gücü:** `Seviye {db['cevre_ayarlari'].get('salgin_kuvveti', 1)}`\n"
-            f"💰 **Mevcut Sığınak Kasası:** `{db['sistem_ayarlari'].get('kasa_hurda', 0)} Hurda`\n"
+            f"💰 **Mevcut Sığınak Kasası:** `{db['sistem_ayarlari'].get('KASA_AKÇE_PLACEHOLDER', 0)} Akçe`\n"
             f"🧱 **Sur Seviyesi:** `{db['sistem_ayarlari'].get('sur_seviyesi', 1)}`\n"
             f"🏡 **Köy Seviyesi:** `{db['sistem_ayarlari'].get('koy_seviyesi', 1)}`\n\n"
             f"⚠️ *Aşağıdaki menüleri ve butonları kullanarak iklim döngüsünü manipüle edebilir, salgının gücünü değiştirebilir veya sığınağa kraliyet desteği indirebilirsin.*"
@@ -109,7 +110,7 @@ class RpOwnerPaneliView(discord.ui.View):
         # Kaynak transferi
         db["koy_ambari"]["stoklar"]["odun"] = db["koy_ambari"]["stoklar"].get("odun", 0) + 2000
         db["koy_ambari"]["stoklar"]["komur"] = db["koy_ambari"]["stoklar"].get("komur", 0) + 1000
-        db["sistem_ayarlari"]["kasa_hurda"] = db["sistem_ayarlari"].get("kasa_hurda", 0) + 500
+        db["sistem_ayarlari"]["KASA_AKÇE_PLACEHOLDER"] = db["sistem_ayarlari"].get("KASA_AKÇE_PLACEHOLDER", 0) + 500
         db["sistem_ayarlari"]["sur_seviyesi"] = db["sistem_ayarlari"].get("sur_seviyesi", 1) + 1
         verileri_kaydet()
 
@@ -119,11 +120,11 @@ class RpOwnerPaneliView(discord.ui.View):
             f"📦 **Ambara Eklenen Lojistik Destek:**\n"
             f"• 🪵 `+2000 Odun`\n"
             f"• 🪨 `+1000 Kömür`\n"
-            f"• 🪙 `+500 Hurda` (Askeri Fon)\n\n"
+            f"• 🪙 `+500 Akçe` (Askeri Fon)\n\n"
             f"🛡️ **Takviye Birlikler:** Sur Savunma Seviyesi `+1` arttırılarak **Seviye {db['sistem_ayarlari']['sur_seviyesi']}** yapıldı!"
         )
         await interaction.response.send_message(embed=embed)
-        haber_ekle("🎺 Kraliyet elçisi sığınağa ulaştı! +2000 odun, +1000 kömür, +500 hurda destek.")
+        haber_ekle("🎺 Kraliyet elçisi sığınağa ulaştı! +2000 odun, +1000 kömür, +500 akçe destek.")
 
     @discord.ui.button(label="☣️ Tüm Sığınağa Enfeksiyon Bulaştır", style=discord.ButtonStyle.danger, custom_id="enfeksiyon_bulastir_btn")
     async def toplu_enfeksiyon(self, interaction: discord.Interaction, button: discord.ui.Button):

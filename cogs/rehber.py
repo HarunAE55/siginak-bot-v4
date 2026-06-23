@@ -62,7 +62,7 @@ class RehberCog(commands.Cog):
             f"📊 **Salgın Durumu:** Köy genelinde taramalar devam ediyor.\n"
             f"🏰 **Sur Sağlamlığı:** %{sur_yuzde}\n"
             f"👥 **Aktif Sakin Sayısı:** `{len([s for s in db['sakinler'].values() if s.get('durum') != 'Ölü'])}`\n"
-            f"💰 **Ortak Kasa:** `{db['sistem_ayarlari'].get('kasa_hurda', 0)} Hurda`\n\n"
+            f"💰 **Ortak Kasa:** `{db['sistem_ayarlari'].get('KASA_AKÇE_PLACEHOLDER', 0)} Akçe`\n\n"
             f"📋 **MANŞETLER VE KAYITLAR:**\n{bülten_metni}"
         )
 
@@ -152,7 +152,7 @@ class RehberCog(commands.Cog):
             inline=False
         )
 
-        embed.set_footer(text="Sığınak Veba RP v4.0 | Detaylı yardım için: /rehber")
+        embed.set_footer(text="Sığınak Veba RP v5.5 | Detaylı yardım için: /rehber")
         await interaction.response.send_message(embed=embed, ephemeral=True)
 
     # ====================================================
@@ -230,7 +230,7 @@ class RehberDropdown(discord.ui.Select):
                     "**Nasıl Kayıt Olunur?**\n"
                     "`/kayit isim: soyisim: yaş: memleket:` komutuyla sicil kütüğüne kaydolursun.\n"
                     "• Yaş sınırı: **10-40** arası\n"
-                    "• Başlangıç: **500 Hurda** + **20 XP** + rastgele **10-20 Atak Gücü**\n\n"
+                    "• Başlangıç: **500 Akçe** + **20 XP** + rastgele **10-20 Atak Gücü**\n\n"
                     "**Karakter Kartın:**\n"
                     "• `/profil` — Tüm istatistiklerin, barların ve biyografin\n"
                     "• `/envanter` — Sırt çantandaki eşyalar\n"
@@ -242,7 +242,7 @@ class RehberDropdown(discord.ui.Select):
                     "☣️ Enfeksiyon (0-100) — 100 olunca ölüm riski\n"
                     "😊 Moral (0-100)\n"
                     "⚔️ Atak / 🛡️ Defans — Savaşlarda kullanılır\n"
-                    "⭐ Seviye/XP — 100 XP = 1 seviye, her seviye ×25 hurda ödülü\n\n"
+                    "⭐ Seviye/XP — 100 XP = 1 seviye, her seviye ×25 akçe ödülü\n\n"
                     "**Önemli:** Öldüğünde tüm eşyaların kaybolur, `/kayit` ile sıfırdan başlarsın."
                 )
             },
@@ -275,13 +275,13 @@ class RehberDropdown(discord.ui.Select):
                 "content": (
                     "**Belediye Başkanı Seçimi:**\n"
                     "• Admin `/secimi-baslat` yapar → 15 dk adaylık + 45 dk oylama = 1 saat\n"
-                    "• Aday olmak için: `/aday-ol [vaat]` — 500 hurda depozito gerekir\n"
+                    "• Aday olmak için: `/aday-ol [vaat]` — 500 akçe depozito gerekir\n"
                     "• Her sakin 1 oy kullanır, en çok oyu olan başkan olur\n"
                     "• Beraberlikte seçim iptal\n\n"
                     "**Başkan Yetkileri:**\n"
                     "• `/yonetim` — Sur ve köy geliştirme paneli\n"
-                    "  - 🧱 Sur Geliştir: 250 hurda, +1 sur seviyesi\n"
-                    "  - 🏡 Köy Geliştir: 300 hurda, +1 köy seviyesi\n"
+                    "  - 🧱 Sur Geliştir: 250 akçe, +1 sur seviyesi\n"
+                    "  - 🏡 Köy Geliştir: 300 akçe, +1 köy seviyesi\n"
                     "• `/tayin-et [@üye] [unvan]` — 5 kadroya atama (Yardımcı, Müfettiş, Komutan, Baş Simyacı, Rahip)\n"
                     "• `/maas-ode [@üye] [miktar]` — Tek sakin maaş\n"
                     "• `/meslek-maas-ode [grup] [miktar]` — Meslek grubuna toplu maaş\n"
@@ -298,8 +298,8 @@ class RehberDropdown(discord.ui.Select):
                     "**Mahkeme Sistemi (Başkan açar):**\n"
                     "• `/yargila [@sanık] [suç]` — 3 seçenek:\n"
                     "  1. 📢 **Halk Oylaması** — 2 dk, halk suçlu/suçsuuz oylar\n"
-                    "  2. 💀 **Yargısız İdam** — Sanık ölür, başkan -300 hurda itibar kaybı (TİRANLIK)\n"
-                    "  3. 🧳 **Mutlak Sürgün** — Sanık sürgün, başkan -150 hurda kaybı\n\n"
+                    "  2. 💀 **Yargısız İdam** — Sanık ölür, başkan -300 akçe itibar kaybı (TİRANLIK)\n"
+                    "  3. 🧳 **Mutlak Sürgün** — Sanık sürgün, başkan -150 akçe kaybı\n\n"
                     "**Hücre Sistemi (Kolluk):**\n"
                     "• `/hucreye-at [@sakin]` — Muhafız sınıfı, kuralları bozanı zindana atar\n"
                     "• `/hucreden-cikar [@sakin]` — Tahliye\n"
@@ -355,7 +355,7 @@ class RehberDropdown(discord.ui.Select):
                     "  - Ölüm: simyacı ölür, virüs verisi sıfırlanır!\n"
                     "  - Lab seviyesi 2: +%25 başarı, seviye 3: +%45 başarı\n\n"
                     "• `/laboratuvar-gelistir` (Başkan veya Baş Simyacı)\n"
-                    "  - 500 hurda/seviye\n"
+                    "  - 500 akçe/seviye\n"
                     "  - Max seviye 3"
                 )
             },
@@ -369,7 +369,7 @@ class RehberDropdown(discord.ui.Select):
                     "• `/hucreden-cikar [@sakin]` — Tahliye et\n\n"
                     "• `/nobet` ⭐ YENİ\n"
                     "  - 4 saatte 1\n"
-                    "  - 40-80 hurda + 20 XP kazandırır\n"
+                    "  - 40-80 akçe + 20 XP kazandırır\n"
                     "  - Komutanlar +%50 bonus, muhafızlar +%20 bonus\n"
                     "  - %20 ihtimal hırsız yakalama bonusu\n"
                     "  - %10 ihtimal sıkıcı nöbet (az ödül)\n\n"
@@ -379,7 +379,7 @@ class RehberDropdown(discord.ui.Select):
                     "• `/karantina-kaldir [@sakin]` — Karantinayı kaldır\n"
                     "  - Yetkililer: Başkan, Komutan, Baş Simyacı, Simyacı, Karantinacı rolü\n\n"
                     "**Başkan Savunma:**\n"
-                    "• `/savunmayi-guclendir` — 500 hurda, +15 muhafız tahkimatı (max 100)"
+                    "• `/savunmayi-guclendir` — 500 akçe, +15 muhafız tahkimatı (max 100)"
                 )
             },
             "uretim": {
@@ -402,7 +402,7 @@ class RehberDropdown(discord.ui.Select):
                     "  - +15 XP\n\n"
                     "**Ambar Sistemi:**\n"
                     "• `/ambar` — Stokları gör\n"
-                    "• `/ambara-bagis [esya] [adet]` — Bağış yap, +2 hurda/adet + itibar\n"
+                    "• `/ambara-bagis [esya] [adet]` — Bağış yap, +2 akçe/adet + itibar\n"
                     "• `/ambardan-al [esya] [adet]` — Ücretsiz al (max 5, cüzdanı 400+ olan alamaz)\n\n"
                     "**Tüketim:**\n"
                     "• `/tuket [esya]` — Gıda/Medikal tüket, su/sağlık yenile\n\n"
@@ -442,14 +442,14 @@ class RehberDropdown(discord.ui.Select):
                 "content": (
                     "**Vergi Sistemi (Vergi Memuru/Müfettişi):**\n"
                     "• `/maliye-yonetim` — Panel + oran ayarlama\n"
-                    "• Veba Vergisi: 5 saatte bir tüm canlılardan kesilir (default 20 hurda)\n"
+                    "• Veba Vergisi: 5 saatte bir tüm canlılardan kesilir (default 20 akçe)\n"
                     "• Ticaret Kesintisi: Bot satışlarından alınır (default %10, max %50)\n\n"
                     "**Hava Durumu:**\n"
                     "• `/hava-durumu-degis [mevsim]` — Admin komutu\n"
                     "• 4 mevsim: İlkbahar, Yaz, Yağmurlu, Kış\n"
                     "• Üretim komutlarını etkiler\n\n"
                     "**RP Owner Paneli (`/sunucu-yonetimi`):**\n"
-                    "• 👑 **Kraliyet Acil Desteği** — +2000 odun, +1000 kömür, +500 hurda, +1 sur\n"
+                    "• 👑 **Kraliyet Acil Desteği** — +2000 odun, +1000 kömür, +500 akçe, +1 sur\n"
                     "• ☣️ **Tüm Sığınağa Enfeksiyon** — Tüm canlıları enfekte et, virüs +15\n"
                     "• 🌍 **Hava Durumu Menüsü** — Mevsim değiştir\n"
                     "• ☣️ **Salgın Kuvveti** — Düşük(1) / Orta(2) / Kıyamet(3)\n\n"
@@ -465,7 +465,7 @@ class RehberDropdown(discord.ui.Select):
         veri = kategoriler.get(kategori, {"title": "❓ Bilinmeyen", "color": 0x7F8C8D, "content": "Kategori bulunamadı."})
         embed = discord.Embed(title=veri["title"], color=veri["color"])
         embed.description = veri["content"]
-        embed.set_footer(text="Sığınak Veba RP v4.0 | Başka kategori için tekrar seçim yap")
+        embed.set_footer(text="Sığınak Veba RP v5.5 | Başka kategori için tekrar seçim yap")
         return embed
 
 

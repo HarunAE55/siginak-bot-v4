@@ -69,7 +69,7 @@ class KayitCog(commands.Cog):
             f"• **Yaş / Memleket:** `{yas} / {memleket}`\n\n"
             f"**Mühürlenen Başlangıç Statüleri:**\n"
             f"• **Rastgele Atak Gücü:** `⚔️ {baslangic_atak}`\n"
-            f"• **Sığınak Yardımı:** `500 Hurda` ve `20 XP`\n\n"
+            f"• **Sığınak Yardımı:** `500 Akçe` ve `20 XP`\n\n"
             f"💡 *Karakterinin hikayesini yazmak için `/biyografi-yaz` komutunu kullanabilirsin.*"
         )
         await interaction.response.send_message(embed=embed)
@@ -132,7 +132,7 @@ class KayitCog(commands.Cog):
         embed.add_field(name="💼 Aktif Meslek", value=f"`{sakin.get('meslek_isim', 'Gezgin')}`", inline=True)
         embed.add_field(name="🏅 Seviye / XP", value=f"`Seviye {sakin.get('seviye', 1)}` / `{sakin.get('xp', 0)} XP`", inline=True)
 
-        embed.add_field(name="💰 Cüzdan", value=f"`{sakin.get('cuzdan', 0)} Hurda`", inline=True)
+        embed.add_field(name="💰 Cüzdan", value=f"`{sakin.get('cuzdan', 0)} Akçe`", inline=True)
         embed.add_field(name="⚔️ Atak Gücü", value=f"`{sakin.get('atak', 10)}`", inline=True)
         embed.add_field(name="🛡️ Defans Gücü", value=f"`{sakin.get('defans', 0)}`", inline=True)
 
@@ -290,7 +290,7 @@ class KayitCog(commands.Cog):
         if atlamalar:
             embed.description += "\n\n🎉 **SEVİYE ATLAMALAR:**\n"
             for a in atlamalar:
-                embed.description += f"• Seviye {a['seviye']}! +{a['odul']} Hurda ödülü\n"
+                embed.description += f"• Seviye {a['seviye']}! +{a['odul']} Akçe ödülü\n"
         embed.set_footer(text="Bu komut sadece yöneticilere açıktır.")
         await interaction.response.send_message(embed=embed)
 
@@ -304,13 +304,13 @@ class KayitCog(commands.Cog):
         soyisim="Karakter soyadı",
         yas="Yaş (10-40)",
         memleket="Memleket",
-        baslangic_hurda="Başlangıç hurda miktarı (varsayılan: 500)"
+        baslangic_akçe="Başlangıç akçe miktarı (varsayılan: 500)"
     )
-    async def owner_kayit(self, interaction: discord.Interaction, uye: discord.Member, isim: str, soyisim: str, yas: int, memleket: str, baslangic_hurda: int = 500):
+    async def owner_kayit(self, interaction: discord.Interaction, uye: discord.Member, isim: str, soyisim: str, yas: int, memleket: str, baslangic_akçe: int = 500):
         # RP Owner rol kontrolü
-        if not any(rol.id == RP_OWNER_ROL_ID for rol in interaction.user.roles):
+        if not admin_mi(interaction):
             await interaction.response.send_message(
-                "❌ Bu komut sadece RP Owner rolüne sahip yetkililer tarafından kullanılabilir!",
+                "❌ Bu komut sadece yönetici ekibine özeldir!",
                 ephemeral=True
             )
             return
@@ -334,8 +334,8 @@ class KayitCog(commands.Cog):
 
         baslangic_atak = random.randint(10, 20)
         sakin_olustur_defaults(u_id, isim, soyisim, yas, memleket, baslangic_atak)
-        # Özel başlangıç hurda
-        db["sakinler"][u_id]["cuzdan"] = baslangic_hurda
+        # Özel başlangıç akçe
+        db["sakinler"][u_id]["cuzdan"] = baslangic_akçe
         verileri_kaydet()
 
         embed = discord.Embed(title="👑 OWNER KAYDI", color=0xF1C40F)
@@ -346,7 +346,7 @@ class KayitCog(commands.Cog):
             f"🎂 **Yaş:** `{yas}`\n"
             f"📍 **Memleket:** `{memleket}`\n"
             f"⚔️ **Başlangıç Atak:** `{baslangic_atak}`\n"
-            f"💰 **Başlangıç Hurda:** `{baslangic_hurda}`"
+            f"💰 **Başlangıç Akçe:** `{baslangic_akçe}`"
         )
         await interaction.response.send_message(embed=embed)
 
@@ -356,9 +356,9 @@ class KayitCog(commands.Cog):
     @app_commands.command(name="kayit-sil", description="[OWNER] Sadece RP Owner: Belirtilen üyenin sicil kaydını tamamen siler.")
     @app_commands.describe(uye="Kaydı silinecek üye", onay="Silmeyi onaylamak için 'EVET' yazın")
     async def kayit_sil(self, interaction: discord.Interaction, uye: discord.Member, onay: str):
-        if not any(rol.id == RP_OWNER_ROL_ID for rol in interaction.user.roles):
+        if not admin_mi(interaction):
             await interaction.response.send_message(
-                "❌ Bu komut sadece RP Owner rolüne sahip yetkililer tarafından kullanılabilir!",
+                "❌ Bu komut sadece yönetici ekibine özeldir!",
                 ephemeral=True
             )
             return
@@ -413,7 +413,7 @@ class KayitCog(commands.Cog):
         db.clear()
         db["sakinler"] = {}
         db["sistem_ayarlari"] = {
-            "kasa_hurda": 50000,
+            "KASA_AKÇE_PLACEHOLDER": 50000,
             "toplam_kayitli_sakin": 0,
             "sur_seviyesi": 1,
             "koy_seviyesi": 1
@@ -428,7 +428,7 @@ class KayitCog(commands.Cog):
         embed.description = (
             f"✅ Tüm veritabanı sıfırlandı!\n\n"
             f"📊 **Silinen Sakin Sayısı:** `{eski_sayi}`\n"
-            f"💰 **Kasa:** `50000 Hurda` (default)\n"
+            f"💰 **Kasa:** `50000 Akçe` (default)\n"
             f"🧱 **Sur Seviyesi:** `1`\n"
             f"🏡 **Köy Seviyesi:** `1`\n\n"
             f"⚠️ *Tüm oyuncular yeniden `/kayit` olmak zorundadır.*\n"
@@ -447,17 +447,17 @@ class KayitCog(commands.Cog):
 
 
     # ====================================================
-    # /hurda-gonder - Oyuncudan oyuncuya hurda
+    # /akçe-gonder - Oyuncudan oyuncuya akçe
     # ====================================================
-    @app_commands.command(name="hurda-gonder", description="[GENEL] Başka bir sakine hurda gönder.")
-    @app_commands.describe(hedef="Hurda gönderilecek kişi", miktar="Gönderilecek hurda miktarı")
-    async def hurda_gonder(self, interaction: discord.Interaction, hedef: discord.Member, miktar: int):
+    @app_commands.command(name="akçe-gonder", description="[GENEL] Başka bir sakine akçe gönder.")
+    @app_commands.describe(hedef="Akçe gönderilecek kişi", miktar="Gönderilecek akçe miktarı")
+    async def akçe_gonder(self, interaction: discord.Interaction, hedef: discord.Member, miktar: int):
         u_id = str(interaction.user.id)
         if u_id not in db["sakinler"]:
             await interaction.response.send_message("❌ Sicil kaydın yok!", ephemeral=True)
             return
         if str(hedef.id) == u_id:
-            await interaction.response.send_message("❌ Kendine hurda gönderemezsin!", ephemeral=True)
+            await interaction.response.send_message("❌ Kendine akçe gönderemezsin!", ephemeral=True)
             return
         if miktar <= 0:
             await interaction.response.send_message("❌ Miktar pozitif olmalı!", ephemeral=True)
@@ -473,21 +473,21 @@ class KayitCog(commands.Cog):
         sakin["cuzdan"] -= miktar
         db["sakinler"][h_id]["cuzdan"] += miktar
         verileri_kaydet()
-        embed = discord.Embed(title="💸 HURDA TRANSFERİ", color=0x2ECC71)
-        embed.description = f"👤 **Gönderen:** {interaction.user.mention}\n👤 **Alan:** {hedef.mention}\n🪙 **Miktar:** `{miktar} Hurda`"
+        embed = discord.Embed(title="💸 AKÇE TRANSFERİ", color=0x2ECC71)
+        embed.description = f"👤 **Gönderen:** {interaction.user.mention}\n👤 **Alan:** {hedef.mention}\n🪙 **Miktar:** `{miktar} Akçe`"
         await interaction.response.send_message(embed=embed)
 
     # ====================================================
     # /kaynak-ekle - Admin kaynak ekleme
     # ====================================================
-    @app_commands.command(name="kaynak-ekle", description="[ADMIN] Sığınak kaynaklarına ekleme yap (odun, kömür, erzak, hurda).")
+    @app_commands.command(name="kaynak-ekle", description="[ADMIN] Sığınak kaynaklarına ekleme yap (odun, kömür, erzak, akçe).")
     @app_commands.describe(kaynak="Eklenecek kaynak", miktar="Eklenecek miktar")
     @app_commands.choices(kaynak=[
         app_commands.Choice(name="🪵 Odun", value="odun"),
         app_commands.Choice(name="🪨 Kömür", value="komur"),
         app_commands.Choice(name="🌾 Erzak", value="erzak"),
         app_commands.Choice(name="⚕️ Tıbbi Malzeme", value="tibbi_malzeme"),
-        app_commands.Choice(name="💰 Kasa Hurda", value="kasa_hurda"),
+        app_commands.Choice(name="💰 Kasa Akçe", value="KASA_AKÇE_PLACEHOLDER"),
     ])
     async def kaynak_ekle(self, interaction: discord.Interaction, kaynak: str, miktar: int):
         if not admin_mi(interaction):
@@ -496,10 +496,10 @@ class KayitCog(commands.Cog):
         if miktar <= 0 or miktar > 100000:
             await interaction.response.send_message("❌ Miktar 1-100000 arası!", ephemeral=True)
             return
-        if kaynak == "kasa_hurda":
-            db["sistem_ayarlari"]["kasa_hurda"] = db["sistem_ayarlari"].get("kasa_hurda", 0) + miktar
+        if kaynak == "KASA_AKÇE_PLACEHOLDER":
+            db["sistem_ayarlari"]["KASA_AKÇE_PLACEHOLDER"] = db["sistem_ayarlari"].get("KASA_AKÇE_PLACEHOLDER", 0) + miktar
             verileri_kaydet()
-            await interaction.response.send_message(f"✅ Kasaya `{miktar} Hurda` eklendi! Yeni: `{db['sistem_ayarlari']['kasa_hurda']}`")
+            await interaction.response.send_message(f"✅ Kasaya `{miktar} Akçe` eklendi! Yeni: `{db['sistem_ayarlari']['KASA_AKÇE_PLACEHOLDER']}`")
         else:
             db["koy_ambari"]["stoklar"][kaynak] = db["koy_ambari"]["stoklar"].get(kaynak, 0) + miktar
             verileri_kaydet()

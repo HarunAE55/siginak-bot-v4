@@ -27,7 +27,7 @@ def verileri_yukle():
     varsayilan_yapi = {
         "sakinler": {},
         "sistem_ayarlari": {
-            "kasa_hurda": 50000,
+            "KASA_AKÇE_PLACEHOLDER": 50000,
             "toplam_kayitli_sakin": 0,
             "sur_seviyesi": 1,
             "koy_seviyesi": 1
@@ -201,9 +201,9 @@ def olum_protokolu(olen_id: str, olum_sebebi: str = "diger", kazanan_id: str = N
     olen["meslek_isim"] = "Gezgin (Ölü)"
 
     olen_env = olen.get("envanter", {})
-    olen_hurda = olen.get("cuzdan", 0)
+    olen_akçe = olen.get("cuzdan", 0)
     olen_banka = olen.get("banka", 0)
-    toplam_para = olen_hurda + olen_banka
+    toplam_para = olen_akçe + olen_banka
     ganimet_metni = ""
 
     # Pazar kataloğunu gecici olarak import et (döngüsel import önlemek için lokal)
@@ -223,11 +223,11 @@ def olum_protokolu(olen_id: str, olum_sebebi: str = "diger", kazanan_id: str = N
 
         if toplam_para > 0:
             kazanan["cuzdan"] = kazanan.get("cuzdan", 0) + toplam_para
-            ganimet_metni += f"  • {toplam_para} Hurda → Kazanana aktarıldı\n"
+            ganimet_metni += f"  • {toplam_para} Akçe → Kazanana aktarıldı\n"
     else:
         if toplam_para > 0:
-            db["sistem_ayarlari"]["kasa_hurda"] = db["sistem_ayarlari"].get("kasa_hurda", 0) + toplam_para
-            ganimet_metni += f"  • {toplam_para} Hurda → Sığınak kasasına aktarıldı\n"
+            db["sistem_ayarlari"]["KASA_AKÇE_PLACEHOLDER"] = db["sistem_ayarlari"].get("KASA_AKÇE_PLACEHOLDER", 0) + toplam_para
+            ganimet_metni += f"  • {toplam_para} Akçe → Sığınak kasasına aktarıldı\n"
 
         satistan_gelen = 0
         cope_giden = []
@@ -242,12 +242,12 @@ def olum_protokolu(olen_id: str, olum_sebebi: str = "diger", kazanan_id: str = N
                 if esya_degeri > 0:
                     satis_fiyat = int(esya_degeri * 0.5) * adet
                     satistan_gelen += satis_fiyat
-                    ganimet_metni += f"  • {esya} ({adet} Adet) → Kasaya satıldı (+{satis_fiyat} Hurda)\n"
+                    ganimet_metni += f"  • {esya} ({adet} Adet) → Kasaya satıldı (+{satis_fiyat} Akçe)\n"
                 else:
                     cope_giden.append(f"  • {esya} ({adet} Adet) → Çöpe atıldı (değersiz)\n")
 
         if satistan_gelen > 0:
-            db["sistem_ayarlari"]["kasa_hurda"] = db["sistem_ayarlari"].get("kasa_hurda", 0) + satistan_gelen
+            db["sistem_ayarlari"]["KASA_AKÇE_PLACEHOLDER"] = db["sistem_ayarlari"].get("KASA_AKÇE_PLACEHOLDER", 0) + satistan_gelen
 
         if cope_giden:
             ganimet_metni += "".join(cope_giden)

@@ -8,8 +8,8 @@
 - ✅ **`/kavga`** komutu eklendi — Ölümcül olmayan düello (RP kavgaları için)
 - ✅ **Tüccar ticaret sistemi** — `/tuccar-paneli`, `/tuccar-al`, `/tuccar-sat` (ambardan ucuz al, pahalı sat = kar!)
 - ✅ **`/muhafiz-donanim`** — Muhafızlara defans ekipmanları (göğüslük, kalkan, zırh, plaka)
-- ✅ **`/hurda-gonder`** — Oyuncudan oyuncuya hurda transferi
-- ✅ **`/kaynak-ekle`** — Admin komutu (odun, kömür, erzak, hurda ekleme)
+- ✅ **`/akçe-gonder`** — Oyuncudan oyuncuya akçe transferi
+- ✅ **`/kaynak-ekle`** — Admin komutu (odun, kömür, erzak, akçe ekleme)
 - ✅ **`/kullan`** komutu düzeltildi (artık kendi logic'i var, /tuket ile aynı)
 - ✅ **`/kutsa`** KeyError hatası düzeltildi (rahip kayıtlı mı kontrolü)
 - ✅ **Seçim süreleri değişti**: 30 dk adaylık + 60 dk oylama = 1.5 saat
@@ -72,7 +72,7 @@ siginak-bot-v5.5/
 ├── requirements.txt
 ├── render.yaml
 └── cogs/
-    ├── kayit.py             # /kayit /profil /envanter /biyografi-yaz /hurda-gonder /kaynak-ekle /kullan
+    ├── kayit.py             # /kayit /profil /envanter /biyografi-yaz /akçe-gonder /kaynak-ekle /kullan
     ├── meslek.py            # /meslek-sec /meslek-yonetim
     ├── pazar.py             # /pazar /satinal /bota-sat /esya-sat /takas-teklif /acik-arttirma-baslat /pey-ver /tuket
     ├── savas.py             # /duello /kavga /sefer /zombi-baskini-baslat
@@ -97,11 +97,11 @@ siginak-bot-v5.5/
 - `/profil` — Karakter kartın + barlar + biyografi
 - `/envanter` — Sırt çantası
 - `/biyografi-yaz [metin]` — Karakter hikayesi (max 1000 karakter, 3 günde 1)
-- `/hurda-gonder [@üye] [miktar]` — Oyuncuya hurda gönder
+- `/akçe-gonder [@üye] [miktar]` — Oyuncuya akçe gönder
 - `/owner-kayit [@üye] ...` — RP Owner: başkasını zorla kaydet
 - `/kayit-sil [@üye] EVET` — RP Owner: kaydı sil
 - `/db-sifirla EVET` — Yetkili Ekip: veritabanını sıfırla
-- `/kaynak-ekle [kaynak] [miktar]` — Yetkili Ekip: kaynak ekle (odun, kömür, hurda)
+- `/kaynak-ekle [kaynak] [miktar]` — Yetkili Ekip: kaynak ekle (odun, kömür, akçe)
 - `/xp_kazan_test [miktar] [@üye]` — Yetkili Ekip: test XP ekle
 
 ### 🛒 Pazar & Ticaret
@@ -116,7 +116,7 @@ siginak-bot-v5.5/
 
 ### 🏛️ Siyaset & Yönetim
 - `/secimi-baslat` — Yetkili Ekip (30 dk adaylık + 60 dk oylama)
-- `/aday-ol [vaat]` — 500 hurda depozito
+- `/aday-ol [vaat]` — 500 akçe depozito
 - `/yonetim` — Başkan paneli
 - `/tayin-et [@üye] [unvan]` — 6 kadroluk atama (Yardımcı, Müfettiş, Komutan, Baş Simyacı, **Baş Doktor**, Rahip)
 - `/maas-ode [@üye] [miktar]` — Tek sakin maaş
@@ -150,13 +150,13 @@ siginak-bot-v5.5/
 - `/asi-uret` — 2 tıbbi malzeme → 1 aşı
 - `/tedavi-et [@üye]` — 1 aşı ile hasta iyileştir
 - `/deney` — Simyacı, %10/%85/%5-15
-- `/laboratuvar-gelistir` — Başkan/Baş Simyacı, 500 hurda/seviye (max 3)
+- `/laboratuvar-gelistir` — Başkan/Baş Simyacı, 500 akçe/seviye (max 3)
 
 ### 🛡️ Kolluk & Savunma
 - `/muhafiz-paneli` — Panel
 - `/karantina-al [@üye]` — Karantinaya al
 - `/karantina-kaldir [@üye]` — Karantinadan çıkar
-- `/savunmayi-guclendir` — Başkan, 500 hurda +15 tahkimat
+- `/savunmayi-guclendir` — Başkan, 500 akçe +15 tahkimat
 - `/nobet` — Muhafız, 4 saat CD, ödül
 - `/muhafiz-donanim [esya]` — Defans ekipmanı al (göğüslük, kalkan, zırh, plaka)
 

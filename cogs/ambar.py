@@ -3,7 +3,7 @@ Cog: Ambar (Köy Ortak Deposu)
 ============================
 Komutlar:
 - /ambar (stok listesi)
-- /ambara-bagis (envanterden ambara bağış, +2 hurda/adet itibar)
+- /ambara-bagis (envanterden ambara bağış, +2 akçe/adet itibar)
 - /ambardan-al (ihtiyaç sahipleri ücretsiz alır, max 5/adet)
 """
 
@@ -111,7 +111,7 @@ class AmbarCog(commands.Cog):
         embed.description = (
             f"👤 **Hayırsever Sakin:** {interaction.user.mention}\n"
             f"📦 **Köy Ambarına Teslim Edilen:** `{adet} Adet {ESYA_ETIKET[temiz_ad]}`\n\n"
-            f"📈 **Toplumsal İtibar Ödülü:** `+{itibar_bonusu} Hurda` ve `+{adet} İtibar Puanı`"
+            f"📈 **Toplumsal İtibar Ödülü:** `+{itibar_bonusu} Akçe` ve `+{adet} İtibar Puanı`"
         )
         await interaction.response.send_message(embed=embed)
         haber_ekle(f"🤝 {sakin['isim']} köy ambarına {adet} adet {ESYA_ETIKET[temiz_ad]} bağışladı.")

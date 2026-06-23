@@ -99,7 +99,7 @@ class PrefixCog(commands.Cog):
             f"• **Ad Soyad:** `{isim} {soyisim}`\n"
             f"• **Yaş / Memleket:** `{yas} / {memleket}`\n"
             f"• **Rastgele Atak Gücü:** `⚔️ {baslangic_atak}`\n"
-            f"• **Sığınak Yardımı:** `500 Hurda` ve `20 XP`\n\n"
+            f"• **Sığınak Yardımı:** `500 Akçe` ve `20 XP`\n\n"
             f"💡 *Biyografini yazmak için `v.biyografi-yaz` komutunu kullanabilirsin.*"
         )
         await ctx.send(embed=embed)
@@ -130,7 +130,7 @@ class PrefixCog(commands.Cog):
         embed.add_field(name=f"{durum_emoji} Durum", value=f"`{durum}`", inline=True)
         embed.add_field(name="💼 Meslek", value=f"`{sakin.get('meslek_isim', 'Gezgin')}`", inline=True)
         embed.add_field(name="🏅 Seviye / XP", value=f"`Seviye {sakin.get('seviye', 1)}` / `{sakin.get('xp', 0)} XP`", inline=True)
-        embed.add_field(name="💰 Cüzdan", value=f"`{sakin.get('cuzdan', 0)} Hurda`", inline=True)
+        embed.add_field(name="💰 Cüzdan", value=f"`{sakin.get('cuzdan', 0)} Akçe`", inline=True)
         embed.add_field(name="⚔️ Atak", value=f"`{sakin.get('atak', 10)}`", inline=True)
         embed.add_field(name="🛡️ Defans", value=f"`{sakin.get('defans', 0)}`", inline=True)
         embed.add_field(name="🎂 Yaş", value=f"`{sakin.get('yas', '?')}`", inline=True)
@@ -233,7 +233,7 @@ class PrefixCog(commands.Cog):
         embed.add_field(name="💰 10. Ekonomi & Çevre", value="`/maliye-yonetim` `/hava-durumu-degis` `/haber`", inline=False)
         embed.add_field(name="🔧 11. Yönetim", value="`/sunucu-yonetimi` `/owner-kayit` `/kayit-sil` `/db-sifirla` `/xp_kazan_test`", inline=False)
         embed.add_field(name="📖 12. Rehber", value="`/destek` `/rehber`", inline=False)
-        embed.set_footer(text="Sığınak Veba RP v5.1 | Slash ve v. prefix desteği")
+        embed.set_footer(text="Sığınak Veba RP v5.5 | Slash ve v. prefix desteği")
         await ctx.send(embed=embed)
 
     # ============================================================
@@ -296,7 +296,7 @@ class PrefixCog(commands.Cog):
                 break
             embed.add_field(
                 name=f"📦 `{kod}` — {veri['isim']}",
-                value=f"💰 `{veri['fiyat']}` Hurda | Etki: `+{veri['bonus_degeri']} {veri['bonus_turu']}`\n*{veri['aciklama']}*",
+                value=f"💰 `{veri['fiyat']}` Akçe | Etki: `+{veri['bonus_degeri']} {veri['bonus_turu']}`\n*{veri['aciklama']}*",
                 inline=False
             )
 
@@ -345,7 +345,7 @@ class PrefixCog(commands.Cog):
         toplam_maliyet = birim_fiyat * adet
 
         if sakin["cuzdan"] < toplam_maliyet:
-            await ctx.send(f"❌ Bakiyeniz yetersiz! Gereken: `{toplam_maliyet}` Hurda, Cüzdanınızda: `{sakin['cuzdan']}`.")
+            await ctx.send(f"❌ Bakiyeniz yetersiz! Gereken: `{toplam_maliyet}` Akçe, Cüzdanınızda: `{sakin['cuzdan']}`.")
             return
 
         sakin["cuzdan"] -= toplam_maliyet
@@ -369,7 +369,7 @@ class PrefixCog(commands.Cog):
 
         verileri_kaydet()
 
-        msg = f"🛒 Alım tamamlandı.\n• Alınan: `{adet} Adet {urun['isim']}`\n• Toplam Ödenen: `💰 {toplam_maliyet} Hurda`"
+        msg = f"🛒 Alım tamamlandı.\n• Alınan: `{adet} Adet {urun['isim']}`\n• Toplam Ödenen: `💰 {toplam_maliyet} Akçe`"
         if indirim_uygula:
             msg += " *(Mesleki %20 İndirim Uygulandı!)*"
         msg += f"\n• Karaktere Yansıyan Bonus: `+{b_degeri} {b_turu}`"
@@ -415,7 +415,7 @@ class PrefixCog(commands.Cog):
 
         envanter[esya_ad] -= adet
         sakin["cuzdan"] += net
-        db["sistem_ayarlari"]["kasa_hurda"] += vergi
+        db["sistem_ayarlari"]["KASA_AKÇE_PLACEHOLDER"] += vergi
 
         if envanter[esya_ad] == 0:
             del envanter[esya_ad]
@@ -426,9 +426,9 @@ class PrefixCog(commands.Cog):
         embed.description = (
             f"**Satan:** {ctx.author.mention}\n"
             f"**Teslim Edilen:** `{adet} Adet {esya_ad}`\n\n"
-            f"• Brüt Tutar: `{brut} Hurda`\n"
-            f"• Vergi (%{int(vergi_orani*100)}): `-{vergi} Hurda`\n"
-            f"• **Net Kazanç:** `💰 {net} Hurda`"
+            f"• Brüt Tutar: `{brut} Akçe`\n"
+            f"• Vergi (%{int(vergi_orani*100)}): `-{vergi} Akçe`\n"
+            f"• **Net Kazanç:** `💰 {net} Akçe`"
         )
         await ctx.send(embed=embed)
 
@@ -763,9 +763,9 @@ class PrefixCog(commands.Cog):
         elif hava == "Kış": carpan = 0.3
 
         nihai = int(taban * carpan)
-        hurda = nihai * 3
+        akçe = nihai * 3
         atlamalar = xp_ekle(u_id, 15)
-        sakin["cuzdan"] = sakin.get("cuzdan", 0) + hurda
+        sakin["cuzdan"] = sakin.get("cuzdan", 0) + akçe
         db["koy_ambari"]["stoklar"]["erzak"] = db["koy_ambari"]["stoklar"].get("erzak", 0) + nihai
         sakin["son_calisma"] = datetime.datetime.now().isoformat()
         verileri_kaydet()
@@ -774,10 +774,10 @@ class PrefixCog(commands.Cog):
         embed.description = (
             f"🌤️ **Hava:** `{hava}` (x{carpan})\n"
             f"📦 **Ambara Eklenen Erzak:** `+{nihai} Adet`\n"
-            f"💰 **Kazanç:** `+{hurda} Hurda` | `+15 XP`"
+            f"💰 **Kazanç:** `+{akçe} Akçe` | `+15 XP`"
         )
         if atlamalar:
-            embed.add_field(name="🎉 Seviye Atlamaları", value="\n".join([f"• Seviye {a['seviye']}! +{a['odul']} Hurda" for a in atlamalar]), inline=False)
+            embed.add_field(name="🎉 Seviye Atlamaları", value="\n".join([f"• Seviye {a['seviye']}! +{a['odul']} Akçe" for a in atlamalar]), inline=False)
         await ctx.send(embed=embed)
 
     # ============================================================
@@ -816,17 +816,17 @@ class PrefixCog(commands.Cog):
         elif hava == "Yağmurlu": carpan = 0.8
 
         nihai = int(taban * carpan)
-        hurda = nihai * 4
+        akçe = nihai * 4
         atlamalar = xp_ekle(u_id, 20)
-        sakin["cuzdan"] = sakin.get("cuzdan", 0) + hurda
+        sakin["cuzdan"] = sakin.get("cuzdan", 0) + akçe
         db["koy_ambari"]["stoklar"]["komur"] = db["koy_ambari"]["stoklar"].get("komur", 0) + nihai
         sakin["son_calisma"] = datetime.datetime.now().isoformat()
         verileri_kaydet()
 
         embed = discord.Embed(title="⛏️ MADEN KAZISI BAŞARILI!", color=0x95A5A6)
-        embed.description = f"🪨 **Ambara Eklenen Kömür:** `+{nihai} Adet`\n💰 **Kazanç:** `+{hurda} Hurda` | `+20 XP`"
+        embed.description = f"🪨 **Ambara Eklenen Kömür:** `+{nihai} Adet`\n💰 **Kazanç:** `+{akçe} Akçe` | `+20 XP`"
         if atlamalar:
-            embed.add_field(name="🎉 Seviye Atlamaları", value="\n".join([f"• Seviye {a['seviye']}! +{a['odul']} Hurda" for a in atlamalar]), inline=False)
+            embed.add_field(name="🎉 Seviye Atlamaları", value="\n".join([f"• Seviye {a['seviye']}! +{a['odul']} Akçe" for a in atlamalar]), inline=False)
         await ctx.send(embed=embed)
 
     # ============================================================
@@ -866,17 +866,17 @@ class PrefixCog(commands.Cog):
         elif hava == "Yaz": carpan = 1.3
 
         nihai = int(taban * carpan)
-        hurda = nihai * 2
+        akçe = nihai * 2
         atlamalar = xp_ekle(u_id, 15)
-        sakin["cuzdan"] = sakin.get("cuzdan", 0) + hurda
+        sakin["cuzdan"] = sakin.get("cuzdan", 0) + akçe
         db["koy_ambari"]["stoklar"]["odun"] = db["koy_ambari"]["stoklar"].get("odun", 0) + nihai
         sakin["son_calisma"] = datetime.datetime.now().isoformat()
         verileri_kaydet()
 
         embed = discord.Embed(title="🪵 ODUN KESİMİ TAMAMLANDI!", color=0x27AE60)
-        embed.description = f"🪓 **Ambara Eklenen Odun:** `+{nihai} Adet`\n💰 **Kazanç:** `+{hurda} Hurda` | `+15 XP`"
+        embed.description = f"🪓 **Ambara Eklenen Odun:** `+{nihai} Adet`\n💰 **Kazanç:** `+{akçe} Akçe` | `+15 XP`"
         if atlamalar:
-            embed.add_field(name="🎉 Seviye Atlamaları", value="\n".join([f"• Seviye {a['seviye']}! +{a['odul']} Hurda" for a in atlamalar]), inline=False)
+            embed.add_field(name="🎉 Seviye Atlamaları", value="\n".join([f"• Seviye {a['seviye']}! +{a['odul']} Akçe" for a in atlamalar]), inline=False)
         await ctx.send(embed=embed)
 
     # ============================================================
@@ -896,7 +896,7 @@ class PrefixCog(commands.Cog):
         db.clear()
         db["sakinler"] = {}
         db["sistem_ayarlari"] = {
-            "kasa_hurda": 50000,
+            "KASA_AKÇE_PLACEHOLDER": 50000,
             "toplam_kayitli_sakin": 0,
             "sur_seviyesi": 1,
             "koy_seviyesi": 1
@@ -911,7 +911,7 @@ class PrefixCog(commands.Cog):
         embed.description = (
             f"✅ Tüm veritabanı sıfırlandı!\n\n"
             f"📊 **Silinen Sakin Sayısı:** `{eski_sayi}`\n"
-            f"💰 **Kasa:** `50000 Hurda` (default)\n"
+            f"💰 **Kasa:** `50000 Akçe` (default)\n"
             f"🧱 **Sur Seviyesi:** `1`\n"
             f"🏡 **Köy Seviyesi:** `1`\n\n"
             f"⚠️ *Tüm oyuncular yeniden `v.kayit` olmak zorundadır.*\n"

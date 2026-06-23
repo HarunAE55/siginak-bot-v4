@@ -148,9 +148,9 @@ class MeslekCog(commands.Cog):
         embed = discord.Embed(title=f"🛠️ {m_isim.upper()} FAALİYET VE YÖNETİM PANELİ", color=0x9B59B6)
 
         paneller = {
-            "belediye_baskani": "👑 **SIĞINAK YÜCE KABİNE PANELİ**\n• Vergi Oranları Koridoru: Sabit %20\n• Sığınak Güvenlik Defansı: `[🟩🟩🟩🟩🟩🟩🟩🟩🟩⬛] %90`\n• Ambar Ödenek Durumu: `45.000 Hurda`",
+            "belediye_baskani": "👑 **SIĞINAK YÜCE KABİNE PANELİ**\n• Vergi Oranları Koridoru: Sabit %20\n• Sığınak Güvenlik Defansı: `[🟩🟩🟩🟩🟩🟩🟩🟩🟩⬛] %90`\n• Ambar Ödenek Durumu: `45.000 Akçe`",
             "baskan_yardimcisi": "📜 **BAŞKAN YARDIMCILIĞI BÜROSU**\n• Onay Bekleyen Sakin Dilekçeleri: `0`\n• İç Düzen Koruma Kararnameleri: Aktif.",
-            "vergi_mufettisi": "⚖️ **MERKEZİ MALİYE DENETİM MASASI**\n• Sığınak Enflasyon Katsayısı: `1.0`\n• Karapara ve Kaçak Hurda İncelemesi: Temiz.",
+            "vergi_mufettisi": "⚖️ **MERKEZİ MALİYE DENETİM MASASI**\n• Sığınak Enflasyon Katsayısı: `1.0`\n• Karapara ve Kaçak Akçe İncelemesi: Temiz.",
             "bas_simyaci": "🔮 **KADİM SİMYA LABORATUVARI**\n• İksir Kazanı Sıcaklığı: `180°C`\n• Mevcut Simya Karışım Formülü: *Cıva Esansı Birleşimi*",
             "simyaci": "🔮 **KADİM SİMYA LABORATUVARI**\n• İksir Kazanı Sıcaklığı: `180°C`\n• Mevcut Simya Karışım Formülü: *Cıva Esansı Birleşimi*",
             "bas_doktor": "🩺 **SIĞINAK REVİR BAŞHEKİMLİĞİ**\n• Yatak Doluluk Oranı: `2 / 10`\n• Karantina Altındaki Sakin Sayısı: `0`.",
@@ -172,7 +172,7 @@ class MeslekCog(commands.Cog):
             "avci": "🎯 **YABAN AV PARSEL TAKİP DEFTERİ**\n• Kurulan Tuzak Sayısı: `3 Adet`\n• Avlanan Son Canlı: Yaban Domuzu.",
             "arastirmaci": "🔬 **KAYIP TEKNOLOJİ TEZGAHI ANALİZİ**\n• Çözülen Şifreli Devre Kartı: `%45`\n• Eski Dünya Arşiv Kaydı: Okunuyor.",
             "kraliyet_elcisi": "👑 **DİPLOMATİK ELÇİLİK MÜHÜR ODASI**\n• Gelen Dış Mektuplar: `Yolsuzluk Yok`\n• Diplomatik Dokunulmazlık Durumu: Geçerli.",
-            "rahip": "⛪ **KUTSAL MANASTIR DUA KÜRSÜSÜ**\n• İbadete Gelen Cemaat Huzuru: Sakin\n• Bağış Kutusu Hurda Seviyesi: `230 Hurda`.",
+            "rahip": "⛪ **KUTSAL MANASTIR DUA KÜRSÜSÜ**\n• İbadete Gelen Cemaat Huzuru: Sakin\n• Bağış Kutusu Akçe Seviyesi: `230 Akçe`.",
             "mezarci": "🪦 **SIĞINAK ŞEHİTLİK VE MEZARLIK SİCİLİ**\n• Boş Mezar Hazırlığı: `5 Adet`\n• Defin İşlemi Bekleyen Kadavra: Yok.",
         }
 

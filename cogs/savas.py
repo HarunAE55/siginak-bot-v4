@@ -106,7 +106,7 @@ class SavasCog(commands.Cog):
 
         # Savaş simülasyonu
         yaratik_cani = zorluk * 400
-        toplam_ganimet_hurda = 0
+        toplam_ganimet_akçe = 0
         rapor_text = f"🪓 **SAVAŞ RAPORU** 🪓\n👾 **Düşman Gücü:** Seviye {zorluk} Zombi Sürüsü (Toplam Can: {yaratik_cani})\n\n"
 
         manga_raporu = {}
@@ -141,10 +141,10 @@ class SavasCog(commands.Cog):
 
         if yaratik_cani <= 0:
             db["sefer_sistemi"]["sefer_zorlugu"] += 1
-            toplam_ganimet_hurda = zorluk * random.randint(150, 300)
-            db["sistem_ayarlari"]["kasa_hurda"] = db["sistem_ayarlari"].get("kasa_hurda", 0) + (toplam_ganimet_hurda // 2)
-            embed_sonuc.description = f"🎉 **ZAFER!** Dış dünya temizlendi. Sefer Zorluğu Seviye `{db['sefer_sistemi']['sefer_zorlugu']}` oldu.\n💰 Sığınak Kasasına `{toplam_ganimet_hurda // 2} Hurda` aktarıldı!\n\n"
-            haber_ekle(f"⚔️ Belediye Başkanı sefer düzenledi ve ZAFER kazanıldı. Ganimet: {toplam_ganimet_hurda // 2} Hurda.")
+            toplam_ganimet_akçe = zorluk * random.randint(150, 300)
+            db["sistem_ayarlari"]["KASA_AKÇE_PLACEHOLDER"] = db["sistem_ayarlari"].get("KASA_AKÇE_PLACEHOLDER", 0) + (toplam_ganimet_akçe // 2)
+            embed_sonuc.description = f"🎉 **ZAFER!** Dış dünya temizlendi. Sefer Zorluğu Seviye `{db['sefer_sistemi']['sefer_zorlugu']}` oldu.\n💰 Sığınak Kasasına `{toplam_ganimet_akçe // 2} Akçe` aktarıldı!\n\n"
+            haber_ekle(f"⚔️ Belediye Başkanı sefer düzenledi ve ZAFER kazanıldı. Ganimet: {toplam_ganimet_akçe // 2} Akçe.")
         else:
             embed_sonuc.description = "❌ **HEZİMET!** Sığınak ordusu geri çekilmek zorunda kaldı.\n\n"
             haber_ekle("💀 Sefer hezimetle sonuçlandı. Manga ağır kayıp verdi.")
@@ -152,13 +152,13 @@ class SavasCog(commands.Cog):
         stat_text = ""
         for p_id, veri in manga_raporu.items():
             if veri["durum"] == "Sağ" and yaratik_cani <= 0:
-                pay = (toplam_ganimet_hurda // 2) // len(view.katilimcilar) if view.katilimcilar else 0
+                pay = (toplam_ganimet_akçe // 2) // len(view.katilimcilar) if view.katilimcilar else 0
                 db["sakinler"][p_id]["cuzdan"] = db["sakinler"][p_id].get("cuzdan", 0) + pay
                 atlamalar = xp_ekle(p_id, 50)
-                stat_text += f"👤 {veri['user'].mention} -> Vurulan: `{veri['hasar']}` | Ganimet: `+{pay} Hurda` (+50 XP)\n"
+                stat_text += f"👤 {veri['user'].mention} -> Vurulan: `{veri['hasar']}` | Ganimet: `+{pay} Akçe` (+50 XP)\n"
                 if atlamalar:
                     for a in atlamalar:
-                        stat_text += f"   🎉 Seviye {a['seviye']} atladı! +{a['odul']} Hurda\n"
+                        stat_text += f"   🎉 Seviye {a['seviye']} atladı! +{a['odul']} Akçe\n"
             else:
                 stat_text += f"☠️ {veri['user'].mention} -> Savaşta elendi.\n"
 
@@ -240,9 +240,10 @@ class SavasCog(commands.Cog):
     @app_commands.command(name="zombi-baskini-baslat", description="[OWNER] Sadece RP Owner: Sığınak surlarına manuel zombi baskını başlatır.")
     async def zombi_baskini_baslat(self, interaction: discord.Interaction):
         # RP Owner kontrolü
-        if not any(rol.id == RP_OWNER_ROL_ID for rol in interaction.user.roles):
+        from veritabani import admin_mi
+        if not admin_mi(interaction):
             await interaction.response.send_message(
-                "❌ Bu komut sadece RP Owner rolüne sahip yetkililer tarafından kullanılabilir!",
+                "❌ Bu komut sadece yönetici ekibine özeldir!",
                 ephemeral=True
             )
             return
@@ -471,7 +472,7 @@ class DuelloView(discord.ui.View):
             olum_embed = discord.Embed(title="💀 HAYATIN SONA ERDİ", color=0x7F8C8D)
             olum_embed.description = (
                 f"<@{k_id}> Sığınakta kanlı bir düelloda can verdin.\n\n"
-                f"⚰️ Tüm eşyaların ve hurdaların rakibine yağmalandı.\n"
+                f"⚰️ Tüm eşyaların ve akçeların rakibine yağmalandı.\n"
                 f"🔄 Yeniden hayata dönmek için `/kayit` komutunu kullan."
             )
             await kanal.send(embed=olum_embed)
@@ -488,7 +489,7 @@ class DuelloView(discord.ui.View):
                 f"🩹 **Kaybeden:** <@{k_id}>\n\n"
                 f"🍀 **DURUM:** Ölüm zarı `{zar}` geldi (%20'lik sınıra takılmadı). "
                 f"**{kaybeden_bilesen['isim']}** ağır yaralı olarak revire kaldırıldı. Hayatta kaldı!\n"
-                f"💸 **Savaş Tazminatı:** Kaybedenden `💰 {tazminat} Hurda` alındı."
+                f"💸 **Savaş Tazminatı:** Kaybedenden `💰 {tazminat} Akçe` alındı."
             )
 
         verileri_kaydet()

@@ -110,11 +110,11 @@ class UretimCog(commands.Cog):
             carpan = 0.3
 
         nihai_erzak = int(taban_erzak * carpan)
-        kazanilan_hurda = nihai_erzak * 3
+        kazanilan_akçe = nihai_erzak * 3
         kazanilan_xp = 15
 
         db["koy_ambari"]["stoklar"]["erzak"] = db["koy_ambari"]["stoklar"].get("erzak", 0) + nihai_erzak
-        sakin["cuzdan"] = sakin.get("cuzdan", 0) + kazanilan_hurda
+        sakin["cuzdan"] = sakin.get("cuzdan", 0) + kazanilan_akçe
         atlamalar = xp_ekle(u_id, kazanilan_xp)
         sakin["son_calisma"] = datetime.datetime.now().isoformat()
         verileri_kaydet()
@@ -123,12 +123,12 @@ class UretimCog(commands.Cog):
         embed.description = (
             f"🌤️ **Mevsim/Hava:** `{hava}` (Çarpan: x{carpan})\n"
             f"📦 **Köy Ambarına Eklenen Erzak:** `+{nihai_erzak} Adet`\n"
-            f"💰 **Kişisel Kazancınız:** `+{kazanilan_hurda} Hurda` | `+{kazanilan_xp} XP`"
+            f"💰 **Kişisel Kazancınız:** `+{kazanilan_akçe} Akçe` | `+{kazanilan_xp} XP`"
         )
         if atlamalar:
             embed.add_field(
                 name="🎉 Seviye Atlamaları",
-                value="\n".join([f"• Seviye {a['seviye']}! +{a['odul']} Hurda" for a in atlamalar]),
+                value="\n".join([f"• Seviye {a['seviye']}! +{a['odul']} Akçe" for a in atlamalar]),
                 inline=False
             )
         await interaction.response.send_message(embed=embed)
@@ -174,11 +174,11 @@ class UretimCog(commands.Cog):
             carpan = 0.8
 
         nihai_komur = int(taban_komur * carpan)
-        kazanilan_hurda = nihai_komur * 4
+        kazanilan_akçe = nihai_komur * 4
         kazanilan_xp = 20
 
         db["koy_ambari"]["stoklar"]["komur"] = db["koy_ambari"]["stoklar"].get("komur", 0) + nihai_komur
-        sakin["cuzdan"] = sakin.get("cuzdan", 0) + kazanilan_hurda
+        sakin["cuzdan"] = sakin.get("cuzdan", 0) + kazanilan_akçe
         atlamalar = xp_ekle(u_id, kazanilan_xp)
         sakin["son_calisma"] = datetime.datetime.now().isoformat()
         verileri_kaydet()
@@ -186,12 +186,12 @@ class UretimCog(commands.Cog):
         embed = discord.Embed(title="⛏️ MADEN KAZISI BAŞARILI!", color=0x95A5A6)
         embed.description = (
             f"🪨 **Köy Ambarına Eklenen Kömür:** `+{nihai_komur} Adet`\n"
-            f"💰 **Kişisel Kazancınız:** `+{kazanilan_hurda} Hurda` | `+{kazanilan_xp} XP`"
+            f"💰 **Kişisel Kazancınız:** `+{kazanilan_akçe} Akçe` | `+{kazanilan_xp} XP`"
         )
         if atlamalar:
             embed.add_field(
                 name="🎉 Seviye Atlamaları",
-                value="\n".join([f"• Seviye {a['seviye']}! +{a['odul']} Hurda" for a in atlamalar]),
+                value="\n".join([f"• Seviye {a['seviye']}! +{a['odul']} Akçe" for a in atlamalar]),
                 inline=False
             )
         await interaction.response.send_message(embed=embed)
@@ -239,11 +239,11 @@ class UretimCog(commands.Cog):
             carpan = 1.3
 
         nihai_odun = int(taban_odun * carpan)
-        kazanilan_hurda = nihai_odun * 2
+        kazanilan_akçe = nihai_odun * 2
         kazanilan_xp = 15
 
         db["koy_ambari"]["stoklar"]["odun"] = db["koy_ambari"]["stoklar"].get("odun", 0) + nihai_odun
-        sakin["cuzdan"] = sakin.get("cuzdan", 0) + kazanilan_hurda
+        sakin["cuzdan"] = sakin.get("cuzdan", 0) + kazanilan_akçe
         atlamalar = xp_ekle(u_id, kazanilan_xp)
         sakin["son_calisma"] = datetime.datetime.now().isoformat()
         verileri_kaydet()
@@ -251,12 +251,12 @@ class UretimCog(commands.Cog):
         embed = discord.Embed(title="🪵 ODUN KESİMİ TAMAMLANDI!", color=0x27AE60)
         embed.description = (
             f"🪓 **Köy Ambarına Eklenen Odun:** `+{nihai_odun} Adet`\n"
-            f"💰 **Kişisel Kazancınız:** `+{kazanilan_hurda} Hurda` | `+{kazanilan_xp} XP`"
+            f"💰 **Kişisel Kazancınız:** `+{kazanilan_akçe} Akçe` | `+{kazanilan_xp} XP`"
         )
         if atlamalar:
             embed.add_field(
                 name="🎉 Seviye Atlamaları",
-                value="\n".join([f"• Seviye {a['seviye']}! +{a['odul']} Hurda" for a in atlamalar]),
+                value="\n".join([f"• Seviye {a['seviye']}! +{a['odul']} Akçe" for a in atlamalar]),
                 inline=False
             )
         await interaction.response.send_message(embed=embed)
@@ -468,7 +468,7 @@ class UretimCog(commands.Cog):
             f"💡 **Komutlar:**\n"
             f"• `/tuccar-al <esya> <adet>` — Ambardan ucuz al\n"
             f"• `/tuccar-sat <esya> <adet>` — Ambara pahalı sat (kar!)\n\n"
-            f"💰 **Cüzdan:** `{db['sakinler'][u_id].get('cuzdan', 0)} Hurda`"
+            f"💰 **Cüzdan:** `{db['sakinler'][u_id].get('cuzdan', 0)} Akçe`"
         )
         await interaction.response.send_message(embed=embed)
 
@@ -511,7 +511,7 @@ class UretimCog(commands.Cog):
             sakin["envanter"] = {}
         sakin["envanter"][esya] = sakin["envanter"].get(esya, 0) + adet
         verileri_kaydet()
-        await interaction.response.send_message(f"✅ `{adet} Adet {esya}` ambardan `{toplam} Hurda`'ya alındı!")
+        await interaction.response.send_message(f"✅ `{adet} Adet {esya}` ambardan `{toplam} Akçe`'ya alındı!")
 
     # ====================================================
     # /tuccar-sat
@@ -549,7 +549,7 @@ class UretimCog(commands.Cog):
         sakin["cuzdan"] += toplam
         db["koy_ambari"]["stoklar"][esya] = db["koy_ambari"]["stoklar"].get(esya, 0) + adet
         verileri_kaydet()
-        await interaction.response.send_message(f"✅ `{adet} Adet {esya}` ambara `{toplam} Hurda`'ya satıldı!")
+        await interaction.response.send_message(f"✅ `{adet} Adet {esya}` ambara `{toplam} Akçe`'ya satıldı!")
 
     # ====================================================
     # /muhafiz-donanim - Muhafız defans eşyası
@@ -588,7 +588,7 @@ class UretimCog(commands.Cog):
         sakin["defans"] = sakin.get("defans", 0) + item["defans"]
         verileri_kaydet()
         embed = discord.Embed(title="🛡️ EKİPMAN ALINDI!", color=0x2980B9)
-        embed.description = f"🛡️ **Ekipman:** `{item['isim']}`\n⚡ **Defans:** `+{item['defans']}`\n💰 **Ödenen:** `{item['fiyat']} Hurda`\n🛡️ **Toplam Defans:** `{sakin['defans']}`"
+        embed.description = f"🛡️ **Ekipman:** `{item['isim']}`\n⚡ **Defans:** `+{item['defans']}`\n💰 **Ödenen:** `{item['fiyat']} Akçe`\n🛡️ **Toplam Defans:** `{sakin['defans']}`"
         await interaction.response.send_message(embed=embed)
 
 
