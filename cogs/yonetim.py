@@ -96,7 +96,7 @@ class YonetimCog(commands.Cog):
     # ====================================================
     # /secimi-baslat - SADECE ADMIN
     # ====================================================
-    @app_commands.command(name="secimi-baslat", description="[YÖNETİM] 1.5 saat sürecek belediye başkanlığı seçimlerini başlatır (30 dk adaylık + 60 dk oylama). Sadece Yetkili Ekip.")
+    @app_commands.command(name="secimi-baslat", description="[YÖNETİM] Belediye başkanlığı seçimlerini başlatır (1.5 saat). Yetkili Ekip.")
     async def secimi_baslat(self, interaction: discord.Interaction):
         from veritabani import admin_mi
         # v5.9.1: Sadece admin_mi() ile kontrol - Yönetici Ekip rolü olanlar da kullanabilir
