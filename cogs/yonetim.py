@@ -24,13 +24,14 @@ from veritabani import (
 
 
 # ====================================================
-# TAYİN EDİLEBİLİR KADROLAR
+# TAYİN EDİLEBİLİR KADROLAR (v5.9: bas_doktor eklendi - BUG FIX)
 # ====================================================
 TAYIN_KADROLARI = {
     "baskan_yardimcisi": {"rol_id": 1508535553434587238, "isim": "Başkan Yardımcısı"},
     "vergi_mufettisi": {"rol_id": 1508536734709973032, "isim": "Vergi Müfettişi"},
     "muhafiz_komutani": {"rol_id": 1508543542153187478, "isim": "Muhafızlar Komutanı"},
     "bas_simyaci": {"rol_id": 1508539755304845352, "isim": "Baş Simyacı"},
+    "bas_doktor": {"rol_id": 1508540001804226703, "isim": "Baş Doktor"},
     "rahip": {"rol_id": 1515026155969843401, "isim": "Rahip"},
 }
 
@@ -95,10 +96,11 @@ class YonetimCog(commands.Cog):
     # ====================================================
     # /secimi-baslat - SADECE ADMIN
     # ====================================================
-    @app_commands.command(name="secimi-baslat", description="[YÖNETİM] 1 saat sürecek belediye başkanlığı seçimlerini başlatır. Sadece sunucu yöneticileri.")
-    @app_commands.checks.has_permissions(administrator=True)
+    @app_commands.command(name="secimi-baslat", description="[YÖNETİM] 1.5 saat sürecek belediye başkanlığı seçimlerini başlatır (30 dk adaylık + 60 dk oylama). Sadece Yetkili Ekip.")
     async def secimi_baslat(self, interaction: discord.Interaction):
         from veritabani import admin_mi
+        # v5.9.1: Sadece admin_mi() ile kontrol - Yönetici Ekip rolü olanlar da kullanabilir
+        # (önceden has_permissions(administrator=True) decorator'ı Yönetici Ekip'i engelliyordu)
         if not admin_mi(interaction):
             await interaction.response.send_message("❌ Bu komut sadece yetkili ekibe özeldir!", ephemeral=True)
             return

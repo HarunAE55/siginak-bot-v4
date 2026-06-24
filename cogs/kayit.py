@@ -141,11 +141,11 @@ class KayitCog(commands.Cog):
         embed.add_field(name="📍 Memleket", value=f"`{sakin.get('memleket', 'Bilinmiyor')}`", inline=True)
         embed.add_field(name="🎯 İtibar", value=f"`{sakin.get('itibar', 50)}`", inline=True)
 
-        # Barlar
+        # Barlar - v5.9: enfeksiyon barı negatif stat (yüksek=kötü, kırmızı/sarı)
         embed.add_field(name="❤️ Sağlık", value=bar_olustur(sakin.get("saglik", 100)), inline=False)
         embed.add_field(name="💧 Su ve Besin", value=bar_olustur(sakin.get("su", 100)), inline=False)
         embed.add_field(name="🧠 Akıl Sağlığı", value=bar_olustur(sakin.get("akil_sagligi", 100)), inline=False)
-        embed.add_field(name="☣️ Enfeksiyon Yükü", value=bar_olustur(sakin.get("enfeksiyon", 0)), inline=False)
+        embed.add_field(name="☣️ Enfeksiyon Yükü", value=bar_olustur(sakin.get("enfeksiyon", 0), negatif=True), inline=False)
         embed.add_field(name="😊 Moral", value=bar_olustur(sakin.get("moral", 50)), inline=False)
 
         # Biyografi

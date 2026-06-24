@@ -1,7 +1,11 @@
 """
-Sığınak Bot - Ana Giriş Noktası (main.py)
-=========================================
-Sığınak Veba RP Bot v5.7 - Cogs mimarisi + v. prefix komutları + cache temizleme + db-sifirla
+Sığınak Bot - Ana Giriş Noktası (main.py) - v5.9.1
+===================================================
+Sığınak Veba RP Bot v5.9.1 - Cogs mimarisi + v. prefix komutları + cache temizleme + db-sifirla
++ Tüm prefix komutları slash ile birebir aynı çıktı verir
++ Tüm sürüm numaraları güncellendi
++ Kritik bug fix'ler uygulandı (tayin bas_doktor, gazete kasa, gez XP, anıt sıralama, enfeksiyon barı)
++ v5.9.1: has_permissions(administrator=True) kaldırıldı, Yönetici Ekip tüm admin komutlarını kullanabilir
 
 Çalıştırma:
     export DISCORD_TOKEN=...
@@ -11,10 +15,9 @@ Sığınak Veba RP Bot v5.7 - Cogs mimarisi + v. prefix komutları + cache temiz
 Bot başladığında:
 1. Veritabanını yükler
 2. Tüm cog'ları yükler (16 cog - prefix dahil)
-3. Eski Discord slash komut cache'ini temizler (command not found fix)
-4. Yeni slash komutlarını Discord'a senkronize eder
-5. Otomatik task'ları başlatır (yedekleme, vergi, gazete, açlık)
-6. Keep-alive Flask sunucusunu başlatır (Render uyku modunu önlemek için)
+3. Yeni slash komutlarını Discord'a senkronize eder
+4. Otomatik task'ları başlatır (yedekleme, vergi, gazete, açlık)
+5. Keep-alive Flask sunucusunu başlatır (Render uyku modunu önlemek için)
 
 Önemli:
 - v. prefix komutları için Discord Developer Portal'da "Message Content Intent" açılmalı!
@@ -98,6 +101,7 @@ COG_LISTESI = [
 async def on_ready():
     log.info("=" * 60)
     log.info(f"🤖 {bot.user.name} (ID: {bot.user.id}) çevrimiçi!")
+    log.info(f"📌 Sürüm: v5.9.1")
     log.info("=" * 60)
 
     # Veritabanını hazırla
@@ -134,20 +138,14 @@ async def on_ready():
         log.error(f"❌ Sistem cog başlatma hatası: {e}")
 
     # SLASH KOMUT SENKRONİZASYONU
-    # Eski komutları Discord'dan temizlemek yerine güvenli sync yapıyoruz.
-    # clear_commands(guild=None) kullanırsak bot'un kendi ağacı da boşalır ve
-    # ikinci sync Discord'a boş liste gönderir → tüm komutlar kaybolur!
-    # Bu yüzden sadece sync() yapıyoruz, Discord eski/komut adlarını otomatik günceller.
     try:
         log.info(f"📥 Slash komutları Discord'a senkronize ediliyor... (bot ağacında {len(bot.tree.get_commands())} komut var)")
         synced = await bot.tree.sync()
         log.info(f"✔️ {len(synced)} slash komutu Discord'a senkronize edildi.")
-        
-        # Eğer 0 komut sync edildiyse, bir şeyler ters gitmiş olabilir
+
         if len(synced) == 0:
             log.warning("⚠️ Hiç komut sync edilmedi! Cog'lar kontrol edilmeli.")
         else:
-            # Komut adlarını listele (debug için)
             komut_adlari = [cmd.name for cmd in synced[:5]]
             log.info(f"📋 İlk 5 komut: {', '.join(komut_adlari)}...")
     except Exception as e:
@@ -158,11 +156,11 @@ async def on_ready():
         status=discord.Status.online,
         activity=discord.Activity(
             type=discord.ActivityType.watching,
-            name=f"Sığınakta {len(db.get('sakinler', {}))} sakin"
+            name=f"Sığınakta {len(db.get('sakinler', {}))} sakin | v5.9.1"
         )
     )
     log.info("=" * 60)
-    log.info("🟢 Bot tamamen hazır!")
+    log.info("🟢 Bot tamamen hazır! (v5.9.1)")
     log.info("=" * 60)
 
 
@@ -174,7 +172,6 @@ async def on_app_command_error(interaction: discord.Interaction, error: app_comm
     """Slash komut hatası yakalama."""
     hata_mesaji = str(error)
 
-    # Yetki hataları
     if isinstance(error, app_commands.MissingPermissions):
         hata_mesaji = f"❌ Bu komut için yetkiniz yok! Gerekli: {', '.join(error.missing_permissions)}"
     elif isinstance(error, app_commands.CommandOnCooldown):
@@ -191,6 +188,25 @@ async def on_app_command_error(interaction: discord.Interaction, error: app_comm
             await interaction.response.send_message(hata_mesaji, ephemeral=True)
     except Exception:
         pass
+
+
+# Prefix komut hata yakalama (v5.9: eklendi)
+@bot.event
+async def on_command_error(ctx, error):
+    """Prefix komut hatası yakalama."""
+    if isinstance(error, commands.MissingPermissions):
+        await ctx.send("❌ Bu komut için yetkiniz yok!")
+    elif isinstance(error, commands.CommandNotFound):
+        # Sessizce yok say
+        return
+    elif isinstance(error, commands.MissingRequiredArgument):
+        await ctx.send(f"❌ Eksik argüman! `{ctx.command.name}` komutu için gerekli parametre: `{error.param.name}`")
+    else:
+        log.error(f"Prefix komut hatası ({ctx.command}): {error}")
+        try:
+            await ctx.send(f"❌ Komut çalıştırılırken bir hata oluştu: {str(error)[:200]}")
+        except Exception:
+            pass
 
 
 # ====================================================

@@ -1,11 +1,17 @@
 """
-Cog: Keşif & Anıt
-=================
+Cog: Keşif & Anıt (v5.9)
+=========================
 Komutlar:
 - /gez (6 saat cooldown, %50 olumlu / %30 olumsuz / %20 gizemli, 30+ olay, büyük ödül/ceza)
 - /anit (sığınak şeref listesi ve şehitler)
 
 Önemli: /gez sonucu hem komutun kullanıldığı kanala, hem de ilgili RP bölge kanalına gönderilir.
+
+v5.9 Değişiklikler:
+- BUG FIX: xp_ekle çağrısında sakin.get("id","") yerine u_id kullanılıyor (önceden boş string dönüyordu)
+- BUG FIX: Anıt sıralama XP yerine seviye*100+xp ile yapılıyor
+- Temizlik: _bolge_kanal_bul artık kanallar.py'deki importları kullanıyor (duplicate ID yok)
+- Bar görsellerinde enfeksiyon kırmızı/sarı gösteriliyor
 """
 
 import discord
@@ -16,10 +22,17 @@ import asyncio
 import datetime
 
 from veritabani import (
-    db, verileri_kaydet, olu_kontrolu,
+    db, verileri_kaydet, olu_kontrolu, bar_olustur,
     sokak_ve_karantina_kontrolu, xp_ekle, haber_ekle
 )
-from kanallar import GEZI_BOLGE_KANAL_ESLEME
+from kanallar import (
+    ZAYIF_SURLAR, TOPRAK_YOL, BOS_EV_1, TARLA, SURLARIN_CEVRESI,
+    MEYDAN_AGACI, PAZAR_YERI, BELEDIYE_BINASI, BASKAN_SALONU,
+    KARANTINA_KAMPI, MEZARLIK, YESIL_KISLA, HASTANE, SIMYACININ_KULESI,
+    KULENIN_TEPESI, KARANLIK_ORMAN_YOLU_BATI, KUZEY_PAZAR, HAN,
+    SU_KUYUSU, IHTISAMLI_HANE, MADEN_OCAGI, ONDERIN_KOSKU,
+    ODUNCUNUN_YERI, SIRLAR_MAGARASI, GIZEMLI_BATAKLIK
+)
 
 
 # ====================================================
@@ -62,7 +75,7 @@ GIZEMLI_OLAYLAR = [
     ("🌀 Yıkık kilisenin sunağında parlayan garip bir rün buldun... Rün kayboldu ama vücudundaki tüm yaralar `+25 Sağlık` ile kapandı!", "saglik+25"),
     ("🔮 Bir mezar taşının altında kadim bir parşömen parçası buldun, üzerindeki rünler zihnini açtı! `+60 XP` kazandın.", "xp+60"),
     ("⚰️ Gece mezarlıkta bir rahibin hayaletiyle karşılaştın! Seni kutsadı ve enfeksiyon yükünü `-30` azalttı.", "enfeksiyon-30"),
-    ("👁️ Göz bebeksiz bir idol heykelciği buldun, sana bakıyor gibi. Heyecanla `+100 Akçe`lık bir hazine keşfettin ama aklın `-15` karaldı.", "akçe_akil+100-15"),
+    ("👁️ Göz bebeksiz bir idol heykelciği buldun, sana bakıyor gibi. Heyecanla `+100 Akçe`lik bir hazine keşfettin ama aklın `-15` karaldı.", "akçe_akil+100-15"),
     ("🌟 Gökyüzünden düşen parlak bir taş buldun, dokunduğunda sağlığın `+30` iyileşti ve `+40 XP` kazandın.", "saglik_xp+30+40"),
     ("🪞 Eski bir aynaya baktın, yansıtan yüzün değil başka biri! Şok oldu aklın `-20` ama o sırada `+150 Akçe` buldun.", "akil_akçe-20+150"),
     ("🕯️ Yanan mumlar senden ayrı yürümeye başladı, korktun ama onlar seni bir hazineye götürdü: `+200 Akçe`.", "akçe+200"),
@@ -75,8 +88,10 @@ GIZEMLI_OLAYLAR = [
 # ====================================================
 # OLAY ETKİ UYGULAMA FONKSİYONU
 # ====================================================
-def olay_ekisini_uygula(sakin, etki: str) -> str:
-    """Etki kodunu sakine uygular. Ek rapor metni döner."""
+def olay_ekisini_uygula(sakin_id: str, sakin: dict, etki: str) -> str:
+    """v5.9 FIX: sakin_id parametre olarak alınır (önceden sakin.get('id','') kullanılıyordu ve hep '' dönüyordu).
+    Etki kodunu sakine uygular. Ek rapor metni döner.
+    """
     ek_metin = ""
 
     # Tekli etkiler (akçe+N, saglik-N, vb.)
@@ -84,23 +99,19 @@ def olay_ekisini_uygula(sakin, etki: str) -> str:
         parca = etki.split("+")
         tur = parca[0]
         miktar = int(parca[1]) if len(parca) > 1 else 0
-        _tekli_etki(sakin, tur, miktar, +1)
+        _tekli_etki(sakin_id, sakin, tur, miktar, +1)
     elif "-" in etki and "_" not in etki and not etki.startswith("-"):
         parca = etki.split("-")
         tur = parca[0]
         miktar = int(parca[1]) if len(parca) > 1 else 0
-        _tekli_etki(sakin, tur, miktar, -1)
+        _tekli_etki(sakin_id, sakin, tur, miktar, -1)
     elif etki == "enfeksiyon_temizle":
         sakin["enfeksiyon"] = 0
         ek_metin = " (Enfeksiyon tamamen temizlendi!)"
 
-    # İkili etkiler (su_saglik+25+15, akil_akçe-20+150, vb.)
+    # İkili/üçlü etkiler (su_saglik+25+15, akil_akçe-20+150, ferahlat-20+20+20 vb.)
     elif "_" in etki:
-        # Parse: "su_saglik+25+15" -> ["su", "saglik", "+25", "+15"]
-        # Veya "akil_akçe-20+150" -> ["akil", "akçe", "-20", "+150"]
-        # Veya "ferahlat-20+20+20" -> 3 etkili
         parcalar = etki.replace("_", " ").replace("+", " +").replace("-", " -").split()
-        # ilk iki öğe tur adları, sonra sayılar
         turler = []
         sayilar = []
         for p in parcalar:
@@ -113,13 +124,14 @@ def olay_ekisini_uygula(sakin, etki: str) -> str:
             if i < len(sayilar):
                 miktar = sayilar[i]
                 yon = +1 if miktar >= 0 else -1
-                _tekli_etki(sakin, tur, abs(miktar), yon)
+                _tekli_etki(sakin_id, sakin, tur, abs(miktar), yon)
 
     return ek_metin
 
 
-def _tekli_etki(sakin, tur: str, miktar: int, yon: int):
-    """Tek bir stat'a etki uygular. yon: +1 artış, -1 azalış."""
+def _tekli_etki(sakin_id: str, sakin: dict, tur: str, miktar: int, yon: int):
+    """Tek bir stat'a etki uygular. yon: +1 artış, -1 azalış.
+    v5.9 FIX: xp artık doğru sakin_id ile xp_ekle'ye gidiyor (seviye atlama tetikleniyor)."""
     if tur == "akçe":
         if yon > 0:
             sakin["cuzdan"] = sakin.get("cuzdan", 0) + miktar
@@ -152,11 +164,9 @@ def _tekli_etki(sakin, tur: str, miktar: int, yon: int):
             sakin["enfeksiyon"] = max(0, sakin.get("enfeksiyon", 0) - miktar)
     elif tur == "xp":
         if yon > 0:
-            # xp_ekle seviye atlamayı otomatik işler
-            atlamalar = xp_ekle(str(sakin.get("id", "")), miktar)
-            # NOT: Bu fonksiyon db içindeki sakin'i doğrudan değiştirmez,
-            # çağıran yerde xp_ekle çağrılıyor, burada sadece stat güncellemesi yap
-            sakin["xp"] = sakin.get("xp", 0) + miktar
+            # v5.9 FIX: sakin_id artık doğru geliyor, seviye atlama çalışıyor
+            xp_ekle(sakin_id, miktar)
+            # xp_ekle zaten sakin["xp"]'i güncelliyor, tekrar ekleme yapma
     elif tur == "odun":
         if yon > 0:
             db["koy_ambari"]["stoklar"]["odun"] = db["koy_ambari"]["stoklar"].get("odun", 0) + miktar
@@ -273,8 +283,8 @@ class KesifCog(commands.Cog):
             embed_renk = 0x9B59B6
             kategori = "GİZEMLİ"
 
-        # Etkiyi uygula
-        ek_metin = olay_ekisini_uygula(sakin, etki)
+        # Etkiyi uygula - v5.9 FIX: sakin_id parametre olarak veriliyor
+        ek_metin = olay_ekisini_uygula(u_id, sakin, etki)
 
         # Cooldown kaydı
         sakin["son_gezi"] = datetime.datetime.now().isoformat()
@@ -282,12 +292,18 @@ class KesifCog(commands.Cog):
 
         # Embed oluştur
         embed = discord.Embed(title=f"🗺️ SEFARET RAPORU: {bolge}", color=embed_renk)
-        embed.description = (
-            f"👣 {interaction.user.mention}, seyahatin sırasında:\n\n"
-            f"**{secilen_olay}**\n\n"
-            f"_{ek_metin}_" if ek_metin else f"**{secilen_olay}**"
-        )
-        embed.set_footer(text=f"Kategori: {kategori} | Zar: {zar}/10 | Cooldown: 6 saat")
+        if ek_metin:
+            embed.description = (
+                f"👣 {interaction.user.mention}, seyahatin sırasında:\n\n"
+                f"**{secilen_olay}**\n\n"
+                f"_{ek_metin}_"
+            )
+        else:
+            embed.description = (
+                f"👣 {interaction.user.mention}, seyahatin sırasında:\n\n"
+                f"**{secilen_olay}**"
+            )
+        embed.set_footer(text=f"Kategori: {kategori} | Zar: {zar}/10 | Cooldown: 6 saat | Sığınak Veba RP v5.9.1")
 
         await interaction.channel.send(embed=embed)
 
@@ -311,21 +327,34 @@ class KesifCog(commands.Cog):
 
 
     def _bolge_kanal_bul(self, bolge: str):
-        """Bölge adından RP kanal ID'sini bul."""
+        """Bölge adından RP kanal ID'sini bul.
+        v5.9: Artık kanallar.py'deki importları kullanıyor (duplicate yok)."""
         eslesme = {
-            "Zayıf Surlar": 1508542217969467445, "Toprak Yol": 1508857245830484282,
-            "Boş Ev": 1508857306467794944, "Tarla": 1508648065307902022,
-            "Surların Çevresi": 1508648316831793242, "Meydan Ağacı": 1508860255293931690,
-            "Pazar Yeri": 1508752279174512730, "Belediye Binası": 1508752930893991976,
-            "Başkan Salonu": 1508753021377708122, "Karantina Kampı": 1515060113029992591,
-            "Mezarlık": 1515060310866788513, "Yeşil Kışla": 1508860968250380318,
-            "Hastane": 1508757518678229172, "Simyacının Kulesi": 1508757828796551288,
-            "Kulenin Tepesi": 1508758009164337238, "Karanlık Orman Yolu": 1508758137346330754,
-            "Kuzey Pazar": 1508755924947308634, "Han": 1508860745943879772,
-            "Su Kuyusu": 1508860784338538698, "İhtişamlı Hane": 1508755973764808754,
-            "Maden Ocağı": 1508756162693304381, "Önderin Köşkü": 1508756267508695061,
-            "Oduncunun Yeri": 1515069184592056370, "Sırlar Mağarası": 1515069602042744964,
-            "Gizemli Bataklık": 1515069633764261998,
+            "Zayıf Surlar": ZAYIF_SURLAR,
+            "Toprak Yol": TOPRAK_YOL,
+            "Boş Ev": BOS_EV_1,
+            "Tarla": TARLA,
+            "Surların Çevresi": SURLARIN_CEVRESI,
+            "Meydan Ağacı": MEYDAN_AGACI,
+            "Pazar Yeri": PAZAR_YERI,
+            "Belediye Binası": BELEDIYE_BINASI,
+            "Başkan Salonu": BASKAN_SALONU,
+            "Karantina Kampı": KARANTINA_KAMPI,
+            "Mezarlık": MEZARLIK,
+            "Yeşil Kışla": YESIL_KISLA,
+            "Hastane": HASTANE,
+            "Simyacının Kulesi": SIMYACININ_KULESI,
+            "Kulenin Tepesi": KULENIN_TEPESI,
+            "Karanlık Orman Yolu": KARANLIK_ORMAN_YOLU_BATI,
+            "Kuzey Pazar": KUZEY_PAZAR,
+            "Han": HAN,
+            "Su Kuyusu": SU_KUYUSU,
+            "İhtişamlı Hane": IHTISAMLI_HANE,
+            "Maden Ocağı": MADEN_OCAGI,
+            "Önderin Köşkü": ONDERIN_KOSKU,
+            "Oduncunun Yeri": ODUNCUNUN_YERI,
+            "Sırlar Mağarası": SIRLAR_MAGARASI,
+            "Gizemli Bataklık": GIZEMLI_BATAKLIK,
         }
         return eslesme.get(bolge)
 
@@ -334,13 +363,19 @@ class KesifCog(commands.Cog):
     # ====================================================
     @app_commands.command(name="anit", description="Sığınak meydanındaki kadim anitı, kuralları ve şeref listesini görüntüler.")
     async def anit_goruntule(self, interaction: discord.Interaction):
-        # En yüksek XP'ye sahip 3 kahraman
-        sirali_sakinler = sorted(db["sakinler"].items(), key=lambda x: x[1].get("xp", 0), reverse=True)[:3]
+        # v5.9 FIX: XP yerine seviye*100+xp ile sırala (gerçek deneyim puanı)
+        sirali_sakinler = sorted(
+            db["sakinler"].items(),
+            key=lambda x: (x[1].get("seviye", 1) * 100) + x[1].get("xp", 0),
+            reverse=True
+        )[:3]
 
         seref_kursusu = ""
         madalyalar = ["🥇", "🥈", "🥉"]
         for i, (s_id, veri) in enumerate(sirali_sakinler):
-            seref_kursusu += f"{madalyalar[i]} **{veri.get('isim', 'Bilinmeyen Kahraman')}** - `{veri.get('xp', 0)} XP`\n"
+            seviye = veri.get("seviye", 1)
+            xp = veri.get("xp", 0)
+            seref_kursusu += f"{madalyalar[i]} **{veri.get('isim', 'Bilinmeyen Kahraman')}** - `Seviye {seviye} ({xp} XP)`\n"
 
         # Şehitler listesi
         olu_sakinler = [(s_id, v) for s_id, v in db["sakinler"].items() if v.get("durum") == "Ölü"]
@@ -368,6 +403,7 @@ class KesifCog(commands.Cog):
             "💀 **ŞEHİTLER DUVARI — Sığınak İçin Can Verenler:**\n" + sehit_listesi + "\n"
             f"📅 **Kuruluş Tarihi:** Sığınak kapıları `03.01.2026` tarihinde mühürlenerek hayata başlamıştır."
         )
+        embed.set_footer(text="Sığınak Veba RP v5.9.1")
         await interaction.response.send_message(embed=embed)
 
 

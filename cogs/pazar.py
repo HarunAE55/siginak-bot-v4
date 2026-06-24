@@ -178,7 +178,7 @@ class PazarCog(commands.Cog):
             "💡 **Satın almak için:** `/satinal [kod] [adet]`\n"
             "💡 **Satmak için:** `/bota-sat [esya] [adet]`"
         )
-        embed.set_footer(text="Sığınak Veba RP v5.7 | Kategori seçmek için aşağıdaki menüyü kullan")
+        embed.set_footer(text="Sığınak Veba RP v5.9.1 | Kategori seçmek için aşağıdaki menüyü kullan")
         
         view = PazarView()
         await interaction.response.send_message(embed=embed, view=view)
@@ -826,7 +826,7 @@ class PazarDropdown(discord.ui.Select):
         if sayac == 0:
             embed.description = "❌ Bu kategoride şu an eşya yok."
 
-        embed.set_footer(text="Sığınak Veba RP v5.7 | Başka kategori için tekrar seçim yap")
+        embed.set_footer(text="Sığınak Veba RP v5.9.1 | Başka kategori için tekrar seçim yap")
         
         yeni_view = PazarView()
         if interaction.response.is_done():

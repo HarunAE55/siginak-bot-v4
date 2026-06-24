@@ -1,8 +1,13 @@
 """
-Sığınak Bot - Merkezi Veritabanı Modülü
-=======================================
+Sığınak Bot - Merkezi Veritabanı Modülü (v5.9)
+================================================
 JSON tabanlı kalıcı veritabanı + tüm yardımcı fonksiyonlar burada.
 Tüm cog'lar bu modülü import eder: `from veritabani import db, verileri_kaydet, ...`
+
+v5.9 Değişiklikler:
+- bar_olustur: negatif stat'ler (enfeksiyon) için kırmızı/sarı renk desteği
+- olum_protokolu: KASA_AKÇE_PLACEHOLDER doğru kullanımı (zaten doğru ama yedeklendi)
+- Sürüm bilgisi güncellendi
 """
 
 import json
@@ -19,6 +24,10 @@ DATA_FILE = "siginak_temel_veri.json"
 
 # Global veritabanı dict'i. Tüm modüller bunu paylaşır.
 db: dict = {}
+
+# v5.9: asyncio lock — DB race condition koruması
+import asyncio
+_db_lock = asyncio.Lock()
 
 
 def verileri_yukle():
@@ -152,12 +161,29 @@ def db_ilkle():
 # 2. YARDIMCI FONKSİYONLAR
 # ====================================================
 
-def bar_olustur(mevcut, maksimum=100, uzunluk=10):
-    """İlerleme barı oluşturur. Örn: [🟩🟩🟩⬛⬛⬛⬛⬛⬛⬛] %30"""
+def bar_olustur(mevcut, maksimum=100, uzunluk=10, negatif=False):
+    """İlerleme barı oluşturur. Örn: [🟩🟩🟩⬛⬛⬛⬛⬛⬛⬛] %30
+
+    v5.9: negatif=True ise yüksek değer kötü demektir (enfeksiyon gibi).
+    Bu durumda düşük değer yeşil, orta sarı, yüksek kırmızı renkte gösterilir.
+    """
     yuzde = max(0, min(mevcut, maksimum)) / maksimum
     dolu = int(yuzde * uzunluk)
     bos = uzunluk - dolu
-    return f"[{'🟩' * dolu}{'⬛' * bos}] %{int(max(0, min(mevcut, maksimum)))}"
+    yuzde_int = int(max(0, min(mevcut, maksimum)))
+
+    if negatif:
+        # Enfeksiyon gibi negatif stat'ler için
+        if yuzde < 0.3:
+            dolu_karakter = "🟩"  # Düşük = iyi (yeşil)
+        elif yuzde < 0.7:
+            dolu_karakter = "🟨"  # Orta = sarı
+        else:
+            dolu_karakter = "🟥"  # Yüksek = kötü (kırmızı)
+    else:
+        dolu_karakter = "🟩"
+
+    return f"[{'🟩' * dolu if not negatif else dolu_karakter * dolu}{'⬛' * bos}] %{yuzde_int}"
 
 
 def olu_kontrolu(sakin_id: str):
@@ -291,7 +317,7 @@ def haber_ekle(metin: str):
 
 
 def sakin_olustur_defaults(u_id: str, isim: str, soyisim: str, yas: int, memleket: str, baslangic_atak: int = None):
-    """Yeni bir sakin kaydı oluşturur ve db'ye yazar.Kaydetmez - çağıran verileri_kaydet() yapmalı."""
+    """Yeni bir sakin kaydı oluşturur ve db'ye yazar. Kaydetmez - çağıran verileri_kaydet() yapmalı."""
     import random
     if baslangic_atak is None:
         baslangic_atak = random.randint(10, 20)
@@ -326,6 +352,8 @@ def sakin_olustur_defaults(u_id: str, isim: str, soyisim: str, yas: int, memleke
         "son_meslek_degisimi": None,
         "son_gezi": None,        # /gez cooldown için
         "son_nobet": None,       # /nobet cooldown için
+        "son_kutsama": None,     # /kutsa cooldown için
+        "son_biyografi_degisimi": None,
     }
     db["sistem_ayarlari"]["toplam_kayitli_sakin"] = db["sistem_ayarlari"].get("toplam_kayitli_sakin", 0) + 1
     return db["sakinler"][u_id]
@@ -363,14 +391,15 @@ class OlumEkraniView(discord.ui.View):
         await interaction.response.send_message(
             "📝 **Yeniden Doğuş:** Sığınak kapıları sana tekrar açılıyor!\n"
             "Hayatına sıfırdan başlamak için `/kayit` komutunu kullan:\n"
-            "`/kayit isim: soyisim: yaş: memleket:`",
+            "`/kayit isim: soyisim: yaş: memleket:`\n\n"
+            "veya prefix ile: `v.kayit isim soyisim yaş memleket`",
             ephemeral=True
         )
         self.stop()
 
 
 # ====================================================
-# 3. ROL ID'leri (Sabit - Sunucuya özel - v5.7 Güncel)
+# 3. ROL ID'leri (Sabit - Sunucuya özel - v5.9 Güncel)
 # ====================================================
 
 # Sunucu Yönetimi
@@ -379,7 +408,7 @@ SECOND_OWNER_ROL_ID = 1470743025280880743     # ♕ • Second Owner
 ADMINISTRATOR_ROL_ID = 1518268192395497544    # 👑 • Administrator
 ADMIN_ROL_ID = 1518268274687873145           # 🛡️ • Admin
 YETKILI_EKIP_ROL_ID = 1518378716533882921    # 🎩 • Yetkili Ekip
-VEBA_BOT_ROL_ID = 1516186216276431062        # 🤖 • Veba 1320
+VEBA_BOT_ROL_ID = 1516186216276431062        # 🤖 • Veba 1320 (bot rolü)
 
 # Yetkili Rolleri
 KAYIT_EKIBI_ROL_ID = 1470748590917025842      # 🪪 • Kayıt Ekibi
@@ -437,7 +466,7 @@ KAYITSIZ_ROL_ID = 1470747472858058897
 
 
 # ====================================================
-# 5. YETKI KONTROL FONKSIYONLARI
+# 5. YETKI KONTROL FONKSİYONLARI
 # ====================================================
 
 def admin_mi(interaction) -> bool:

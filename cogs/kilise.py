@@ -143,10 +143,11 @@ class KiliseCog(commands.Cog):
         db["kilise_sistemi"]["kedi_katliami_yapildi"] = True
         db["kilise_sistemi"]["fare_nufusu"] *= 10
 
-        # Sadece Canlı sakinleri enfekte et
+        # v5.9: Hem Canlı hem Sağlıklı sakinleri enfekte et
+        # (önceden sadece "Canlı" olanlar enfekte oluyordu, doktor tedavi edince "Sağlıklı" olurdu)
         sayac = 0
         for s_id, veri in db["sakinler"].items():
-            if veri.get("durum") == "Canlı":
+            if veri.get("durum") in ("Canlı", "Sağlıklı"):
                 veri["durum"] = "Enfekte"
                 sayac += 1
 

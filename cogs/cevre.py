@@ -152,20 +152,20 @@ class HavaDurumuSecimi(discord.ui.Select):
     def __init__(self):
         options = [
             discord.SelectOption(label="☀️ Güneşli (Yaz)", description="Çiftçilerin ekin üretimi tavan yapar.", emoji="☀️", value="Yaz"),
-            discord.SelectOption(label="🌧️ Yağmurlu (İlkbahar)", description="Toprak sulanır, odun üretimi dengelenir.", emoji="🌧️", value="Ilkbahar"),
+            discord.SelectOption(label="🌧️ Yağmurlu (İlkbahar)", description="Toprak sulanır, odun üretimi dengelenir.", emoji="🌧️", value="İlkbahar"),
             discord.SelectOption(label="⛈️ Fırtınalı (Sonbahar)", description="Dışarı keşfe çıkma riskleri artar.", emoji="⛈️", value="Sonbahar"),
-            discord.SelectOption(label="❄️ Buzul Kış (Kış)", description="Çiftçi üretimi durur! Ambarlardan tüketim başlar.", emoji="❄️", value="Kis")
+            discord.SelectOption(label="❄️ Buzul Kış (Kış)", description="Çiftçi üretimi durur! Ambarlardan tüketim başlar.", emoji="❄️", value="Kış")
         ]
         super().__init__(placeholder="🌍 Dinamik Hava Durumu ve Mevsim Döngüsü Ayarla...", min_values=1, max_values=1, options=options, custom_id="hava_durumu_select")
 
     async def callback(self, interaction: discord.Interaction):
         secilen_hava = self.values[0]
-        # Hem cevre_ayarlari hem cevre_durumu güncelle
+        # v5.9 FIX: Türkçe karakterli değerler kullanılıyor (orman_kes/tarla_calis ile uyumlu)
         hava_eslesme = {
             "Yaz": ("Güneşli", "Yaz"),
-            "Ilkbahar": ("Yağmurlu", "İlkbahar"),
+            "İlkbahar": ("Yağmurlu", "İlkbahar"),
             "Sonbahar": ("Fırtınalı", "Yağmurlu"),
-            "Kis": ("Karlı", "Kış")
+            "Kış": ("Karlı", "Kış")
         }
         cevre_hava, mevsim = hava_eslesme.get(secilen_hava, (secilen_hava, secilen_hava))
         db["cevre_ayarlari"]["hava_durumu"] = cevre_hava
@@ -175,9 +175,9 @@ class HavaDurumuSecimi(discord.ui.Select):
         embed = discord.Embed(title="🌍 MEVSİM VE İKLİM DÖNGÜSÜ DEĞİŞTİ", color=0x3498DB)
         mesajlar = {
             "Yaz": "☀️ **Yaz Mevsimi!** Çiftçilerin üretimi %50 daha verimli.",
-            "Ilkbahar": "🌧️ **İlkbahar!** Bereketli yağmurlar, dengeli üretim.",
+            "İlkbahar": "🌧️ **İlkbahar!** Bereketli yağmurlar, dengeli üretim.",
             "Sonbahar": "⛈️ **Sonbahar!** Fırtınalar, dış dünya riskli.",
-            "Kis": "❄️ **Kış!** Çiftçi üretimi durdu, dış çalışma çok zorlu."
+            "Kış": "❄️ **Kış!** Çiftçi üretimi durdu, dış çalışma çok zorlu."
         }
         embed.description = mesajlar.get(secilen_hava, f"Hava durumu değişti: {secilen_hava}")
         await interaction.response.send_message(embed=embed)

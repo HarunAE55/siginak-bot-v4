@@ -138,6 +138,7 @@ class SistemCog(commands.Cog):
 
                     # Sağlık 0 ise ölüm!
                     if veri["saglik"] == 0:
+                        # v5.9: Türkçe karakter "Ölü" - önceden "Öldü" yazılmıştı
                         veri["durum"] = "Ölü"
                         veri["meslek_anahtar"] = "gezgin"
                         veri["meslek_isim"] = "Gezgin (Öldü)"
